@@ -1,0 +1,306 @@
+﻿@using PITB.CMS_Common
+
+@{
+    //Layout = "~/Views/Shared/Executive/_ExecutiveDashboardLayout.cshtml";
+}
+<style>
+    .btn-primary {
+        background-color: #FBCC3E;
+        border-color: #C2BF53;
+        color: #000;
+    }
+
+    table, td {
+        text-align: center !important;
+    }
+
+        table th {
+            text-align: center;
+            color: white;
+            border: 1px solid white !important;
+            font-weight: bold;
+            background: #415e61;
+            /*background: rgb(72, 127, 132);*/
+            border: 2px;
+        }
+
+    tfoot td {
+        text-align: center;
+        /*background-color: rosybrown;*/
+        color: white;
+        border: 1px solid white !important;
+        font-weight: bold;
+        background: #415e61; /*rgb(72, 127, 132);*/
+        border: 2px;
+    }
+
+    /** {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 25px 0;
+            line-height: 1.2;
+        }
+
+        p {
+            margin: 15px 0;
+            line-height: 1.8;
+        }
+
+        body {
+            font-family: Arial;
+            font-size: 10pt;
+        }
+
+        table {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+        }
+
+            table th {
+                background-color: rosybrown;
+                color: white;
+                border: 1px solid black;
+                font-weight: bold;
+                background: grey;
+            }
+
+            table td {
+                padding: 5px;
+                border: 1px solid black;
+                background: white;
+                color: black;
+            }*/
+
+</style>
+
+
+
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" @*src="@ViewBag.LogoUrl"*@>Region wise resolved complaints @*@ViewBag.CampaignName*@</h3>
+            </div>
+            @*@using (Html.BeginForm("ParamsForRegionWiseResolvedComplaintReport", "Report", FormMethod.Post, new { id = "SubmitComplaintAction", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::PostActionCallback||url::../Report/ParamsForRegionWiseResolvedComplaintReport?complaintId=" + @Model.ComplaintId }))*@
+            @using (Html.BeginForm("GetRegionWiseResolvedComplaintsResult", "Report", FormMethod.Post, new { id = "RegionWiseResolvedReport", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::PopulateWiseResolvedReportData||url::../Report/GetRegionWiseResolvedComplaintsResult" }))
+            {
+                <div class="box-body-white clearfix">
+                    @*<div class="col-md-12 col-sm-12">*@
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            @*<div class="col-md-12">*@
+                            <div class="form-group col-md-3">
+                                <div class="col-md-4">
+                                    <label>From *</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" data-val-tag="T1" class="form-control" data-date-end-date="0d" data-input-format="Date" data-input-date-format="yyyy-mm-dd" value=@(Utility.GetDateTimeStr(DateTime.Now.AddMonths(-6), "yyyy-MM-dd")) name="From_Date" data-val-is-required="True" />
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter date" data-validation-for-type="text" data-val-for-name="From_Date">
+
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="col-md-4">
+                                    <label>To *</label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" data-val-tag="T1" class="form-control" data-date-end-date="0d" data-input-format="Date" data-input-date-format="yyyy-mm-dd" value=@(Utility.GetDateTimeStr(DateTime.Now, "yyyy-MM-dd")) name="To_Date" data-val-is-required="True" />
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter date" data-validation-for-type="text" data-val-for-name="To_Date">
+
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-md-3">
+                                <div class="col-md-4">
+                                    <label>Campaign*</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*<select class="form-control" type="select" name="Campaign" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">*@
+                                    <select class="form-control" type="select" id="Campaign" name="Campaign" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/GetRegionWiseResolvedComplaintCampaings" data-val-is-required="True">
+                                        <option value="-1">--Select--</option>
+                                    </select>
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Campaign is required" data-validation-for-type="text" data-val-for-name="Campaign">
+
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="col-md-4">
+                                    <label>Region*</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*<select class="form-control" type="select" name="Region" data-val-tag="T1" data-val-repopulate-onchange-of="Campaign" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">*@
+                                    <select class="form-control" type="select" name="Region" data-val-tag="T1" data-val-repopulate-onchange-of="Campaign" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/GetHierarchies?campaignId={id}" data-val-is-required="True">
+                                        <option value="-1">--Select--</option>
+                                    </select>
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="Region">
+
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <div class="col-md-4">
+                                    <label>Category Level*</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*<select class="form-control" type="select" name="Region" data-val-tag="T1" data-val-repopulate-onchange-of="Campaign" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">*@
+                                    <select class="form-control" type="select" id="CategoryLevel" name="CategoryLevel" data-val-repopulate-onchange-of="Campaign" data-val-select-defaultId-onchange="-1" data-val-tag="T1">
+                                        <option value="-1">--Select--</option>
+                                        <option value="1">Department</option>
+                                        <option value="2">Category</option>
+                                        <option value="3">Subcategory</option>
+                                    </select>
+                                    @*<span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="Region">
+
+                                        </span>*@
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-3" style="display: none;" @*class="hidden"*@ data-display-if="CategoryLevel::1,2,3">
+                                <div class="col-md-4">
+                                    <label>Categories *</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*<select class="form-control" type="select" name="Region" data-val-tag="T1" data-val-repopulate-onchange-of="Campaign" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">*@
+                                    <select class="form-control" type="select" id="Categories" name="Categories" data-val-tag="T1" data-force-post="True" data-val-ismultiselectenabled="True" data-val-repopulate-onchange-of="CategoryLevel" multiple="multiple" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/GetCategories" data-val-dont-append-default-select="True" data-val-api-url-data-func="GetCategoryLevelApiData" data-val-is-required="True">
+                                        @*<option value="-1">--Select--</option>*@
+                                    </select>
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="Region">
+
+                                    </span>
+                                </div>
+                            </div>
+
+                            @*<div class="form-group col-md-3" style="display: none;" data-display-if="CategoryLevel::2,3">
+                                    <div class="col-md-4">
+                                        <label>Level 2*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <select class="form-control" type="select" name="CategorLevel1" data-val-tag="T1" data-val-repopulate-onchange-of="CategoryLevel" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/GetHierarchies?campaignId={id}" data-val-is-required="True">
+                                            <option value="-1">--Select--</option>
+                                        </select>
+                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="Region">
+
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-3" style="display: none;"  data-display-if="CategoryLevel::3">
+                                    <div class="col-md-4">
+                                        <label>Level 3*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                       <select class="form-control" type="select" name="CategorLevel1" data-val-tag="T1" data-val-repopulate-onchange-of="CategoryLevel" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/GetHierarchies?campaignId={id}" data-val-is-required="True">
+                                            <option value="-1">--Select--</option>
+                                        </select>
+                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="Region">
+
+                                        </span>
+                                    </div>
+                                </div>*@
+
+
+                            <div class="form-group row">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="col-md-3 pull-right">
+                                        <button type="submit" style="margin: 5px 15px 0 0" class="btn pull-right btn-primary" @*onclick="OnSumitClick()"*@><span class="fa fa-save"></span>&nbsp;Filter</button>
+                                        <button id="ExcelExportBtn" style="margin: 5px 15px 0 0" class="btn btn-success pull-right" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @*</div>*@
+                        </div>
+
+
+                    </div>
+
+                    @*</div>*@
+                </div>
+            }
+            <div id="regionWiseListingContainer" class="scroll">
+                <table id="regionWiseListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing"></table>
+                @*<table id="tblCustomers"> <caption>A complex table</caption> <thead> <tr> <th colspan="3">Invoice #123456789</th> <th>14 January 2025 </tr> <tr> <td colspan="2"> <strong>Pay to:</strong><br> Acme Billing Co.<br> 123 Main St.<br> Cityville, NA 12345 </td> <td colspan="2"> <strong>Customer:</strong><br> John Smith<br> 321 Willow Way<br> Southeast Northwestershire, MA 54321 </td> </tr> </thead> <tbody> <tr> <th>Name / Description</th> <th>Qty.</th> <th>asdas</th> <th>Cost</th> </tr> <tr> <td>Paperclips</td> <td>1000</td> <td>0.01</td> <td>10.00</td> </tr> <tr> <td>Staples (box)</td> <td>100</td> <td>1.00</td> <td>100.00</td> </tr> </tbody> <tfoot> <tr> <th colspan="3">Subtotal</th> <td> 110.00</td> </tr> <tr> <th colspan="2">Tax</th> <td> 8% </td> <td>8.80</td> </tr> <tr> <th colspan="3">Grand Total</th> <td>$ 118.80</td> </tr> </tfoot> </table>*@
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //debugger;
+        //alert("zeeshi");
+        RegisterLocalValidation("#RegionWiseResolvedReport", "T1");
+        //$.enableMultiselectOf("CategoryLevel");
+    });
+
+    function GetCategoryLevelApiData() {
+        var dataArr = [];
+        dataArr[0] = { key: "campaignId", value: $("#Campaign").val() };
+        dataArr[1] = { key: "categoryLevel", value: $("#CategoryLevel").val() };
+        return dataArr;
+    }
+
+    $("#RegionWiseResolvedReport").submit(function (event) {
+        debugger;
+        event.preventDefault();
+        var elementsToPost = [];
+        var isValid = ValidateFormOnSubmit("#RegionWiseResolvedReport", "T1", elementsToPost);
+        if (isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+            var response = SubmitForm("#RegionWiseResolvedReport", elementsToPost);
+            debugger;
+
+        }
+        return isValid;
+    });
+
+    function OnExport(table, name) {
+        var uri = 'data:application/vnd.ms-excel;base64,',
+            template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>',
+            base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))); },
+            format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }); }
+        //return function (table, name) {
+        if (!table.nodeType) table = document.getElementById(table);
+        var ctx = { worksheet: name || 'Worksheet', table: table.innerHTML }
+        //window.location.href = uri + base64(format(template, ctx));
+
+        var a = document.createElement('a');
+        //var data_type = 'data:application/vnd.ms-excel';
+        a.href = uri + base64(format(template, ctx));
+        a.download = 'RegionWiseReport' + '.xls';
+        a.click();
+        //}
+    }
+
+
+    $(function () {
+        //doInline($("#tblCustomers").html());
+        $("#ExcelExportBtn").click(function () {
+            var asd = $("#regionWiseListingContainer").inlineStyler();
+            OnExport("regionWiseListingContainer", 'W3C Example Table');
+            //ExportTable("#regionWiseListingContainer", 'W3C Example Table');
+            //$("#regionWiseListingContainer").table2excel({
+            //    filename: "Table.xls"
+            //});
+        });
+    });
+
+    function PopulateWiseResolvedReportData(data) {
+        var tableData = data; //JSON.parse(data);
+        $("#regionWiseListing").empty();
+        $("#regionWiseListing").append(tableData.Html);
+        HideLoading();
+
+        debugger;
+    }
+
+</script>

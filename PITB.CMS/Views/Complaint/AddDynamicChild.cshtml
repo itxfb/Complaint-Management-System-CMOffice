@@ -1,0 +1,26 @@
+﻿@using System.Web.UI.WebControls
+@using Newtonsoft.Json
+@model BridgeDTO.Form.DynamicForm.FormAjaxParams
+@{
+    //Layout = null;
+}
+<div id="FormParams__@Model.FormId" style="display: none;">@JsonConvert.SerializeObject(@Model)</div>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading"><h1 class="panel-title">Bridge.NET Form Builder @Model.FormId</h1></div>
+        <div class="panel-body">
+            <form id=@Model.FormId class="form-horizontal" role="form"></form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var @Model.FormId = {};
+    (@Model.FormId).FormId = '@Model.FormId';
+
+
+    $(document).ready(function() {
+        BridgeClassLib.Form.FormInitializer.Main("FormParams__" + (@Model.FormId).FormId );
+    });
+
+</script>
+    @*<script src="~/js/Bridge/FormBuilder/FormInitializer.js"></script>*@

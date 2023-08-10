@@ -1,0 +1,404 @@
+﻿@using PITB.CMS_Common.Helper.Extensions;
+@model VmAddStakeholderUser
+
+@{
+    ViewBag.Title = "AddEditUser";
+    //Layout = "~/Views/Shared/_AdminStakeholderLayout.cshtml";
+}
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+</style>
+<div class="overlay"></div>
+
+
+<div id="Loading" style="display:none;" class="LoadingBlock">
+
+</div>
+<div class="popup-">
+    <div class="popup-detail container">
+        <a href="#" class="popup-close">X</a>
+        <div id="MainInfo">
+
+        </div>
+    </div>
+</div>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary ">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Users Listing</h4>
+        </div>
+        <div class="row margin">
+            <div class="col-md-8 col-lg-8 col-sm-8">
+                <h5>Users who received Verification code : <span id="verification_code_users"></span></h5>
+                <h5>Users who changed password : <span id="password_changed"></span></h5>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <a href="#" data-url="@Url.Action("AddUser", "AdminStakeholder")" class="btn btn-primary pull-right add-btn"><span class="fa fa-user"></span>&nbsp;Add User</a>
+            </div>
+        </div>
+        <hr>
+        <br />
+        <div class="row ">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    @*Select Campaign*@
+                    @Html.DropDownListFor(m => m.Campaign, Model.CampaignSelectList, "--Select Campaign--", new { @Id = "GridControlCampaign", @class = "form-control" })
+
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    @*Select Hierarchy*@
+                    @Html.DropDownListFor(m => m.Hierarchy, Model.HierachyList, "--Select Hierarchy--", new { @Id = "GridControlHierarchy", @class = "form-control" })
+
+
+                </div>
+                </div>
+            </div>
+        <br clear="all">
+        <hr>
+        <table id="StakeholderUsersTable" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+            @*<table id="tableToPopulate" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">*@
+            <thead>
+                <tr role="row" class="tableHeader">
+                    <th>Id</th>
+                    <th>Full Name</th>
+                    <th>User Name</th>
+                    <th>Cnic</th>
+                    <th>Phone</th>
+                    <th>Province</th>
+                    <th>Division</th>
+                    <th>District</th>
+                    <th>Tehsils</th>
+                    <th>Union Councils</th>
+                    <th>Edit</th>
+
+                </tr>
+            </thead>
+            <thead>
+                <tr>
+                    <th><input type="text" data-column="0" class="search-input-text"></th>
+                    <th><input type="text" data-column="1" class="search-input-text"></th>
+                    <th><input type="text" data-column="2" class="search-input-text"></th>
+                    <th><input type="text" data-column="3" class="search-input-text"></th>
+                    <th><input type="text" data-column="4" class="search-input-text"></th>
+                    <th><input type="text" data-column="5" class="search-input-text"></th>
+                    <th><input type="text" data-column="6" class="search-input-text"></th>
+                    <th><input type="text" data-column="7" class="search-input-text"></th>
+                    <th><input type="text" data-column="8" class="search-input-text"></th>
+                    <th><input type="text" data-column="9" class="search-input-text"></th>
+                    @*<th><input type="text" data-column="10" class="search-input-text"></th>*@
+                    <th></th>
+                </tr>
+
+
+            <tbody></tbody>
+
+        </table>
+    </div>
+</div>
+
+<style>
+    .error {
+        color: red;
+        font-size: medium;
+    }
+
+    .success {
+        color: green;
+        font-size: medium;
+    }
+
+    .mandatory {
+        color: red;
+        font-size: 20px;
+    }
+</style>
+@if (ViewBag.Message != null)
+{
+    Html.RenderPartial("~/Views/Shared/ViewUserControls/_MessageBox.cshtml", (VmMessage)ViewBag.Message);
+}
+
+<script type="text/javascript">
+
+    var dtData;
+
+    $(function () {
+        $(window).load(function () {
+
+            loadNewGrid();
+        });
+
+        $(".add-btn").click(function (e) {
+            e.preventDefault();
+
+            var url = $(this).attr('data-url');
+            LoadMainInfo(url);
+
+        });
+        $(".popup-close").click(function (e) {
+            e.preventDefault();
+
+            $(".overlay").fadeOut("slow");
+            $(".popup-").fadeOut("fast");
+
+        });
+        $('#GridControlCampaign').change(function () {
+
+            loadNewGrid();
+        });
+        $('#GridControlHierarchy').change(function () {
+
+            loadNewGrid();
+        });
+
+        $(document).on('click', '.edit-btn', function () {
+            var url = $(this).attr('data-url');
+            var UserId = $(this).attr('UserId');
+            EditForm(url, UserId);
+            //alert(val);
+        });
+    });
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#StakeholderUsersTable').DataTable().columns(i).search(v).draw();
+    });
+
+    function LoadMainInfo(url) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            success: function (result) {
+                $(".overlay").fadeIn("fast");
+                $(".popup-").fadeIn("slow");
+
+                $("#MainInfo").html(result);
+                $('.content-wrapper').css('min-height', ($('#MainInfo').height() + 350) + "px");
+            }
+
+        });
+    }
+
+    function EditForm(url, UserId) {
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { UserID: UserId },
+            success: function (result) {
+                $(".overlay").fadeIn("fast");
+                $(".popup-").fadeIn("slow");
+
+                $("#MainInfo").html(result);
+                $('.content-wrapper').css('min-height', ($('#MainInfo').height() + 350) + "px");
+            }
+
+        });
+    }
+
+
+    function ShowLoading() {
+        $('#Loading').fadeIn('slow');
+    }
+    function HideLoading() {
+        $('#Loading').fadeOut('slow');
+    }
+
+    function fnCallbackAlter() {
+
+    }
+
+    function loadNewGrid() {
+        ShowLoading();
+        var Campaigns = ($('#GridControlCampaign').val() == "") ? "0" : $('#GridControlCampaign').val();
+        var HierarchyID = ($('#GridControlHierarchy').val() == "") ? "0" : $('#GridControlHierarchy').val();
+        var editlink = '@Url.Action("EditUser", "AdminStakeholder")';
+
+        var table = $('#StakeholderUsersTable').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                //counter = 1;
+                //dtData = oSettings.aoData;
+                //alert(dtData);
+            },
+            "bDestroy": true,
+            "iDisplayLength": 25,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                var psData = {};
+                psData.aoData = JSON.stringify(aoData);
+                psData.campaigns = Campaigns;
+                psData.hierarchy_id = HierarchyID;
+
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": '@Url.Action("GetAllUserP", "api/Report")',
+                    "data": psData, //{ aoData: JSON.stringify(aoData), Campaigns: Campaigns, Hierarchy_id: HierarchyID},
+                    //"success": fnCallbackAlter,
+                    "success": function (msg) {
+                        fnCallback(msg.Data);
+
+                    },
+                });
+                dtData = aoData;
+                //alert(aoData.Data);
+            },
+            //"sAjaxDataProp": "Data.data",
+            "columns": [
+                { "data": "Id" },
+                { "data": "Name" },
+                { "data": "Username" },
+                { "data": "Cnic" },
+                { "data": "Phone" },
+                { "data": "Province_Name" },
+                { "data": "Division_Name" },
+                { "data": "District_Name" },
+                { "data": "Tehsil_Name" },
+                { "data": "UnionCouncils_Name" },
+                //{ "data": "IsActive" },
+                { "data": "Id" }
+
+            ],
+            aoColumnDefs: [{
+                "aTargets": [8],
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+                    return "<div class='tehsil_name'>" + full.Tehsil_Name + "</div>";
+                }
+            },
+            {
+                "aTargets": [9],
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+                    return "<div class='unionConcil_name'>" + full.UnionCouncils_Name + "</div>";
+                }
+            },
+            {
+                "aTargets": [10],
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    return "<a class='edit-btn' data-url='" + editlink + "' UserId='" + full.Id + "'><span class='fa fa-edit'></span></a>";
+                }
+            }
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                if (data.IsActive == true) {
+                    $(row).css('background-color', '#CDF98F');
+                } else if (data.IsActive == false) {
+                    $(row).css('background-color', '#F4B9B1');
+                }
+            },
+            "sPaginationType": "full_numbers",
+            "bDestroy": true,
+            "bJQueryUI": true,
+            "cache": false,
+            "aaSorting": [[0, "desc"]],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                //if (aData[9] == "true") {
+                //    $('td', nRow).css('background-color', 'Green');
+                //} else if (aData[9] == "false") {
+                //    $('td', nRow).css('background-color', 'Red');
+                //}
+            }
+
+        });
+
+
+
+
+        //$("#tableBody").html("");
+        /*$.ajax({
+            type: "GET",
+            cache: false,
+            async:false,
+            data: { Campaigns: Campaigns, Hierarchy_id: HierarchyID },
+            success: function (msg) {
+                var html = "";
+                $(".display").dataTable().fnDestroy();
+                for (var i = 0; i < msg.Data.length; i++) {
+                    html += "<tr style='height: 50px;'>" +
+                        "<td>" + msg.Data[i].Id + "</td>" +
+                        "<td>" + msg.Data[i].Name + "</td>" +
+                        "<td>" + msg.Data[i].Username + "</td>" +
+                        "<td>" + msg.Data[i].Cnic + "</td>" +
+                        "<td>" + msg.Data[i].Phone + "</td>" +
+                        //"<td>" + msg.Data[i].Province_Name + "</td>" +
+                        "<td>" + msg.Data[i].Division_Name + "</td>" +
+                        "<td>" + msg.Data[i].District_Name + "</td>" +
+                        "<td><div class='tehsil_name'>" + msg.Data[i].Tehsils_Name + "</div></td>" +
+                        "<td><div class='unionConcil_name'>" + msg.Data[i].UnionCouncils_Name + "</div></td>" +
+                        "<td style='display:none;'>" + msg.Data[i].IsActive + "</td>" +
+                        "<td><a class='edit-btn' data-url='" + editlink +"' UserId='"+ msg.Data[i].Id + "'><span class='fa fa-edit'></span></a> </td>" +
+                    "</tr>";
+
+
+                }
+               $("#tableBody").html(html);
+                $(".display").dataTable({
+                    "sPaginationType": "full_numbers",
+                    "oLanguage": {
+                        "sZeroRecords": "abc"
+                    },
+                    "createdRow": function (row, data, dataIndex) {
+                        if (data[9] == 'true') {
+                            $(row).css('background-color', '#CDF98F');
+                        } else if (data[9] == 'false') {
+                            $(row).css('background-color', '#F4B9B1');
+                        }
+                    },
+                    "fixedColumns": {
+                        "heightMatch": "none"
+                    },
+                    "bDestroy": true,
+                    "bJQueryUI": true,
+                    "cache": false,
+                    "aaSorting": [[0, "desc"]],
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                        //if (aData[9] == "true") {
+                        //    $('td', nRow).css('background-color', 'Green');
+                        //} else if (aData[9] == "false") {
+                        //    $('td', nRow).css('background-color', 'Red');
+                        //}
+                    }
+                });*/
+
+        //oTable.ajax.reload(function (json) {
+        //    $("#tableBody").html(html);
+        //});
+        $.ajax({
+            type: "GET",
+            cache: false,
+            async: false,
+            url: '@Url.Action("GetUsersVerificationAndPasswordCount", "api/Report")',
+            data: { Campaigns: Campaigns },
+            //beforeSend: function () { $.showprogress(); },
+            success: function (msg) {
+                var json = $.parseJSON(msg.Data);
+                document.getElementById("verification_code_users").innerHTML = json["VerificationCount"];
+                document.getElementById("password_changed").innerHTML = json["PasswordCount"];
+            }
+        });
+        HideLoading();
+        /*},
+        error: function (x) {
+            alert("The call to the server side failed. " + x.responseText);
+        }
+    });*/
+
+    }
+</script>

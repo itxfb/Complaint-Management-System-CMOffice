@@ -1,0 +1,226 @@
+﻿<div class="cust-overlay pie-overlay@(ViewBag.graphName)">Loading...</div>
+<div class="position-r">
+    <div class="row">
+
+        @*<div class="col-lg-6 col-md-6 col-sm-6">
+                <span>From Date</span>
+                <input type="text" id="Piedatepickerlower@(ViewBag.graphName)" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>To Date</span>
+                <input type="text" id="Piedatepickermax@(ViewBag.graphName)" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+            </div>*@
+        <div class="col-lg-4 col-md-4 col-sm-4">
+            <span>Select Date</span>
+            <input type="text" id="dateRange@(ViewBag.graphName)" placeholder="" class="form-control">
+        </div>
+
+    </div>
+
+
+    <div id="@(ViewBag.graphName)" style="width:100%; height:450px; margin-top:20px;" graph-name="@(ViewBag.graphName)">
+
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#dateRange@(ViewBag.graphName)').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#dateRange@(ViewBag.graphName)').on('apply.daterangepicker', function (ev, picker) {
+            $.LoadPieChart@(ViewBag.graphName)();
+        });
+    });
+
+    @*var oldStart = $('#Piedatepickerlower@(ViewBag.graphName)').val();
+    var oldenddate = $('#Piedatepickermax@(ViewBag.graphName)').val();*@
+
+
+    var campaignId@(ViewBag.graphName) = '@(ViewBag.campaignId)';
+    var graphname@(ViewBag.graphName) = '@(ViewBag.graphName)';
+    $(function () {
+
+        $.LoadPieChart@(ViewBag.graphName)();
+    });
+
+    @*jQuery('#Piedatepickerlower@(ViewBag.graphName)').change(function () {
+        if (oldStart != $('#Piedatepickerlower@(ViewBag.graphName)').val()) {
+            $.LoadPieChart@(ViewBag.graphName)();
+            oldStart = $('#Piedatepickerlower@(ViewBag.graphName)').val();
+        }
+        //$.LoadPieChart();
+    });
+    jQuery('#Piedatepickermax@(ViewBag.graphName)').change(function () {
+        if (oldenddate != $('#Piedatepickermax@(ViewBag.graphName)').val()) {
+            $.LoadPieChart@(ViewBag.graphName)();
+            oldenddate = $('#Piedatepickermax@(ViewBag.graphName)').val();
+        }
+        //$.LoadPieChart();
+    });*@
+
+
+    $.LoadPieChart@(ViewBag.graphName) = function () {
+        var totalList = [];
+        var colorList = [];
+        //debugger;
+        if ("@(ViewBag.graphName)" == "other")
+            $(".Others-Graphs").html("");
+
+        $(".pie-overlay@(ViewBag.graphName)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("PieLegentChartProgress", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $("#dateRange@(ViewBag.graphName)").val().split('To')[0].trim(),
+                datemax: $("#dateRange@(ViewBag.graphName)").val().split('To')[1].trim(),
+                campaignId: campaignId@(ViewBag.graphName),
+                graphName: graphname@(ViewBag.graphName),
+                graphType: @(Convert.ToInt32(ViewBag.graphType))
+                },
+            async: false,
+            success: function (data) {
+                debugger;
+                data = $.parseJSON(data);
+                var detailObj;
+                //debugger;
+                if (data.Total.ListStatusWiseCount != null) {
+
+                    $.each(data.Total.ListStatusWiseCount, function (idx, obj) {
+                        //New Object
+                        var statusCount = new Object();
+                        
+                        statusCount.name = (obj.name);
+                        statusCount.y = (obj.y);
+                        //Add in list
+                        totalList.push(statusCount);
+
+                        //New Object
+
+
+                    });
+                    if (data.Total.AllStatusColorList != null) {
+                        $.each(data.Total.AllStatusColorList, function (idx, obj) {
+                            //debugger;
+                            colorList.push(obj);
+                        });
+
+                    }
+                    $(".pie-overlay@(ViewBag.graphName)").fadeOut(1000);
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: colorList //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+
+                    Highcharts.chart('@(ViewBag.graphName)', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: ' ' //'@(ViewBag.graphName) Graph'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.name}:  ({point.percentage:.0f}%) <br> Count: <b>{point.y}</b>'
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                showInLegend: true
+                            },
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer',
+                                point: {
+                                    events: {
+                                        click: function () {
+
+                                            
+                                            if ('@(ViewBag.graphName)' == 'Own') {
+                                                var temp = this.name.split('-');
+                                                var from = $('#dateRange@(ViewBag.graphName)').val().split('To')[0].trim();
+                                                var to = $('#dateRange@(ViewBag.graphName)').val().split('To')[1].trim();
+                                                var statutId = temp[0];
+                                                var userId =  @PITB.CMS_Common.Handler.Authentication.AuthenticationHandler.GetCookie().UserId;
+                                                LoadGridView(from, to, userId, statutId);
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series:
+                            [{
+                                name: 'Status',
+                                colorByPoint: true,
+                                data: totalList,
+                                labels: {
+                                    formatter: function () {
+                                        var text = this.value,
+
+
+                                            //formatted = text.length > 100 ? text.substring(0, 100) + '...' : text;
+
+                                            formatted = text.split('-')[0];
+                                        return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' + formatted + '</div>';
+                                    },
+                                    style: {
+                                        width: '150px'
+                                    },
+                                    useHTML: true
+                                }
+                            }]
+                    });
+                    var valuesArr = $('#@(ViewBag.graphName)').find("g.highcharts-legend-item").find("text");
+
+                    for (var i = 0; i < valuesArr.length; i++) {
+
+                        var lblArr = valuesArr[i].innerHTML.split('-');
+                        if (lblArr.length > 1) {
+                            var labelValue = "";
+                            for (var j = 1; j < lblArr.length; j++) {
+                                labelValue = labelValue + lblArr[j] + "-";
+                            }
+                            labelValue = labelValue.substr(0, labelValue.length - 1);
+                            valuesArr[i].innerHTML = labelValue;
+                            //valuesArr[i].innerHTML = "asdasd";
+                        }
+                    }
+
+                    /* valuesArr.each(function( vals ) {
+
+                     });*/
+
+                }
+            }
+        });
+    }
+</script>

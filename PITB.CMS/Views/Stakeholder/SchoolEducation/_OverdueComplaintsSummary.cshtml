@@ -1,0 +1,99 @@
+﻿
+
+<div class="box-header-blue with-border btn-header">
+    <h4 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;">Overdue Complaints</h4>
+</div>
+
+
+<div class="box-body-white">
+
+    <table id="OverDueTable_@(ViewBag.divTag)" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+        <thead>
+            <tr role="row" class="tableHeader">
+                <th>Sr No</th>
+                <th>Complaint No</th>
+                @*<th>Category</th>*@
+                <th>Type</th>
+                <th>SubType</th>
+
+
+                <th>Resolving Officer</th>
+                <th>Date</th>
+                <th>Days Overdue</th>
+                <th>School Name</th>
+                <th>@ViewBag.Hierarchy1</th>
+                <th>@ViewBag.Hierarchy2</th>
+                @*<th>@ViewBag.Hierarchy1</th>
+                    <th>@ViewBag.Hierarchy2</th>*@
+            </tr>
+        </thead>
+        <tbody></tbody>
+
+    </table>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(function() {
+        debugger;
+        LoadData@(ViewBag.divTag)();
+        
+    });
+    function LoadData@(ViewBag.divTag)()
+        {
+        LoadTable@(ViewBag.divTag)("@Url.Action("GetOverDueComplaintSummary", "ApiSchoolEducation")");
+        }
+    function LoadTable@(ViewBag.divTag)(apiUrl, from, to, campaign, cateogries, statuses) {
+        debugger;
+        var table = $('#OverDueTable_@(ViewBag.divTag)').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "serverSide": false,
+            "ajax": {
+                "url": apiUrl,//'../GeneralApi/GetStakeholderComplaints',
+                "type": "POST",
+                data: {
+                    startDate: $('#dateRange').val().split('To')[0].trim(),
+                    endDate: $('#dateRange').val().split('To')[1].trim(),
+                    campId: @((string)ViewBag.campId),
+                    hierarchyId: @((int)ViewBag.hierarchyId),
+                    userHierarchyId: @((int)ViewBag.userHierarchyId),
+                    commaSepVal: '@((string)ViewBag.commaSepVal)',
+                    statusIds: '@(ViewBag.statusIds)',
+                    reportType: @((int)ViewBag.reportType),
+                    divTag: @((string)ViewBag.divTag)
+                    }
+                //data: { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: statuses }
+            },
+            "columns": [
+                       { "data": "SrNo" },
+                       { "data": "ComplaintNo" },
+                       //{ "data": "Department" },
+                       { "data": "Category" },
+                       { "data": "SubCategory" },
+                       { "data": "ResolvingOfficer" },
+                       { "data": "Date" },
+                       { "data": "DaysOverDue" },
+                       { "data": "SchoolName" },
+                       { "data": "Hierarchy1Data" },
+                       { "data": "Hierarchy2Data"}//,
+                       //{ "data": "Id" }
+            ],
+        });
+        DivData.push(table);
+    }
+
+    function OpenStakeholderDetailPopup(complaintId) {
+        $('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId);
+        //$('#PopupDiv').load("../Complaint/Detail?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }
+</script>

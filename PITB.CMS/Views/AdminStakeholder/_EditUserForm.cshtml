@@ -1,0 +1,397 @@
+﻿@using PITB.CMS_Common;
+@using PITB.CMS_Common.Helper.Extensions;
+@model PITB.CMS_Common.Models.View.VmEditStakeholderUser
+
+<div>
+
+</div>
+<div>
+    @using (Ajax.BeginForm("OnEditUserSubmit", "AdminStakeholder", new { enctype = "multipart/form-data", @id = "form0" }, new AjaxOptions() { HttpMethod = "POST", OnSuccess = "successResponse(data)" }))
+    {
+        @Html.HiddenFor(m => m.UserId)
+        @Html.HiddenFor(m => m.IsEdit)
+
+
+
+
+        <h2> @Model.TitleHeading </h2>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Full Name<span class="mandatory"> * </span>
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control characters-only-with-space", @placeholder = "John Smith" })
+                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter Password<span class="mandatory"> * </span>
+                @Html.TextBoxFor(m => m.Password, new { @class = "form-control characters-only-with-space", @placeholder = "abcd1234" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter Mobile No.
+                @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", @placeholder = "03331234567" })
+                @Html.ValidationMessageFor(x => x.Phone, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter Email
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", @placeholder = "john.smith@yahoo.com" })
+                @Html.ValidationMessageFor(x => x.Email, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter Address
+                @Html.TextBoxFor(x => x.Address, new { @class = "form-control", @placeholder = "10457 NE Fenton Rd, Bainbridge Island, WA, 98110" })
+                @Html.ValidationMessageFor(x => x.Address, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter CNIC
+                @Html.TextBoxFor(x => x.CNIC, new { @class = "form-control", @placeholder = "3210277789987" })
+                @Html.ValidationMessageFor(x => x.CNIC, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Enter Designation
+                @Html.TextBoxFor(x => x.Designation, new { @class = "form-control", @placeholder = "Chief Executive Officer" })
+                @Html.ValidationMessageFor(x => x.Designation, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                Enter Designation Abbrevation
+                @Html.TextBoxFor(x => x.DesignationAbbrevation, new { @class = "form-control", placeholder = "CEO" })
+                @Html.ValidationMessageFor(x => x.DesignationAbbrevation, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                Enter Imei No.
+                @Html.TextBoxFor(x => x.ImeiNo, new { @class = "form-control", placeholder = "123456789123456" })
+                @Html.ValidationMessageFor(x => x.ImeiNo, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                Enter User Identification Id
+                @Html.TextBoxFor(x => x.UserHierarchyId, new { @class = "form-control", placeholder = "0" })
+                @Html.ValidationMessageFor(x => x.UserHierarchyId, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div style="margin-bottom:7px;">Active</div>
+                @Html.RadioButtonListFor(m => m.ActiveState, Model.ActiveStateList, new { @Id = "RadioListActiveInActive" })
+                @Html.ValidationMessageFor(m => m.ActiveState, "", new { @class = "label label-warning" })
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Select Campaign<span class="mandatory"> * </span>
+                @Html.DropDownListFor(m => m.Campaign, Model.CampaignSelectList, "--Select--", new { @Id = "userControlCampaign", @name = "Campaign", @class = "form-control", @data_val_tag = "T1" })
+                @Html.ValidationMessageFor(m => m.Campaign, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" style="display: none;" data-display-if="userControlHierarchy::1,2,3,4,5">
+                Select Province<span class="mandatory"> * </span>
+                @*@Html.DropDownListFor(m => m.ProvinceId, new List<SelectListItem>(), "--Select--", new { @Id = "userControlProvince", @name = "userControlProvince", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True", data_val_repopulate_onchange_of = "Campaign", data_val_api_url = "/GeneralApi/ProvinceByCampaignId?id={id}&campaignId=49" })*@
+                @Html.DropDownListFor(m => m.ProvinceId, Model.ProvinceSelectList, "--Select--", new { @Id = "userControlProvince", @name = "userControlProvince", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True" })
+                @*@Html.ValidationMessageFor(m => m.ProvinceId, "", new { @class = "label label-warning" })*@
+                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Province is required" data-validation-for-type="text" data-val-for-name="ProvinceId">
+
+                </span>
+            </div>
+
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6" style="display: none;" data-display-if="userControlHierarchy::2,3,4,5">
+                Select Division<span class="mandatory"> * </span>
+                @Html.DropDownListFor(m => m.DivisionId, Model.DivisionList, "--Select--", new { @Id = "userControlDivision", @name = "userControlDivision", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True" })
+                @*@Html.ValidationMessageFor(m => m.DivisionId, "", new { @class = "label label-warning" })*@
+                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Division is required" data-validation-for-type="text" data-val-for-name="DivisionId">
+
+                </span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" style="display: none;" data-display-if="userControlHierarchy::3,4,5">
+                Select District<span class="mandatory"> * </span>
+                @Html.DropDownListFor(m => m.DistrictId, Model.DistrictList, "--Select--", new { @Id = "userControlDistrict", @name = "userControlDistrict", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True" })
+                @*@Html.ValidationMessageFor(m => m.District, "", new { @class = "label label-warning" })*@
+                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="DistrictId">
+
+                </span>
+            </div>
+        </div>
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6" style="display: none;" data-display-if="userControlHierarchy::4,5">
+                Select Tehsil<span class="mandatory"> * </span>
+                @Html.ListBoxFor(m => m.TehsilId, Model.TehsilList, new { @Id = "userControlTehsil", @name = "TehsilId", @class = "form-control", @multiple = "multiple", @data_val_tag = "T1", @data_val_is_required = "True" })
+                @*@Html.ValidationMessageFor(m => m.TehsilId, "", new { @class = "label label-warning" })*@
+                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Tehsil is required" data-validation-for-type="text" data-val-for-name="TehsilId">
+
+                </span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" style="display: none;" data-display-if="userControlHierarchy::5">
+                Select UnionCounil<span class="mandatory"> * </span>
+                @Html.ListBoxFor(m => m.UnionCounilId, Model.UnionCouncilsList, new { @Id = "userControlUnionCounil", @name = "UnionCounilId", @class = "form-control", @multiple = "multiple", @data_val_tag = "T1", @data_val_is_required = "True" })
+                @*@Html.ValidationMessageFor(m => m.UnionCounilId, "", new { @class = "label label-warning" })*@
+                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Union Council is required" data-validation-for-type="text" data-val-for-name="UnionCounilId">
+
+                </span>
+            </div>
+        </div>
+        @*<div class="row margin-bottom">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    Select Ward
+                    @Html.DropDownListFor(m => m.WardId, Model.WardsList, "--Select--", new { @Id = "userControlWard", @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.WardId, "", new { @class = "label label-warning" })
+                </div>
+            </div>*@
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Select Category<span class="mandatory"> * </span>
+                @Html.ListBoxFor(m => m.Categories, Model.CategoryList, new { @Id = "userControlCategory", @class = "form-control", @multiple = "multiple" })
+                @Html.ValidationMessageFor(m => m.Categories, "", new { @class = "label label-warning" })
+
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                Select Hierarchy<span class="mandatory"> * </span>
+                @Html.DropDownListFor(m => m.Hierarchy, Model.HierachyList, "--Select--", new { @Id = "userControlHierarchy", @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Hierarchy, "", new { @class = "label label-warning" })
+
+            </div>
+
+        </div>
+
+        <div class="row margin-bottom">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div style="margin-bottom:7px;">Can Transfer Complaint</div>
+                @Html.RadioButtonListFor(m => m.TransferState, Model.TransferStateList, new { @Id = "RadioListActiveInActive" })
+                @Html.ValidationMessageFor(m => m.TransferState, "", new { @class = "label label-warning" })
+            </div>
+            <div class="col-md-12 text-center">
+                <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary "><span class="fa fa-save"></span>&nbsp;Save</button>
+                <div id="msg">
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    var dropDownDict = [];
+    //var hierarchyDict = [];
+    $(document).ready(function () {
+        $('form').removeData('validator');
+        $('form').removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse('form');
+        RegisterLocalValidation("#form0", "T1");
+        $('.modal-content').load(function () {
+            
+            $('.content-wrapper').css('min-height', ($('.modal-content').height() + 1000) + "px");
+
+        });
+        RegisterDropDownListChangeEventsForCampaignCategory("userControlCampaign", "userControlCategory",true);
+
+        $.enableMultiselectWithAlreadySelectedValues('userControlTehsil', $('#userControlTehsil').val());
+
+        $.enableMultiselectWithAlreadySelectedValues('userControlUnionCounil', $('#userControlUnionCounil').val());
+        
+        $('#userControlHierarchy').trigger('change');
+        function EmptyListBox(divId, multiselect) {
+            $('#' + divId).empty();
+            if (multiselect) {
+                $.enableMultiselectOf(divId)
+            } else {
+                $('#' + divId).append($('<option/>', { value: "", text: "--Select--" }));
+            }
+            $('#' + divId).trigger('change');
+
+        }
+        $('#userControlCampaign').change(function () {
+            
+            var selectedCampaignId = $('#userControlCampaign').val();
+            EmptyListBox('userControlProvince', false);
+            
+            if (selectedCampaignId != null && selectedCampaignId != '' && selectedCampaignId != 0 && selectedCampaignId != -1) {
+                $.getJSON('@Url.Action("GetProvinceList", "AdminStakeholder")', {campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        var provinceList = $('#userControlProvince');
+                        provinceList.empty();
+                        provinceList.append($('<option/>', { value: "", text: "--Select--" }));
+                        $.each(hierarchyList, function (index, item) {
+                            provinceList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+        $('#userControlProvince').change(function () {
+            
+            var selectedProvinceId = $('#userControlProvince').val();
+            var selectedCampaignId = $('#userControlCampaign').val();
+            EmptyListBox('userControlDivision', false);
+            
+            if (selectedProvinceId != null && selectedProvinceId != '' && selectedProvinceId != 0 && selectedProvinceId != -1) {
+                $.getJSON('@Url.Action("GetDivisionList", "AdminStakeholder")', { provinceId: selectedProvinceId, campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        var divisionList = $('#userControlDivision');
+                        divisionList.empty();
+                        divisionList.append($('<option/>', { value: "", text: "--Select--" }));
+                        $.each(hierarchyList, function (index, item) {
+                            divisionList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+        $('#userControlDivision').change(function () {
+            
+            var selectedDivisionId = $('#userControlDivision').val();
+            var selectedCampaignId = $('#userControlCampaign').val();
+            EmptyListBox('userControlDistrict', false);
+            
+            if (selectedDivisionId != null && selectedDivisionId != '' && selectedDivisionId != 0 && selectedDivisionId != -1) {
+                $.getJSON('@Url.Action("GetDistrictList", "AdminStakeholder")', { divisionId: selectedDivisionId, campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        var districtList = $('#userControlDistrict');
+                        districtList.empty();
+                        districtList.append($('<option/>', { value: "", text: "--Select--" }));
+                        $.each(hierarchyList, function (index, item) {
+                            districtList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+        $('#userControlDistrict').change(function () {
+            
+            var selectedDistrictId = $('#userControlDistrict').val();
+            var selectedCampaignId = $('#userControlCampaign').val();
+            EmptyListBox('userControlTehsil', true);
+            
+            if (selectedDistrictId != null && selectedDistrictId != '' && selectedDistrictId != 0 && selectedDistrictId != -1) {
+                $.getJSON('@Url.Action("GetTehsilList", "AdminStakeholder")', { districtId: selectedDistrictId, campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        
+                        var tehsilList = $('#userControlTehsil');
+                        tehsilList.empty();
+                        $.each(hierarchyList, function (index, item) {
+                            tehsilList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                        $.enableMultiselectOf('userControlTehsil');
+                        tehsilList.trigger('change');
+                    };
+                });
+            }
+        });
+        function GetIdsString(arr) {
+            if (arr == null)
+                return "-1";
+            var Len = arr.length;
+            var Ids = "";
+            for (i = 0; i < Len; i++) {
+                Ids += arr[i] + ",";
+            }
+            var response = Ids;
+            if (Ids.length > 0) {
+                response = Ids.substring(0, Ids.length - 1);
+            }
+            return response;
+        }
+        $('#userControlTehsil').change(function () {
+            
+            var selectedTehsilId = $('#userControlTehsil').val();
+            var selectedCampaignId = $('#userControlCampaign').val();
+            var Ids = GetIdsString(selectedTehsilId);
+            if (selectedTehsilId == null) {
+                $('#userControlUnionCounil').empty();
+                $.enableMultiselectOf('userControlUnionCounil');
+            }
+            
+            if (Ids != null && Ids != '' && Ids != 0 && Ids != -1) {
+                $.getJSON('@Url.Action("GetUnionCouncilList", "AdminStakeholder")', { tehsilId: Ids, campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        
+                         var unionCouncilList = $('#userControlUnionCounil');
+                        unionCouncilList.empty();
+                        $.each(hierarchyList, function (index, item) {
+                            unionCouncilList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                       $.enableMultiselectOf('userControlUnionCounil');
+                        
+                    };
+                });
+            }
+        });
+        $('#userControlUnionCounil').change(function () {
+            
+            var selectedUnionCouncilId = $('#userControlUnionCounil').val();
+            var selectedCampaignId = $('#userControlCampaign').val();
+
+            
+            if (selectedUnionCouncilId != null && selectedUnionCouncilId != '' && selectedUnionCouncilId != 0 && selectedUnionCouncilId != -1) {
+                $.getJSON('@Url.Action("GetWardList", "AdminStakeholder")', { unioncouncilId: selectedUnionCouncilId, campaignId: selectedCampaignId }, function (hierarchyList) {
+                    if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                        var wardList = $('#userControlWard');
+                        wardList.empty();
+                        $.each(hierarchyList, function (index, item) {
+                            wardList.append($('<option/>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+                    };
+                });
+            }
+        });
+    });
+    function successResponse(data) {
+        
+        var res = JSON.stringify(data);
+        var obj = JSON.parse(res);
+        $("#msg span").html(obj.messageText);
+        $("#msg span").removeClass();
+        if (obj.messageTitle == "Error") {
+            $("#msg span").addClass("error");
+        } else if (obj.messageTitle == "Success") {
+            $("#msg span").addClass("success");
+        }
+        //alert(res);
+    }
+    $("#form0").submit(function (event) {
+        
+        //event.preventDefault();
+        //setTimeout(function () {
+        //$("#CnicTxtBox-error").html("Cnic is required");
+        //});
+        var isValid = ValidateFormOnSubmit("#form0", "T1");
+        if ($('#form0').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+            //ShowLoading();
+        }
+        return isValid;
+    });
+    function OnHierarchyDropDownChange(selectedIndex) {
+        for (i = 0; i < dropDownDict.length; i++) {
+
+            if (dropDownDict[i].requiredId <= selectedIndex) {
+                $(dropDownDict[i].requiredField).val("True");
+            } else {
+                $(dropDownDict[i].requiredField).val("False");
+            }
+        }
+    }
+
+    
+</script>

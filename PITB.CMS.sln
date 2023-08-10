@@ -1,0 +1,92 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CMS", "PITB.CMS\PITB.CMS.csproj", "{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CRM_API", "PITB.CRM_API\PITB.CRM_API.csproj", "{F6E7C492-D834-4931-97BB-0775494E316E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CMS_WindowService", "PITB.CMS_WindowService\PITB.CMS_WindowService.csproj", "{4FEE24AB-79A6-4AA6-82EB-979E0CA17185}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CRM.Public_Web", "PITB.CRM.Public_Web\PITB.CRM.Public_Web.csproj", "{E594E920-0B18-44B5-8484-671669C2C98A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CRM.Desktop_Application", "PITB.CRM.Desktop_Application\PITB.CRM.Desktop_Application.csproj", "{7D323C74-3BB7-4315-B6DF-B54C8E47D0D3}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "PITB.CMS_WindowService_Setup", "PITB.CMS_WindowService_Setup\PITB.CMS_WindowService_Setup.vdproj", "{B1CD15AC-67FF-4892-932F-A30C97207549}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2E6DCD93-D12A-4DA0-BE3B-0C677D363B95}"
+	ProjectSection(SolutionItems) = preProject
+		Performance1.psess = Performance1.psess
+		Performance3.psess = Performance3.psess
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PITB.CMS_Common", "PITB.CMS_Common\PITB.CMS_Common.csproj", "{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6E7C492-D834-4931-97BB-0775494E316E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6E7C492-D834-4931-97BB-0775494E316E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6E7C492-D834-4931-97BB-0775494E316E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6E7C492-D834-4931-97BB-0775494E316E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FEE24AB-79A6-4AA6-82EB-979E0CA17185}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FEE24AB-79A6-4AA6-82EB-979E0CA17185}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FEE24AB-79A6-4AA6-82EB-979E0CA17185}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FEE24AB-79A6-4AA6-82EB-979E0CA17185}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E594E920-0B18-44B5-8484-671669C2C98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E594E920-0B18-44B5-8484-671669C2C98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E594E920-0B18-44B5-8484-671669C2C98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E594E920-0B18-44B5-8484-671669C2C98A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D323C74-3BB7-4315-B6DF-B54C8E47D0D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D323C74-3BB7-4315-B6DF-B54C8E47D0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D323C74-3BB7-4315-B6DF-B54C8E47D0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D323C74-3BB7-4315-B6DF-B54C8E47D0D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1CD15AC-67FF-4892-932F-A30C97207549}.Debug|Any CPU.ActiveCfg = Debug
+		{B1CD15AC-67FF-4892-932F-A30C97207549}.Release|Any CPU.ActiveCfg = Release
+		{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B9D2B73-B7EB-43C7-827F-F3E0EE5C1B16}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 8
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://tfs.pitb.gov.pk:8080/tfs/pitb%20projects
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = PITB.CMS_WindowService_Setup\\PITB.CMS_WindowService_Setup.vdproj
+		SccProjectName1 = PITB.CMS_WindowService_Setup
+		SccLocalPath1 = PITB.CMS_WindowService_Setup
+		SccProjectUniqueName2 = PITB.CMS\\PITB.CMS.csproj
+		SccProjectName2 = PITB.CMS
+		SccLocalPath2 = PITB.CMS
+		SccProjectUniqueName3 = PITB.CMS_Common\\PITB.CMS_Common.csproj
+		SccProjectName3 = PITB.CMS_Common
+		SccLocalPath3 = PITB.CMS_Common
+		SccProjectUniqueName4 = PITB.CMS_WindowService\\PITB.CMS_WindowService.csproj
+		SccProjectName4 = PITB.CMS_WindowService
+		SccLocalPath4 = PITB.CMS_WindowService
+		SccProjectUniqueName5 = PITB.CRM.Desktop_Application\\PITB.CRM.Desktop_Application.csproj
+		SccProjectName5 = PITB.CRM.Desktop_Application
+		SccLocalPath5 = PITB.CRM.Desktop_Application
+		SccProjectUniqueName6 = PITB.CRM.Public_Web\\PITB.CRM.Public_Web.csproj
+		SccProjectName6 = PITB.CRM.Public_Web
+		SccLocalPath6 = PITB.CRM.Public_Web
+		SccProjectUniqueName7 = PITB.CRM_API\\PITB.CRM_API.csproj
+		SccProjectName7 = PITB.CRM_API
+		SccLocalPath7 = PITB.CRM_API
+	EndGlobalSection
+EndGlobal

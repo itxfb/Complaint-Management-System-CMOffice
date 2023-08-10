@@ -1,0 +1,206 @@
+﻿
+<div class="cust-overlay pie-overlay@(ViewBag.divTag)">Loading...</div>
+<div class="position-r">
+
+
+
+    <div id="@(ViewBag.divTag)" style="width:100%; height:400px; margin-top:40px;" graph-name="@(ViewBag.divTag)">
+
+
+    </div>
+</div>
+<script>
+    var campaignId@(ViewBag.divTag) = '@(ViewBag.campaignId)';
+    var divTag@(ViewBag.divTag) = '@(ViewBag.divTag)';
+    $(function () {
+        debugger;
+        LoadData@(ViewBag.divTag)();
+
+
+    });
+    function LoadData@(ViewBag.divTag)()
+    {
+        LoadPieChart@(ViewBag.divTag)();
+    }
+    function LoadPieChart@(ViewBag.divTag)() {
+        var totalList = [];
+        var colorList = [];
+        debugger;
+        if ("@(ViewBag.divTag)" == "other")
+            $(".Others-Graphs").html("");
+
+        $(".pie-overlay@(ViewBag.divTag)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("PieLegendChartComplaintTypeWise", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $('#dateRange').val().split('To')[0].trim(),
+                datemax: $('#dateRange').val().split('To')[1].trim(),
+                campaignId: campaignId@(ViewBag.divTag),
+                divTag: divTag@(ViewBag.divTag),
+                graphType: @(Convert.ToInt32(ViewBag.graphType)),
+            },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var detailObj;
+                //debugger;
+                if (data.Total.ListComplaintTypeWiseCount != null) {
+
+
+                    $.each(data.Total.ListComplaintTypeWiseCount, function (idx, obj) {
+                        //New Object
+                        var Complaint_Type_Wise_Count = new Object();
+                        
+                        Complaint_Type_Wise_Count.name = (obj.name);
+                        Complaint_Type_Wise_Count.y = (obj.y);
+                        //Add in list
+                        totalList.push(Complaint_Type_Wise_Count);
+
+                        //New Object
+
+
+                    });
+                    if (data.Total.AllStatusColorList != null) {
+                        $.each(data.Total.AllStatusColorList, function (idx, obj) {
+                            //debugger;
+                            colorList.push(obj);
+                        });
+
+                    }
+                    $(".pie-overlay@(ViewBag.divTag)").fadeOut(1000);
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: colorList //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+                    Highcharts.chart('@(ViewBag.divTag)', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Calls By Volume',
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '20px',
+                            }
+                        },
+                        tooltip: {
+                            pointFormat: '{series.name}:  ({point.percentage:.0f}%) <br> Count: <b>{point.y:,.0f}</b>'
+                        },
+                        inside: true,
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '{point.name}: {point.y:,.0f} ({point.percentage:.1f} %)',
+                                    style: {
+                                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                                        fontSize: '15px',
+
+                                    }
+                                },
+                                showInLegend: false
+                            },
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer',
+                                pie: {
+                                    dataLabels: {
+                                        style: {
+                                            fontSize: '15px'
+                                        }
+                                    }
+                                },
+                                point: {
+                                    events: {
+                                        click: function () {
+                                            
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series:
+                            [{
+                                name: 'Ratio',
+                                colorByPoint: true,
+                                data: totalList,
+                                labels: {
+                                    formatter: function () {
+                                        
+                                        var text = this.value,
+
+
+                                            //formatted = text.length > 100 ? text.substring(0, 100) + '...' : text;
+
+                                            formatted = text.split('-')[0];
+                                        return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' + formatted + '</div>';
+                                    },
+                                    style: {
+                                        width: '150px'
+                                    },
+                                    useHTML: true
+                                }
+
+                                //[{
+                                //    name: 'Microsoft Internet Explorer',
+                                //    y: 56.33
+                                //}, {
+                                //    name: 'Chrome',
+                                //    y: 24.03,
+                                //    sliced: true,
+                                //    selected: true
+                                //}, {
+                                //    name: 'Firefox',
+                                //    y: 10.38
+                                //}, {
+                                //    name: 'Safari',
+                                //    y: 4.77
+                                //}, {
+                                //    name: 'Opera',
+                                //    y: 0.91
+                                //}, {
+                                //    name: 'Proprietary or Undetectable',
+                                //    y: 0.2
+                                //}]
+                            }]
+                    });
+                    var valuesArr = $('#@(ViewBag.divTag)').find("g.highcharts-legend-item").find("text").find("tspan");
+
+                    for (var i = 0; i < valuesArr.length; i++) {
+                        var lblArr = valuesArr[i].innerHTML.split('-');
+                        if (lblArr.length > 1) {
+                            valuesArr[i].innerHTML = lblArr[1];
+                        }
+                    }
+
+                    /* valuesArr.each(function( vals ) {
+                         
+                     });*/
+                    
+                }
+            },
+            error: function (x) {
+                console.log('error');
+            }
+        });
+    }
+</script>

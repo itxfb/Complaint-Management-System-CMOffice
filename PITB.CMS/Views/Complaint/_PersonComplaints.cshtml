@@ -1,0 +1,80 @@
+﻿@model IEnumerable<VmAgentComplaintSearchListing>
+    @if (Model != null)
+    {
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-warning collapsed-box" style="border-top-color: #f39c12;">
+                <div class="box-header with-border">
+
+
+                    <h4 class="box-title">
+                        Previous Complaints
+                    </h4>
+                    <div class="box-tools pull-right">
+                        <span data-toggle="tooltip" title="" class="badge bg-yellow" data-original-title="@Model.Count() previous complaints">@Model.Count()</span>
+                        <button type="button" id="showhidebtn" class="btn btn-box-tool" onclick="btnClick()" data-widget="remove">
+                            @*<i class="fa fa-plus"></i>*@Show
+                        </button>
+
+                    </div>
+                </div>
+                <div class="mainTable box-body box-body-white" style="margin-top: 5px; display:none">
+                    <div class="form-group col-md-12">
+                        <table id="personComplaintsTbl" class="table table-bordered table-hover table-striped table-condensed table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>Complaint No</th>
+                                    <th>Campaign</th>
+                                    <th>Type </th>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in Model)
+                                {
+                                    <tr>
+                                        <td>@m.ComplaintNo</td>
+                                        <td>@m.Campaign_Name</td>
+                                        <td>@m.ComplaintType</td>
+                                        <td>@m.Person_Name</td>
+                                        <td>@m.Created_Date</td>
+                                        <td>@m.Category</td>
+                                        <td>@m.Status</td>
+                                        <td style="text-align:center">
+                                            <a href="javascript:void(0);" data-original-title="View details" data-toggle="tooltip" id="@m.Id" onclick="OpenDetailPopup(this.id);"><span class="fa fa-eye"></span></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <br style="clear: both;" />
+
+                </div>
+
+
+            </div>
+            <br style="clear: both;">
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#personComplaintsTbl').DataTable();
+            });
+            function btnClick() {
+                debugger;
+                if ($(".mainTable").css('display') == 'none') {
+                    $(".mainTable").css('display', 'block');
+                    $("#showhidebtn").text("Hide");
+                    //$("#showhidebtn").innerHTML = "<i class='fa fa-minus'></i>";
+                } else if ($(".mainTable").css('display') == 'block') {
+                    $(".mainTable").css('display', 'none');
+                    $("#showhidebtn").text("Show");
+                    //$("#showhidebtn").innerHTML = "<i class='fa fa-plus'></i>";
+                }
+            }
+        </script>
+    }

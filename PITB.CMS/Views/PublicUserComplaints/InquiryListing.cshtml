@@ -1,0 +1,197 @@
+﻿@using PITB.CMS_Common
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+</style>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Inquiry Listing</h4>
+        </div>
+        <div class="box-body-white">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <span>Select Date</span>
+                <input type="text" id="dateRange" placeholder="" class="form-control">
+            </div>
+            <div class="form-group col-md-4" style="padding:20px;">
+                <div class="col-md-3">
+                    <label>Campaigns</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownList("campaignList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                </div>
+            </div>
+            <div class="col-md-2" style="padding:20px;">
+                <div class="row">
+                    <div class="col-md-6 col-xs-6"><button id="FilterBtnPublicUser" class="btn btn-primary col-md-12" type="submit">Filter</button></div>
+                    <div class="col-md-6 col-xs-6" data-placement="left" data-animation="true" data-toggle="tooltip" title="Your export of data depends upon your selection of filters">
+                        <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="box-body-white">
+
+            <table id="publicUserListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="publicUserListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Complaint No</th>
+                        <th>Campaign</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Department</th>
+                        <th>Category</th>
+                        <th>Subcategory</th>
+                        <th>Complaint Remarks</th>
+                        <th>Action</th>
+
+
+                        @*<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Complaint Number: activate to sort column descending" style="width: 180px;">Complaint Number</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Complainant's Name: activate to sort column ascending" style="width: 191px;">Complainant's Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Father/Husband Name: activate to sort column ascending" style="width: 213px;">Father/Husband Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Gender: activate to sort column ascending" style="width: 77px;">Gender</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CNIC Number: activate to sort column ascending" style="width: 138px;">CNIC Number</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Cell Number : activate to sort column ascending" style="width: 135px;">Cell Number </th>
+                            <th style="text-align: center; width: 78px;" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Actions</th>*@
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th><input type="text" data-column="0" class="search-input-text"></th>
+                        <th><input type="text" data-column="1" class="search-input-text"></th>
+                        <th><input type="text" data-column="2" class="search-input-text"></th>
+                        <th><input type="text" data-column="3" class="search-input-text"></th>
+                        <th><input type="text" data-column="4" class="search-input-text"></th>
+                        <th><input type="text" data-column="5" class="search-input-text"></th>
+                        <th><input type="text" data-column="6" class="search-input-text"></th>
+                        <th><input type="text" data-column="7" class="search-input-text"></th>
+                        @*<th><input type="text" data-column="5" class="search-input-text"></th>*@
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        debugger;
+        $('#dateRange').daterangepicker({
+            startDate: '@DateTime.Now.AddMonths(-6).ToShortDateString()',
+            endDate: '@DateTime.Now.ToShortDateString()',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+    });
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#publicUserListing').DataTable().columns(i).search(v).draw();
+    });
+
+    $(function () {
+        $.enableMultiselectOf("campaignList");
+        $("#FilterBtnPublicUser").trigger('click');
+
+    });
+    $("#FilterBtnPublicUser").click(function (e) {
+        e.preventDefault();
+        $.loadPublicUserListings("@Url.Action("GetPublicUserComplaints","GeneralApi")", $("#dateRange").val().split('To')[0].trim(), $("#dateRange").val().split('To')[1].trim(), $("#campaignList").val());
+
+    });
+    $("#ExcelExportBtn").click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: '@Url.Action("ExportPublicUserData", "generalapi")', //'../GeneralApi/GetStakeholderComplaintsServerSide',
+            data: { aoData: aoDataStringify, from: $("#dateRange").val().split('To')[0].trim(), to: $("#dateRange").val().split('To')[1].trim(), campaign: $("#campaignList").val(), complaintType: @Convert.ToInt32(Config.ComplaintType.Inquiry), listingType: @Convert.ToInt32(Config.PublicUserComplaintListingType.AddedByMe) },
+            success: function(dataId) {
+                //alert(dataId);
+                window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?dataId=' + dataId;
+            }
+        });
+        @*window.location = '@Url.Action("ExportPublicUserData", "generalapi")?startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + '&campaign=' + $("#campaignList").val() + '&complaintType='+@Convert.ToInt32(Config.ComplaintType.Inquiry);*@
+    });
+
+    var counter = 1;
+    var aoDataStringify;
+    $.loadPublicUserListings = function (api, from, to, campaign) {
+
+        if (counter == 1) {
+            //alert('zeeshi');
+            counter++;
+            var table = $('#publicUserListing').dataTable({
+                "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+                fnInitComplete: function (oSettings, json) {
+                    counter = 1;
+                },
+                "bDestroy": true,
+                "iDisplayLength": 50,
+                "processing": true,
+                "responsive": true,
+                "serverSide": true,
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    aoDataStringify = JSON.stringify(aoData);
+                    $.ajax({
+                        "dataType": 'json',
+                        "type": "POST",
+                        "url": '../GeneralApi/GetPublicUserComplaints',//'../GeneralApi/GetStakeholderComplaintsServerSide',
+                        "data": { aoData: JSON.stringify(aoData), from: from, to: to, campaign: campaign, complaintType: @Convert.ToInt32(Config.ComplaintType.Inquiry) , listingType: @Convert.ToInt32(Config.PublicUserComplaintListingType.AddedByMe)},
+                        "success": fnCallback,
+                    });
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Campaign_Name" },
+                    { "data": "Person_Name" },
+                    { "data": "Created_Date" },
+                    { "data": "Department_Name" },
+                    { "data": "Complaint_Category_Name" },
+                    { "data": "Complaint_SubCategory_Name" },
+                    { "data": "Complaint_Remarks" },
+                    { "data": "ComplaintNo" }
+
+                ],
+                aoColumnDefs: [{
+                    "aTargets": [8],
+                    "bSearchable": false,
+                    "bSortable": false,
+                    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                        $(nTd).css('text-align', 'center');
+                    },
+                    "mData": null,
+                    "mRender": function (data, type, full) {
+
+                        return '<td style="text-align:center">' +
+                            // '<a href="user-registration.html" ><span class="fa fa-pencil"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                            '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintNo + '" onclick="OpenPublicUserDetailPopup(this.id);"><span class="fa fa-eye"></span></a>' +
+                            '</td>';
+                    }
+                }],
+
+
+            });
+        }
+
+    }
+
+    function OpenPublicUserDetailPopup(complaintId)
+    {
+        $('#PopupDiv').load("../PublicUserComplaints/ComplaintDetail?complaintId=" + complaintId + "&viewType=PublicUserComplaintDetail");
+        $('#PopupDiv').modal();
+
+    }
+
+</script>

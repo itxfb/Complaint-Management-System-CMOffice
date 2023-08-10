@@ -1,0 +1,338 @@
+﻿@using PITB.CMS_Common
+
+@{
+    //Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+}
+<style>
+    .modal-dialog {
+        margin: 0 auto !important;
+    }
+
+    #PopupDiv2 {
+        z-index: 1053 !important;
+    }
+</style>
+@*<div class="cust-overlay pie-overlay" style="display:none;">Loading...</div>
+<div class="cust-overlay popup-overlay" style="display:none;"></div>*@
+
+    <div class="row">
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header-blue with-border btn-header">
+                    <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.CampaignName</h3>
+                </div>
+                <div class="box-body-white clearfix">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="OwnContent">
+                                    <h3 class="text-center">Aging (Monthly)</h3>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-3 col-sm-3">
+                                            <span>From Date</span>
+                                            @*@Html.TextBox("CRONo", DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx datepicker", @id = "Piedatepickerlower" })*@
+                                            <input type="text" id="DatepickerFirst" value="@(DateTime.Now.AddMonths(-1).ToString("MM-yyyy"))" placeholder="example: 05-2015"
+                                                   class="form-control datepickerChart" data-original-title="From" data-toggle="tooltip">
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-3">
+                                            <span>To Date</span>
+                                            @*@Html.TextBox("CRONo", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx", @id = "Piedatepickermax" })*@
+                                            <input type="text" id="DatepickerSecond" value="@DateTime.Now.ToString("MM-yyyy")" placeholder="example: 05-2015"
+                                                   class="form-control datepickerChart" data-original-title="To" data-toggle="tooltip">
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-3">
+                                            <button id="ShowBtn" style="margin-top: 20px;" class="btn btn-primary" type="button"><i class="fa fa-filter"></i>&nbsp;Show</button>
+                                        </div>
+                                        <div id="AgingGraph" style="width:100%; height:450px; margin-top:20px;" graph-name="AgingGraph">
+
+
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@*<div class="Others-Graphs">
+
+    </div>
+        
+    <div class="scroll"></div>*@
+
+@section scripts{
+    <script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+@*<script src="~/Scripts/piechartdrilldown.js"></script>*@
+<script>
+    var campaignId = @(ViewBag.CampignId);
+
+    $(document).ready(function () {
+        debugger;
+        $("#ShowBtn").trigger('click');
+        $(".datepickerChart").datepicker({
+            format: "mm-yyyy",
+            viewMode: "months",
+            minViewMode: "months"
+        });
+        //LoadBarChart();
+        //function OpenStakeholderDetailPopup(complaintId) {
+
+        //}
+    });
+
+    $("#ShowBtn").click(function (e) {
+        e.preventDefault();
+        LoadBarChart();
+    });
+
+    //Highcharts.chart('AgingGraph', {
+    //    chart: {
+    //        type: 'column'
+    //    },
+    //    title: {
+    //        text: 'Monthly Average Rainfall'
+    //    },
+    //    subtitle: {
+    //        text: 'Source: WorldClimate.com'
+    //    },
+    //    xAxis: {
+    //        categories: [
+    //            'Jan',
+    //            'Feb',
+    //            'Mar',
+    //            'Apr',
+    //            'May',
+    //            'Jun',
+    //            'Jul',
+    //            'Aug',
+    //            'Sep',
+    //            'Oct',
+    //            'Nov',
+    //            'Dec'
+    //        ],
+    //        crosshair: true
+    //    },
+    //    yAxis: {
+    //        min: 0,
+    //        title: {
+    //            text: 'Rainfall (mm)'
+    //        }
+    //    },
+    //    tooltip: {
+    //        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+    //        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+    //            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+    //        footerFormat: '</table>',
+    //        shared: true,
+    //        useHTML: true
+    //    },
+    //    plotOptions: {
+    //        column: {
+    //            pointPadding: 0.2,
+    //            borderWidth: 0
+    //        }
+    //    },
+    //    series: [{
+    //        name: 'Tokyo',
+    //        data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+
+    //    }, {
+    //        name: 'New York',
+    //        data: [83.6, 78.8, 98.5, 93.4, 106.0, 84.5, 105.0, 104.3, 91.2, 83.5, 106.6, 92.3]
+
+    //    }, {
+    //        name: 'London',
+    //        data: [48.9, 38.8, 39.3, 41.4, 47.0, 48.3, 59.0, 59.6, 52.4, 65.2, 59.3, 51.2]
+
+    //    }, {
+    //        name: 'Berlin',
+    //        data: [42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1]
+
+    //    }]
+    //});
+
+    var Counter = 0;
+    function LoadBarChart() {
+        var UserList = [];
+        var StatusList = [];
+        var colorList = [];
+
+        //$(".pie-overlay@(ViewBag.graphName)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("BarChartAgingReport", "api/Report")",
+            type: "GET",
+            data: {
+                dateFirst: $('#DatepickerFirst').val(),
+                dateSecond: $('#DatepickerSecond').val(),
+                campaignId: campaignId,
+                agingReportType: @(Convert.ToInt32(Config.AgingReportType.Monthly))
+                },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var statusList = data.AllStatusList;
+                var resultlist = [];
+                var resultObj;
+
+                var dict = []; // create an empty array
+
+
+
+                if (data.Total != null) {
+                    $.each(data.Total.ListUserWiseData, function (idx, obj) {
+                        //New Object
+
+                        var UserCount = new Object();
+                        
+                        obj.Name = obj.Name.trim();
+                        var test = obj.Name; //+ "-" + obj.UserId;
+                        UserCount.name = (test);
+
+                        //Add in list
+                        UserList.push(UserCount.name);
+                        var isPresent = false;
+                        debugger;
+                        $.each(obj.ListVmStatusWiseCount, function (idxa, objSub) {
+
+                            isPresent = false;
+                            if (dict.length > 0) {
+                                for (var obj1 in dict) {
+                                    if (dict[obj1].name == objSub.StatusString) {
+                                        dict[obj1].data.push(objSub.Count);
+                                        isPresent = true;
+                                    }
+                                }
+                                if (!isPresent) {
+                                    var obj2 = { name: objSub.StatusString, data: [] }
+                                    obj2.data.push(objSub.Count);
+                                    dict.push(obj2);
+
+                                }
+                            }
+                            else {
+                                var obj3 = { name: objSub.StatusString, data: [] }
+                                obj3.data.push(objSub.Count);
+                                dict.push(obj3);
+                            }
+                            /*$.each(obj.statusList,function (idxb,str)
+                            {
+                                if(str == objSub)
+                                {
+                                    resultObj = new Object();
+                                    resultObj.Status = objSub.StatusString;
+                                }
+                            });*/
+                            //New Object
+
+                        });
+
+
+                    });
+
+                    if (data.Total.AllStatusColorList != null) {
+                        $.each(data.Total.AllStatusColorList, function (idx, obj) {
+                            debugger;
+                            colorList.push(obj);
+                        });
+
+                    }
+                    debugger;
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: colorList //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+                    Highcharts.chart('AgingGraph', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: '@(ViewBag.graphName)'
+                        },
+                        xAxis: {
+                            //tickInterval: 6,
+                            //allowDecimals: false,
+                            categories: UserList,  //['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'No. of Complaints Resolved'
+                            }
+                        },
+                        legend: {
+                            reversed: false
+                        },
+                        plotOptions: {
+                            //series: {
+                            //    stacking: 'normal',
+                            //    cursor: 'pointer',
+                            //    point: {
+                            //        events: {
+                            //            click: function () {
+                            //                //alert('Category: ' + this.category + ', value: ' + this.y);
+                            //                var temp = this.category.split('-');
+
+
+                            //                clickHandler(campaignId, temp[0], 1, temp[1]);
+                            //            }
+                            //        }
+                            //    }
+                            //}
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series: dict
+                        /*[{
+                        name: 'Pending',
+                        data: [5, 3, 4, 7, 2]
+                    }, {
+                        name: 'Resolve',
+                        data: [2, 2, 3, 2, 1]
+                    }, {
+                        name: 'Solve',
+                        data: [3, 4, 4, 2, 5]
+                    }]*/
+                    });
+
+                    //$('html,body').animate({
+                    //    scrollTop: $(".scroll").offset().top
+                    //}, 1500);
+                }
+                else {
+                    //alert('@ViewBag.UserId user has no data.');
+
+                    //@ViewBag.UserId
+                    @*var from = $("#Piedatepickerlowerother").val();
+                    var to = $("#Piedatepickermaxother").val();
+                    var userId =  @ViewBag.UserId;
+
+                    LoadGridView( from, to, userId, -1);*@
+                }
+            }
+
+        });
+    }
+
+
+</script>
+
+
+}

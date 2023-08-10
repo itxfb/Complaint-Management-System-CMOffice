@@ -1,0 +1,376 @@
+﻿@using PITB.CRM.Public_Web.Models
+@{
+    Layout = "";
+    CookieUserModel userData = null;
+    if (ViewBag.UserData != null)
+    {
+        userData = ViewBag.UserData as CookieUserModel;
+    }
+}
+<!DOCTYPE html>
+<html class="transition-navbar-scroll top-navbar-xlarge bottom-footer" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    @*<link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,300,400italic,400,600italic,600,700italic,700,800italic,800' rel='stylesheet' type='text/css'>*@
+    @*<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400normal" rel="stylesheet">*@
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmvBGutmB41Al24g9jcvqTc5tcsas4O90">
+    </script>
+    <link rel="apple-touch-icon" sizes="57x57" href="~/StaticResources/images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/StaticResources/images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/StaticResources/images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/StaticResources/images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/StaticResources/images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/StaticResources/images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/StaticResources/images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/StaticResources/images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/StaticResources/images/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/StaticResources/images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/StaticResources/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/StaticResources/images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/StaticResources/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="~/StaticResources/images/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/StaticResources/images/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <title>Punjab Fix IT | Government of Punjab</title>
+
+    <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-1.12.4.min.js"></script>
+    <link href="~/StaticResources/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/theme-core.min.css" rel="stylesheet">
+    <link href="~/StaticResources/css/module-essentials.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-layout.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-navbar.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-background.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-buttons.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-text.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/fixit.css" rel="stylesheet" />
+
+</head>
+<body style="background-color:#ffffff;">
+    <!--style="background-color:#e9ebee;font-family: 'Source Sans Pro','Calibri'"-->
+    <!-- Fixed navbar -->
+    <div id="imgView" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    &nbsp;<button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" id="imageHolder" style="overflow: auto;">
+                </div>
+                <div class="modal-footer hide">
+                    <div>
+                        <a class="btn btn-success float-right " id="download-link" download href="#">Download&nbsp;<span class="glyphicon glyphicon-download-alt"></span></a>
+                        <a class="btn btn-default float-left " href="javascript:void(0);" title="View in full screen" onclick="requestFullScreen();">&nbsp;<span class="glyphicon glyphicon-fullscreen"></span>&nbsp;Fullscreen</a>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="container">
+        <div class="navbar navbar-default navbar-fixed-top navbar-size-large paper-shadow navbar-size-xlarge" data-animated role="navigation">
+            <!--style="opacity: 0.9;
+                                                                                                   -webkit-box-shadow: 0px 0px 8px 2px #ececec;
+                                                                                                   -moz-box-shadow: 0px 0px 8px 2px #000000;
+                                                                                                   box-shadow: 0px 0px 6px 3px #cecece;
+                                                                                               " data-z="0"-->
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand navbar-brand-logo">
+                        <a href="@Url.Action("index","public")">
+                            <img src="~/StaticResources/images/fixit_dashboard_logo.png" alt="Punjab FixIT" height="50px" />
+                        </a>
+                    </div>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="main-nav">
+
+                    <div class="navbar-right">
+
+                        @if (userData == null)
+                        {
+                            <a id="loginClick" href="@Url.Action("login", "Account")?returnUrl=/public/index">
+                                <img src="~/StaticResources/images/facebook-flat.svg" width="250" style="padding-top: 8px;" />
+                                @*<img src="https://fb-s-c-a.akamaihd.net/h-ak-xaf1/v/t39.2365-6/16344632_403881753293914_7761668832074137600_n.png?oh=a15e2e9912fa31f678447aaf65f8fdc2&amp;oe=599693ED&amp;__gda__=1502516821_9923b94311d5fd0fe817bd7b0a822d5f"
+                                    alt="Click here to login with Facebook" width="250">*@
+                                @*Click here to login with Facebook*@
+                            </a>
+
+                        }
+                        else
+                        {
+                            <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
+
+                                <li class="dropdown user active">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <img src="@Url.Content(userData.Data.ProfilePhoto)" alt="" class="img-circle" /> @userData.Data.FullName<span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        @*<li><a href="website-student-dashboard.html"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
+                                            <li class="active"><a href="website-student-courses.html"><i class="fa fa-mortar-board"></i> My Courses</a></li>
+                                            <li><a href="website-student-profile.html"><i class="fa fa-user"></i> Profile</a></li>*@
+                                        <li><a href="@Url.Action("signout","account")"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        }
+                        <!-- user -->
+                        <!-- // END user -->
+                    </div>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-section">
+
+            <div class="row">
+                <div class="col-md-3 sidebar-fixed ">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="padding: 17px 15px;">
+                            <h4>Filters</h4>
+                        </div>
+                        <div class="panel-body">
+                            @{Html.RenderAction("GetFilters", "Public");}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-9 middle-content">
+                    <div id="Feed"></div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="parallax overflow-hidden bg-blue-400 page-section third" style="background-color:#f4f4f4;">
+            <div class="container parallax-layer" data-opacity="true">
+                @{Html.RenderAction("GetFilters", "Public");}
+            </div>
+        </div>*@
+
+    <!-- Footer -->
+    <footer class="footer">
+        <strong>@DateTime.Now.Year &copy; Punjab Information Technology Board</strong>
+    </footer>
+    <!-- // Footer -->
+    <script>
+        var colors = {
+            "danger-color": "#e74c3c",
+            "success-color": "#81b53e",
+            "warning-color": "#f0ad4e",
+            "inverse-color": "#2c3e50",
+            "info-color": "#2d7cb5",
+            "default-color": "#6e7882",
+            "default-light-color": "#cfd9db",
+            "purple-color": "#9D8AC7",
+            "mustard-color": "#d4d171",
+            "lightred-color": "#e15258",
+            "body-bg": "#f6f6f6"
+        };
+        var config = {
+            theme: "html",
+            skins: {
+                "default": {
+                    "primary-color": "#42a5f5"
+                }
+            }
+        };
+    </script>
+    <!-- Separate Vendor Script Bundles -->
+    <script src="~/StaticResources/js/vendor-core.min.js"></script>
+    <script src="~/StaticResources/js/vendor-forms.min.js"></script>
+    <script src="~/StaticResources/js/module-essentials.min.js"></script>
+    <script src="~/StaticResources/js/module-material.min.js"></script>
+    <script src="~/StaticResources/js/module-layout.min.js"></script>
+    <script src="~/StaticResources/js/theme-core.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/StaticResources/js/notify.js"></script>
+    @*<script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmvBGutmB41Al24g9jcvqTc5tcsas4O90">
+        </script>*@
+
+    <script type="text/javascript">
+        var counter = 1;
+        var getFilteredData = false;
+
+        var globalFilterObject = {
+            "Filterable": false,
+            "StatusId": $("#StatusDDL").val(),
+            "DistrictIds": $("#DistrictsDDL").val(),
+            "TownTehsilId": $("#TehsilDDL").val(),
+            "FromDate": $("#FromDate").val(),
+            "Uc": $("#UcDDL").val(),
+            "Categories": $("#CategoryDDL").val(),
+            "Paging": { "CurrentPage": 0 }
+        };
+
+        function FilterBtnClick() {
+            getFilteredData = true;
+            PrepareObject(true);
+
+            FetchDataFromServer(true);
+        }
+        function PrepareObject(getFilteredData) {
+            if (getFilteredData) {
+                globalFilterObject.Filterable = true;
+                globalFilterObject.StatusId = $("#StatusDDL").val();
+                globalFilterObject.DistrictIds = $("#DistrictsDDL").val();
+                globalFilterObject.TownTehsilId = $("#TehsilDDL").val();
+                globalFilterObject.FromDate = $("#FromDate").val();
+                globalFilterObject.Uc = $("#UcDDL").val();
+                globalFilterObject.Categories = $("#CategoryDDL").val();
+                globalFilterObject.Paging.CurrentPage = 0;
+            }
+            else {
+                globalFilterObject.Filterable = false;
+            }
+        }
+        function FetchDataFromServer(ifBtnFilterPressed) {
+
+            $.ajax({
+                url: "@Url.Action("Loadmore","Public")",
+                type: "POST",
+                data: globalFilterObject,
+                async: false,
+                success: function (html) {
+                    var nguid = $(html).hide();
+                    if (ifBtnFilterPressed) {
+                        $("#Feed").html(nguid);
+
+                    } else {
+                        $("#Feed").append(nguid);
+                    }
+                    nguid.show('fast');
+                }
+            });
+            globalFilterObject.Paging.CurrentPage = globalFilterObject.Paging.CurrentPage + 1;
+        }
+
+
+
+        var maps = [];
+        var markers = [];
+        function initMap(loadAll, elementClass) {
+            var $maps = '';
+            if (loadAll)
+                $maps = $('.map');
+            else {
+                $maps = $('.' + elementClass);
+
+            }
+            $.each($maps, function (i, value) {
+                var uluru = { lat: parseFloat($(value).attr('lat')), lng: parseFloat($(value).attr('lng')) };
+
+                var mapDivId = $(value).attr('id');
+
+                maps[mapDivId] = new google.maps.Map(document.getElementById(mapDivId), {
+                    zoom: 17,
+                    center: uluru
+                });
+
+                markers[mapDivId] = new google.maps.Marker({
+                    position: uluru,
+                    map: maps[mapDivId]
+                });
+            })
+        }
+
+        function renderMap(latitude, longitude, elementWhereMapWillBeRendered, title) {
+            console.log(latitude)
+            console.log(elementWhereMapWillBeRendered)
+            var myLatLng = { lat: latitude, lng: longitude };
+
+            var map = new google.maps.Map(document.getElementById(elementWhereMapWillBeRendered), {
+                zoom: 15,
+                center: myLatLng
+            });
+
+            var marker = new google.maps.Marker({
+                position: myLatLng,
+                map: map,
+                title: title
+            });
+
+
+        }
+        function submitVote(complaintId, isUpVote, upElement, downElement, baseElement) {
+            var obj = {
+                "ComplaintHash": complaintId,
+                "UserVote": isUpVote
+            }
+
+            $.ajax({
+                url: "@Url.Action("SubmitMyVote", "Public")",
+                type: "POST",
+                data: obj,
+                async: false,
+                success: function (json) {
+
+                    if (json.Status) {
+
+
+                        $('#' + upElement).html(json.UpVoteCount);
+
+                        $('#' + downElement).html(json.DownVoteCount);
+
+
+
+                        $('#' + baseElement).notify(json.Message, 'success');
+
+                    } else {
+                        $('#' + baseElement).notify(json.Message, 'info');
+                    }
+                }
+            });
+        }
+
+
+        $(function () {
+            FetchDataFromServer(false);
+            $(window).scroll(function () {
+                if ($(window).scrollTop() == $(document).height() - $(window).height()) {
+                    FetchDataFromServer(false);
+                }
+            });
+
+
+        });
+        function onViewClick(event) {
+
+            var holder = document.getElementById('imageHolder');
+            holder.innerHTML = '';
+            var image = document.createElement('img');
+            var imageSrc = event.getAttribute('data-link');
+            image.src = imageSrc;
+            image.setAttribute('id', 'imgPrev');
+            image.setAttribute('class', 'img-responsive');
+            document.getElementById('download-link').href = imageSrc;
+            holder.appendChild(image);
+            $('#imgView').modal();
+            $('.img-responsive').loupe();
+        }
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>

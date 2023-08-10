@@ -1,0 +1,1120 @@
+﻿@using Microsoft.Ajax.Utilities
+@using PITB.CMS_Common
+@using System.Linq
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Models.View.Dynamic
+@using PITB.CMS_Common.Models.Custom
+@using PITB.CMS_Common.Handler.Authentication
+@model PITB.CMS_Common.Models.View.VmAddComplaint
+
+@{
+    //if (Request.IsAjaxRequest()) { Layout = null; }
+    //if (ViewBag.Layout == null)
+    //{
+    //    Layout = Config.DefaultMasterPageAgent;
+    //}
+    //else
+    //{
+    //    Layout = ViewBag.Layout;
+    //}
+    ViewBag.Title = "Add Complaint";
+    int fieldIndex = 0;
+    Model.ComplaintVm.Province_Id = 1;
+}
+<style>
+    .Complaint.active {
+        border-top-color: #fbcc3e !important;
+    }
+
+    .Suggestion.active {
+        border-top-color: #008000 !important;
+    }
+
+    .Inquiry.active {
+        border-top-color: #ff0000 !important;
+    }
+
+    label.normalFont {
+        font-weight: normal;
+    }
+
+    .dynamicDiv {
+        background: #f7f7f7; /*#efefee*/
+        padding: 10px 0px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+    /*.select2 {
+        width: 100% !important;
+    }*/
+    /*input {
+        text-transform: uppercase;
+    }*/
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+
+
+
+
+        <section class="content">
+            <div style="    width: 50px;
+                                       left: 0;
+                                       position: fixed;
+                                       z-index: 1000;
+                                       margin: 0;
+                                       height: 100px;">
+                <img width="50px" src="@Url.Content(ViewBag.Campaignname)" alt="Alternate Text" />
+
+
+            </div>
+            @using (Html.BeginForm("OnAddComplaintSubmit", "Complaint", FormMethod.Post, new { id = "AddComplaintForm", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::OnAddComplaintSubmit||url::/LGCD/OnAddComplaintSubmit" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" data-force-post="True" name="tagId" value="TagAddComplaint">
+                <input data-force-post="True" id="complaintType" name="complaintType" type="hidden" value="">
+                <input data-force-post="True" id="campaignId" name="campaignId" type="hidden" value="104">
+                <input data-force-post="True" id="depId" name="departmentId" type="hidden" />
+                @Html.HiddenFor(m => m.PersonalInfoVm.Person_id, new { @data_force_post = true })
+                if (Model.PersonalInfoVm != null)
+                {
+                    @Html.HiddenFor(m => m.PersonalInfoVm.Cnic_No, new { @data_force_post = true })
+                }
+                @Html.HiddenFor(m => m.ComplaintVm.Compaign_Id, new { @data_force_post = true })
+                @Html.HiddenFor(m => m.currentComplaintTypeTab, new { @data_force_post = true })
+                @Html.HiddenFor(m => m.ComplaintVm.hasDepartment, new { @data_force_post = true })
+                @Html.HiddenFor(m => m.SuggestionVm.hasDepartment, new { @data_force_post = true })
+                @Html.HiddenFor(m => m.InquiryVm.hasDepartment, new { @data_force_post = true })
+
+
+                @*<label class="text-danger">@Html.ValidationSummary()</label>*@
+                <section class="content">
+                    <div class="row">
+
+                        <div>
+
+                            <div class="box box-primary">
+                                <div class="box-header-blue with-border btn-header">
+                                    <h4 class="box-title">Complainant Information شکایت کرنے والے کی معلومات</h4>
+                                </div>
+                                <div class="box-body-white" style="margin-top:5px;">
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Name نام*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Person_Name, new { @class = "fieldsEnable form-control characters-only-with-space text-uppercase", @placeholder = "Complainant Name" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Person_Name, "", new { @class = "label label-warning" })
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group col-md-6"> temporary hidden
+                                    <div class="col-md-4">
+                                        <label>Father/Husband Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.PersonalInfoVm.Person_Father_Name, new { @class = "fieldsEnable form-control characters-only-with-space", @placeholder = "Father/Husband Name" })
+                                    </div>
+                                </div>*@
+                                    @if (Model.PersonalInfoVm == null)
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>CNIC شناختی کارڈ*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.PersonalInfoVm.Cnic_No, new { @class = "fieldsEnable form-control numbers-only", @data_val_is_required = "True", @placeholder = "ex 3520174842579", @maxlength = 13, id = "CnicTxtBox", @data_val_config = "controlType::text__data-val-is-required::True__data-val-is-required-message::Please enter Cnic__data-val-inputFormat::numbers*__data-val-Length::13-13__data-val-Length-min-message::Minimum 13 characters" })
+                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter cnic" data-val-for-name="PersonalInfoVm.Cnic_No">
+
+                                                </span>
+                                                @*@Html.ValidationMessageFor(m => m.PersonalInfoVm.Cnic_No, "", new { @class = "label label-warning" })*@
+                                            </div>
+                                            @*<div class="col-md-4">
+                                            <div class="col-md-6" style="margin-top: 5px;">
+                                                CNIC not required
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.CheckBoxFor(m => m.PersonalInfoVm.IsCnicPresent, new { @id = "IsCnicPresent", @Style = "width:20px;height:20px;" })
+                                            </div>
+                                        </div>*@
+                                        </div>
+                                    }
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Gender جنس</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.Gender, EnumHelper.GetSelectList(typeof(Config.Gender)), "--Select--", new { @class = "fieldsEnable form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Gender, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Cell Number موبائل نمبر*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Mobile_No, new { @class = "fieldsEnable form-control numbers-only", @placeholder = "03001234567", @maxlength = 11 })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Mobile_No, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6 hide">
+                                        <div class="col-md-4">
+                                            <label>Secondary Contact No متبادل رابطہ نمبر</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Secondary_Mobile_No, new { @class = "fieldsEnable form-control numbers-only", @placeholder = "04235880062", @maxlength = 15 })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6 hide">
+                                        <div class="col-md-4">
+                                            <label>Province صوبہ*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.Province_Id, Model.ComplaintVm.ProvinceSelectList, new { @Id = "userControlPersonProvince", @class = "fieldsEnable form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "userControlPersonDistrict", @class = "fieldsEnable form-control" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.District_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Address پتہ</label>
+                                        </div>
+                                        <div class="col-md-8 col-xs-12">
+                                            @Html.TextAreaFor(m => m.PersonalInfoVm.Person_Address, new { @class = "fieldsEnable form-control", rows = 3 })
+                                        </div>
+
+                                    </div>
+                                    @*<div class="form-group col-md-6">temporary
+                                    <div class="col-md-4">
+                                        <label>Nearest location (if any)</label>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12">
+                                        <textarea class="form-control" rows="3"></textarea>
+                                    </div>
+
+                                </div>*@
+                                    @*<div class="form-group col-md-6 hide">
+
+                                    <div class="col-md-4">
+                                        <label>Send Anonymously </label>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12">
+                                        <p> @Html.CheckBoxFor(m => m.ComplaintVm.Is_Anonymous)</p>
+
+                                        <small class="text-danger" style="font-weight:bold;">Note: The effectiveness of complaint resolution may be impacted if the caller's information is kept anonymous.</small>
+                                    </div>
+
+                                </div>*@
+                                    <br style="clear: both;" />
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="row mb-3">
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    @for (int i = Model.ComplaintVm.MinDynamicFormPriority; i <= Model.ComplaintVm.MaxDynamicFormPriority; i++)
+                                    {
+                                        List<VmRadioButton>
+                                            listDynamicRadioButtons = Model.ComplaintVm.ListDynamicRadioButtons.Where(n => n.Priority == i).ToList();
+
+                                        // DropdownListCode server side
+                                        if (listDynamicRadioButtons != null)
+                                        {
+
+                                            foreach (VmRadioButton vmRadioBtn in listDynamicRadioButtons)
+                                            {
+                                                int index = Model.ComplaintVm.ListDynamicRadioButtons.FindIndex(n => n == vmRadioBtn);
+
+                                                // adding custom code
+                                                <div class="col-md-12 p-5" style="margin-bottom:10px">
+                                                    @*<div class="box-header bg-navy" style="min-height:60px;">
+                                                    <h6 class="box-title">@vmRadioBtn.FieldName  </h6>
+
+                                                </div>*@
+                                                    <div class="box-header-blue with-border btn-header mb-3">
+                                                        <h4 class="box-title">Select a Department ادارہ کا انتخاب کریں</h4>
+                                                    </div>
+                                                    @*<p class="box-header" style="font-weight:bold;"> Select a Department </p>*@
+                                                </div>
+
+
+                                                foreach (VmDynamicRadioBtn x in Model.ComplaintVm.ListDynamicRadioButtons[index].FieldValue)
+                                                {
+                                                    <div class='col-md-4 chkbx'>
+                                                        <div class="box box-warning" style="border: none">
+
+                                                            <div class="box-body-white" style="margin-top: 5px;">
+                                                                <div style="text-align: center;height: 100px">
+                                                                    <div class="col-md-12">
+                                                                        @*@Html.CheckBox("ComplaintVm.ListDynamicRadioButtons[" + index + "].Setting", , new { @Id = "department_" + x.TagId, @hidden = "true" })*@
+                                                                        <input type="checkbox" class="department-checkbox" name="department-checkbox" id="department_@x.TagId" style="display: none;">
+                                                                        <div style="text-align: center;">
+                                                                            <img width="82" height="82" src="@x.TagId.Split('_')[2]" style="max-height: 100%;max-width: 100%" />
+
+                                                                        </div>
+                                                                        <span>
+                                                                            <label class="depLabel text-black mr-4">
+                                                                                @x.Text
+                                                                            </label>
+                                                                        </span>
+                                                                        @*@Html.CheckBoxFor(m => m.ComplaintVm.ListDynamicRadioButtons[index].IsRequired, new { @Id = "department_" + x.TagId })*@
+
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicRadioButtons[index].Setting, null, new { @class = "label label-warning" })
+                                                                    @Html.HiddenFor(m => m.ComplaintVm.ListDynamicRadioButtons[index].IsRequired)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+
+
+                                                <div class='col-md-4 chkbx' id="otherDep">
+                                                    <div class="box box-warning" style="border: none">
+
+                                                        <div class="box-body-white" style="margin-top: 5px;">
+                                                            <div style="text-align: center;height: 100px">
+                                                                <div class="col-md-12">
+                                                                    @*@Html.CheckBox("ComplaintVm.ListDynamicRadioButtons[" + index + "].Setting", , new { @Id = "department_" + x.TagId, @hidden = "true" })*@
+                                                                    <input type="checkbox" class="department-checkbox" name="department-checkbox" style="display: none;">
+                                                                    <div style="text-align: center;">
+                                                                        <img width="82" height="82" src="https://storage.punjab.gov.pk/crm-cms/campaignimages/goplogo.png" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                                                                       
+                                                                    </div>
+                                                                    <span>
+                                                                        <label class="depLabel text-black mr-4">
+                                                                            Other Departments
+                                                                        </label>
+                                                                    </span>
+                                                                    @*@Html.CheckBoxFor(m => m.ComplaintVm.ListDynamicRadioButtons[index].IsRequired, new { @Id = "department_" + x.TagId })*@
+
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            }
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Tabs Area Start-->
+                        <div class="nav-tabs-custom hide" id="parentNav">
+                            <ul class="nav nav-tabs">
+                                <li class="Complaint center"><a href="#complaintArea" id="complaintHeaderTab" data-toggle="tab" aria-expanded="true"><i class="fa fa-solid fa-chevron-down"></i></a></li>
+                                @*<li class="Suggestion"><a href="#suggestionArea" data-toggle="tab" aria-expanded="false">Suggestion</a></li>
+                            <li class="Inquiry"><a href="#InquiryArea" data-toggle="tab" aria-expanded="false">Inquiry</a></li>*@
+                                @*<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>*@
+                            </ul>
+                            <div class="tab-content">
+                                <!--Complaint tab content-->
+                                <div class="tab-pane" id="complaintArea">
+
+
+
+                                    @if (@Model.ComplaintVm.ListOfDepartment != null && @Model.ComplaintVm.ListOfDepartment.Count > 0)
+                                    {
+                                        <div class="form-group col-md-6 dep">
+                                            <div class="col-md-4">
+                                                <label>
+                                                    Department
+                                                    ادارہ
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.departmentId, Model.ComplaintVm.DepartmentSelectList, "--Select--", new { @class = "form-control dep" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.departmentId, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+                                    }
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Complaint Category شکایت کا زمرہ </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.Complaint_Category, Model.ComplaintVm.ComplaintCategoriesSelectList, "--Select--", new { @class = "form-control cat", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_Category, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>
+                                                Complaint Sub Category
+                                                شکایت کا ذیلی زمرہ
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.Complaint_SubCategory, new List<SelectListItem>(), "--Select--", new { @class = "form-control subcat", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_SubCategory, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+                                    @*<div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Type</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.ComplaintVm.Complaint_Type, EnumHelper.GetSelectList(typeof(Config.ComplaintType)), "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                    </div>
+                                </div>*@
+
+                                    @*<div class="form-group col-md-6 hide">
+                                            <div class="col-md-4">
+                                                <label>Province صوبہ</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Province_Id, Model.ComplaintVm.ProvinceSelectList, new { @Id = "complaintUserControlProvince", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.Province_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                </div>*@
+
+
+
+
+
+
+
+                                    @Html.HiddenFor(m => m.ComplaintVm.Province_Id, new { @Id = "complaintUserControlProvince", @data_force_post = true })
+                                    @Html.Hidden("m => m.ComplaintVm.Province_Id", Model.ComplaintVm.Province_Id, new { @data_force_post = true })
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlDistrict", @class = "form-control", @data_val_is_required = "True" })
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="ComplaintVm.District_Id">
+
+                                            </span>
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.District_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+
+                                    <div id="partialViewContainer">
+
+                                    </div>
+
+                                    @*<div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>UC*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.ComplaintVm.UnionCouncil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlUc", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.ComplaintVm.UnionCouncil_Id, "", new { @class = "label label-warning" })
+
+
+                                    </div>
+                                </div>*@
+                                    @if (PermissionHandler.IsPermissionAllowedInCampagin(Config.CampaignPermissions.ShowWards))
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Wards*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Ward_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlWards", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.Ward_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    @*<div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>House / Shop No</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.ComplaintVm.HomeShopNo, new { @class = "form-control", @placeholder = "Home or shop no" })
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Street No. / Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.ComplaintVm.StreetNameNo, new { @class = "form-control", @placeholder = "Stree no or name" })
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Locality / Area</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(m => m.ComplaintVm.LocalityArea, new { @class = "form-control", @placeholder = "Nearest Location" })
+                                    </div>
+                                </div>*@
+                                    <div class="form-group  col-md-12">
+                                        <div class="col-md-2 col-lg-2">
+                                            <label>Details of Complaint شکایت کی تفصیلات</label>
+                                        </div>
+                                        <div class="col-md-10">
+
+                                            @Html.TextAreaFor(m => m.ComplaintVm.Complaint_Remarks, new { @class = "form-control col-md-12 col-xs-12", rows = 3, @data_val_is_required = "True" })
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter Detail" data-validation-for-type="text" data-val-for-name="ComplaintVm.Complaint_Remarks">
+
+                                            </span>
+                                            @*@Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_Remarks, "", new { @class = "label label-warning" })*@
+
+
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group col-lg-12 col-md-12">
+                                    <div class="col-md-2 col-lg-2">
+                                        <label>Remarks/Comments </label>
+                                    </div>
+                                    <div class="col-md-10">
+                                        @Html.TextAreaFor(m => m.ComplaintVm.Agent_Comments, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                        @Html.ValidationMessageFor(m => m.ComplaintVm.Agent_Comments, "", new { @class = "label label-warning" })
+
+
+                                    </div>
+                                </div>*@
+
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <div class="col-md-2 col-lg-2">
+                                            <label>Attach File </label>
+                                        </div>
+                                        @*<input type="text" data-val-tag="T1" class="form-control" name="NameInPerson" data-val-is-required="True" data-val-is-required-message="Please select value">
+                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter Name" data-validation-for-type="text" data-val-for-name="NameInPerson">
+
+                                    </span>*@
+                                        <div class="col-md-3">
+                                            <input data-val-tag="T1" class="form-control"
+                                                   data-val-is-required="False" type="file" name="FileUpload1" accept=".pdf,audio/mpeg, video/mp4,.jpeg, .jpg, .png" onchange="checkFileSize(event)" />
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please attach file" data-validation-for-type="text" data-val-for-name="FileUpload1">
+
+                                            </span>
+                                            <!--</div>
+                                    <div class="col-md-3">
+                                    <input data-val-tag="T1" class="form-control"  type="file" name="FileUpload2" />-->
+                                            @*<span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please attach file" data-validation-for-type="text" data-val-for-name="FileUpload2">
+
+                                        </span>*@
+                                            <!--</div>
+                                    </div>-->
+                                            @*<div class="row">
+                                            <div class="col-md-5 form-group">
+                                                <div class="col-md-1">
+                                                    <label>1) </label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" type="file" name="FileUpload1" />
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                                    </div>
+                                    <br clear="all" />
+                                    @*<div class="col-md-12 col-xs-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header-blue with-border btn-header">
+                                            <h4 class="box-title" style="float:left;"> New Complaint</h4>
+                                        </div>
+
+
+                                        <div class="box-body-white" style="margin-top:5px;">
+
+
+                                            <br style="clear: both;" />
+
+                                        </div>
+
+                                        <div class="box-footer">
+                                            <div class="col-md-8 col-md-offset-2 text-center"><button class="btn btn-primary" type="submit">Launch Complaint</button></div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                                </div>
+
+                                <!--End Complaint-->
+
+
+
+                            </div>
+                            <!-- /.tab-content -->
+                        </div>
+
+
+                        <!--Tabs End-->
+
+                    </div>
+                </section>
+            }
+
+
+
+        </section>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dropDownDictHierarchyComplaint = [];
+    var dropDownDictHierarchySuggestion = [];
+    var dropDownDictHierarchyInquiry = [];
+
+
+    var dropDownDictComplaint = [];
+    var dropDownDictSuggestion = [];
+    var dropDownDictInquiry = [];
+
+    var serverSideDropDownUrl;
+
+    //$('#IsCnicPresent').change(function () {
+    //    if ($(this).is(":checked")) {
+    //        $("#CnicTxtBox").prop("disabled", true);
+    //    } else {
+    //        $("#CnicTxtBox").prop("disabled", false);
+    //    }
+    //});
+    $(window).load(function () {
+        RegisterLocalValidation("#AddComplaintForm", null);
+    });
+    function checkFileSize(event) {
+        const fileInput = event.target;
+        const files = fileInput.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const fileSizeinBytes = file.size;
+            const maxSizeinBytes = 2 * 1024 * 1024;
+            if (fileSizeinBytes > maxSizeinBytes) {
+                alert("File size is greater than 2MB");
+                fileInput.value = '';
+                return false;
+            }
+
+        }
+    }
+    $(document).ready(function () {
+        debugger;
+
+        $("#complaintUserControlTownTehsil").select2();
+        $("#suggestionUserControlTownTehsil").select2();
+        $("#inquiryUserControlTownTehsil").select2();
+        $('#IsCnicPresent').trigger("change");
+
+        serverSideDropDownUrl = '@Url.Action("GetDynamicOptionListAgainstSearch", "GeneralApi")?campaignId=1&categoryId=2&searchStr=3';
+        //debugger;
+        PopulateDropDownDictionaryHierarchy();
+
+        RegisterDropDownListChangeEventsForProvinceDistrict("userControlPersonProvince", "userControlPersonDistrict", $('#ComplaintVm_Compaign_Id').val());
+        RegisterDropDownListChangeEventsForProvinceDistrict("Province_Id", "District_Id", -1/*$('#ComplaintVm_Compaign_Id').val()*/);
+
+
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchyComplaint);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchySuggestion);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchyInquiry);
+        //RegisterDropDownListChangeEventsForProvinceDistrict("complaintUserControlProvince", "complaintUserControlDistrict", "complaintUserControlTownTehsil", "complaintUserControlUc");
+        //RegisterDropDownListChangeEventsForProvinceDistrict("suggestionUserControlProvince", "suggestionUserControlDistrict", "suggestionUserControlTownTehsil", "suggestionUserControlUc");
+        //RegisterDropDownListChangeEventsForProvinceDistrict("inquiryUserControlProvince", "inquiryUserControlDistrict", "inquiryUserControlTownTehsil", "inquiryUserControlUc");
+
+        PopulateDropDownDictionary();
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictComplaint);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictSuggestion);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictInquiry);
+
+        //RegisterDropDownListChangeEventsComplaintTypes("ComplaintVm_Complaint_Category", "ComplaintVm_Complaint_SubCategory");
+        //RegisterDropDownListChangeEventsComplaintTypes("SuggestionVm_Complaint_Category", "SuggestionVm_Complaint_SubCategory");
+        //RegisterDropDownListChangeEventsComplaintTypes("InquiryVm_Complaint_Category", "InquiryVm_Complaint_SubCategory");
+
+        setSelectedListOfDropDown("userControlPersonDistrict", "@Model.PersonalInfoVm.IfNotNull(m => m.District_Id)");
+        $('form').removeData('validator');
+        $('form').removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse('form');
+
+
+        function formatRepo(repo) {
+            if (repo.loading) return repo.text;
+
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
+
+            if (repo.description) {
+                markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
+            }
+
+            markup += "<div class='select2-result-repository__statistics'>" +
+                "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+                "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+                "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+                "</div>" +
+                "</div></div>";
+
+            return markup;
+        }
+
+        function formatRepoSelection(repo) {
+            return repo.full_name || repo.text;
+        }
+
+        //window.location = serverSideDropDownUrl;
+        $('.js-data-example-ajax').each(function (i, obj) {
+            //alert(obj.id);
+            var splitStr = obj.id.split("___");
+            var campaignId = parseInt(splitStr[2]);
+            var categoryId = parseInt(splitStr[3]);
+            //alert(splitStr[2]);
+            $(obj).select2({
+                ajax: {
+                    //url: "https://api.github.com/search/repositories",
+                    url: '@Url.Action("GetDynamicOptionListAgainstSearch", "GeneralApi")',
+                    //?campaignId='+campaignId+'&categoryId='+categoryId+'&searchStr=3'
+                    //url: serverSideDropDownUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250,
+                    //data: { campaignId: campaignId, categoryId: categoryId, searchStr: params.term },
+                    data: function (params) {
+                        return {
+                            searchStr: params.term, // search term
+                            page: params.page || 1,
+                            campaignId: campaignId,
+                            categoryId: categoryId
+                        };
+                    },
+                    processResults: function (data, params) {
+                        debugger;
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        //data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+
+                        return {
+                            results: data.ListItems,
+                            pagination: {
+                                more: (params.page * 10) < data.TotalCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                //escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
+                //templateResult: formatRepo, // omitted for brevity, see the source of this page
+                //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+            });
+        });
+    });
+
+
+    /*
+    $('.form-control').on('input keydown', function (e) {
+        debugger;
+        e.preventDefault();
+        alert('olololo');
+        //var i = $(this).attr('data-column');key
+        //var v = $(this).val();
+        //$('#agentListing').DataTable().columns(i).search(v).draw();
+    });
+    */
+
+
+
+    function OnSumitClick() {
+        //$('#currentComplaintTypeTab').val($('.nav-tabs .active').text());
+        //debugger;
+        //if ($('#AddComplaintForm').valid()) {
+        //    ShowLoading();
+        //}
+        //debugger;
+        //setTimeout(function () {
+        //    $("#CnicTxtBox-error").html("Cnic is required");
+        //});
+        //var isValid = ValidateFormOnSubmit("#AddComplaintForm", "T1");
+        //if ($('#AddComplaintForm').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+        //    ShowLoading();
+        //}
+        //return isValid;
+    }
+
+    $("#AddComplaintForm").submit(function (event) {
+        
+        $('#currentComplaintTypeTab').val('@VmAddComplaint.TabComplaint');
+        setTimeout(function () {
+            $("#CnicTxtBox-error").html("Cnic is required");
+        });
+        var elementsToPost = [];
+        var isValid = ValidateFormOnSubmit("#AddComplaintForm", null, elementsToPost);
+        //alert($('#AddComplaintForm').valid());
+        //if ($('#AddComplaintForm').valid()) {
+        //    ShowLoading();
+        //}
+
+        if ($('#AddComplaintForm').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+            var response = SubmitForm("#AddComplaintForm", elementsToPost);
+        }
+        return false;
+        //return isValid;
+    });
+
+    function OnAddComplaintSubmit(data) {
+        HideLoading();
+    }
+
+    $('input[name="PersonalInfoVm.IsCnicPresent"]').click(function (event) {
+        var element = $($('input[name="PersonalInfoVm.Cnic_No"]')[0]);
+
+        if ($(this).prop("checked") == true) {
+
+            SetElementConfiguration(element, "data-val-is-required::True", "data-val-is-required::False");
+            SetElementConfiguration(element, "data-val-Length::13-13", "data-val-Length::*-*");
+            ApplyTextBoxValidation("#AddComplaintForm", element);
+            RemoveValidationMessage("#AddComplaintForm", "PersonalInfoVm.Cnic_No");
+            //$($('input[name="PersonalInfoVm.Cnic_No"]')[0]).removeAttr("data-val-is-required");
+            //$($('[data-val-for-name="PersonalInfoVm.Cnic_No"]')[0]).children()[0].remove();
+            $("#CnicTxtBox").prop("disabled", true);
+            //alert("Checkbox is checked.");
+        }
+        else if ($(this).prop("checked") == false) {
+            //$($('input[name="PersonalInfoVm.Cnic_No"]')[0]).attr("data-val-is-required", "True");
+            SetElementConfiguration(element, "data-val-is-required::False", "data-val-is-required::True");
+            SetElementConfiguration(element, "data-val-Length::*-*", "data-val-Length::13-13");
+            ApplyTextBoxValidation("#AddComplaintForm", element);
+            $("#CnicTxtBox").prop("disabled", false);
+        }
+        //alert("munna kaka");
+    });
+
+    // Populate Hierarchy Dictioary done
+
+    function PopulateDropDownDictionaryHierarchy() {
+        //alert(dropDownDict);
+
+        // complaint
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlProvince",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlDistrict",
+            value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlTownTehsil",
+            value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlUc",
+            value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlWards",
+            value: null
+        });
+
+        //Suggestion list
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlProvince",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlDistrict",
+            value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlTownTehsil",
+            value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlUc",
+            value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlWards",
+            value: null
+        });
+
+
+        //Inquiry list
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlProvince",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlDistrict",
+            value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlTownTehsil",
+            value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlUc",
+            value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlWards",
+            value: null
+        });
+
+
+
+    }
+
+
+    function PopulateDropDownDictionary() {
+        //alert(dropDownDict);hasDepartment
+
+        if ($('#ComplaintVm_hasDepartment').val() == 'True') {
+            dropDownDictComplaint.push({
+                key: "ComplaintVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Complaint)'
+            });
+        }
+
+        if ($('#SuggestionVm_hasDepartment').val() == 'True') {
+            dropDownDictSuggestion.push({
+                key: "SuggestionVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Suggestion)'
+            });
+        }
+
+        if ($('#InquiryVm_hasDepartment').val() == 'True') {
+            dropDownDictInquiry.push({
+                key: "InquiryVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Inquiry)'
+            });
+        }
+
+        dropDownDictComplaint.push({
+            key: "ComplaintVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Complaint)'
+        });
+
+        dropDownDictComplaint.push({
+            key: "ComplaintVm_Complaint_SubCategory",
+            value: null
+        });
+
+        dropDownDictSuggestion.push({
+            key: "SuggestionVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Suggestion)'
+        });
+
+        dropDownDictSuggestion.push({
+            key: "SuggestionVm_Complaint_SubCategory",
+            value: null
+        });
+
+        dropDownDictInquiry.push({
+            key: "InquiryVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Inquiry)'
+        });
+
+        dropDownDictInquiry.push({
+            key: "InquiryVm_Complaint_SubCategory",
+            value: null
+        });
+
+
+
+    }
+     window.onload = function () {
+
+        if ('@((int)AuthenticationHandler.GetCookie().Role)' == 9) {
+            $('.fieldsEnable:input').each(function (i,v) {
+
+                if ($(this).is("input") || $(this).is("textarea")) {
+                    $(this).attr('readonly','enabled');
+                }
+                else if ($(this).is("select")) {
+                    $(this).attr('disabled', 'enabled');
+                }
+            })
+        }
+    }
+
+
+    $("[id^='department_']").change(function () {
+
+
+        
+        $(".dep").val("");
+
+        var hierarchyAndDepartmentId = $(this).attr('id').split("_");
+        var hierarchyId = hierarchyAndDepartmentId[1]; // Replace with the actual value of hierarchyId
+        var campaignId = '@Model.ComplaintVm.Compaign_Id';   // Replace with the actual value of campaignId
+        var departmentId = hierarchyAndDepartmentId[2]; // Replace with the actual value of departmentId
+
+        var checkboxes = $('input[name="' + $(this).attr('name') + '"]');
+
+        //console.log("DepName", $(this).closest('.chkbx').find(".depLabel").html());
+    
+        if (!$(this).prop('checked')) {
+            $("#partialViewContainer").empty();
+            $(".dep").attr("disabled", false);
+            toggleTab($('#complaintHeaderTab'),true);
+           
+        } else {
+            $("#partialViewContainer").load("../Complaint/GetFieldsByHeirarchyId?hierarchyId=" + hierarchyId + "&campaignId=" + campaignId);
+            checkboxes.not(this).prop('checked', false);
+            $(".dep").attr("disabled", true);
+            toggleTab($('#complaintHeaderTab'), false);
+            
+        }
+
+
+
+
+        populateDropDownList(departmentId, "ComplaintVm_Complaint_Category", "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Suggestion)', []);
+
+
+
+        $("#depId").val(departmentId);
+
+
+        $("[id$='_Id']").trigger('change');
+
+    });
+
+
+  
+    $('.chkbx').on('click', function () {
+
+        /*$("#ComplaintVm.departmentId").value('');*/
+       
+        if ($(this).css("background-color") === "rgb(209, 222, 227)") {
+            $(this).css("background-color", "transparent");
+        } else {
+            $(this).css("background-color", "rgb(209, 222, 227)");
+        }
+
+        var selectedChkBox = $(this).find('input[type="checkbox"]');
+
+        var selectedLabel = $(this).find('.depLabel').html();
+
+        var checkboxes = $('input[name="' + selectedChkBox.attr('name') + '"]');
+
+        var divId = $(this).attr('id');
+
+        if (divId == "otherDep") {
+            $(".dep").attr("disabled", false);
+            if (!selectedChkBox.prop('checked')) {
+
+                toggleTab($('#complaintHeaderTab'), false);
+
+            } else {
+
+                
+
+                toggleTab($('#complaintHeaderTab'), true);
+
+            }
+        }
+        // Find the checkbox inside the clicked div and toggle its checked state
+        selectedChkBox.prop('checked', function (index, currentValue) {
+
+            $("#complaintHeaderTab").html("Complaints ( " + selectedLabel + " )");
+
+
+           
+            return !currentValue;
+        });
+        
+        checkboxes.not(selectedChkBox).closest('.chkbx').css("background-color", "transparent");
+
+      
+        selectedChkBox.trigger('change');
+       
+
+    });
+
+
+   
+    
+    //$('#complaintHeaderTab').click(function () {
+
+        
+    //    toggleTab(this);
+    //});
+
+    function toggleTab(div, toggle = undefined) {
+
+        
+        // Check if the tab is currently active
+        var isActive = toggle;
+
+       
+
+        // Toggle the tab close behavior
+        if (isActive) {
+            // If the tab is active, remove the 'active' class to close it
+            $(div).removeClass('active');
+            $(div).attr('aria-expanded', 'false');
+            // Hide the associated tab content
+            $($(div).attr('href')).removeClass('in active');
+            $("#parentNav").addClass('hide');
+        } else {
+            // If the tab is inactive, add the 'active' class to open it
+            $(div).addClass('active');
+            $(div).attr('aria-expanded', 'true');
+            // Show the associated tab content
+            $($(div).attr('href')).addClass('in active');
+
+            $("#parentNav").removeClass('hide');
+        }
+    }
+
+
+    
+</script>

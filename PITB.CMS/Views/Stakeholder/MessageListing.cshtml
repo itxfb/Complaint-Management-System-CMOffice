@@ -1,0 +1,223 @@
+﻿@{
+    Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+}
+
+
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+
+    #agentListing tr td:nth-child(1) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+    #agentListing tr th:nth-child(1) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+     #agentListing tr td:nth-child(4) {
+        word-break: break-all;
+        width: 200px !important;
+    }
+    #agentListing tr th:nth-child(4) {
+        word-break: break-all;
+        width: 200px !important;
+    }
+   #agentListing tr td:nth-child(5) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+    #agentListing tr th:nth-child(5) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+
+    #agentListing tr td:nth-child(6) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+    #agentListing tr th:nth-child(6) {
+        word-break: break-all;
+        width: 50px !important;
+    }
+</style>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Message Listing</h4>
+
+        </div>
+        <div class="row" style="padding-left: 10px;padding-top: 10px;">
+            <div class="span4 pull-right" style="padding-left: 10px;padding-right: 30px;" data-placement="right" data-animation="true" data-toggle="tooltip" title="Export Data">
+                <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+            </div>
+            <div class="span4 pull-right" data-placement="right" data-animation="true" data-toggle="tooltip" title="Open Mass Reply">
+                <button id="MassReplyBtn" class="btn btn-primary" type="button"><i class="glyphicon glyphicon-list-alt"></i>&nbsp;Mass Reply</button>
+            </div>
+            </div>
+            <div class="row" style="padding:20px;">
+
+
+                <div class="box-body-white">
+
+                    <table id="agentListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                        <thead>
+                            <tr role="row" class="tableHeader">
+                                <th style="width: 50px;">ID</th>
+                                @*<th>Campaign ID</th>*@
+                                <th>Caller No</th>
+                                <th>Message</th>
+                                <th>DateTime [yyyy-mm-dd hh:mi:ss (24h)]</th>
+                                <th>Reply</th>
+                                @*<th>Duration</th>
+            <th>Caller Name</th>
+            <th>Department</th>
+            <th>PPMRP Service</th>
+            <th>Recording ID</th>*@
+                                <th>View Thread</th>
+                                @*<th>Register</th>*@
+
+
+                                @*<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Complaint Number: activate to sort column descending" style="width: 180px;">Complaint Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Complainant's Name: activate to sort column ascending" style="width: 191px;">Complainant's Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Father/Husband Name: activate to sort column ascending" style="width: 213px;">Father/Husband Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Gender: activate to sort column ascending" style="width: 77px;">Gender</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CNIC Number: activate to sort column ascending" style="width: 138px;">CNIC Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Cell Number : activate to sort column ascending" style="width: 135px;">Cell Number </th>
+            <th style="text-align: center; width: 78px;" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Actions</th>*@
+                            </tr>
+                        </thead>
+                        <thead>
+                            <tr>
+                                <th><input type="text" data-column="0" class="search-input-text"></th>
+                                <th><input type="text" data-column="1" class="search-input-text"></th>
+                                <th><input type="text" data-column="2" class="search-input-text"></th>
+                                <th><input type="text" data-column="3" class="search-input-text"></th>
+                                <th><input type="text" data-column="4" class="search-input-text"></th>
+                                @*<th><input type="text" data-column="4" class="search-input-text"></th>
+                                <th><input type="text" data-column="5" class="search-input-text"></th>
+                                <th><input type="text" data-column="6" class="search-input-text"></th>
+                                <th><input type="text" data-column="7" class="search-input-text"></th>
+                                <th><input type="text" data-column="8" class="search-input-text"></th>*@
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+<script type="text/javascript">
+
+    var dtData;
+
+    $(document).ready(function () {
+        LoadTaggingTable();
+        setInterval(LoadTaggingTable, 300000);
+    });
+
+    $("#ExcelExportBtn").click(function (e) {
+        e.preventDefault();
+        window.location = '@Url.Action("ExportMessageThreadData", "generalapi")?dtData=' + JSON.stringify(dtData);
+    });
+
+    $("#MassReplyBtn").click(function (e) {
+        e.preventDefault();
+        $('#PopupDiv').load('@Url.Action("GetMassMessageReplyPopup", "Message")');
+        $('#PopupDiv').modal();
+        //window.location = '@Url.Action("GetMassMessageReplyPopup", "Message")';
+    });
+
+
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#agentListing').DataTable().columns(i).search(v).draw();
+    });
+
+
+    function LoadTaggingTable() {
+        debugger;
+        var table = $('#agentListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                //counter = 1;
+                //dtData = oSettings.aoData;
+                //alert(dtData);
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": '../GeneralApi/GetMessagingListing',//'../GeneralApi/GetStakeholderComplaintsServerSide',
+                    "data": { aoData: JSON.stringify(aoData) },
+                    "success": fnCallback,
+                });
+                dtData = aoData;
+                //alert(dtData);
+            },
+            "columns": [
+                { "data": "Id" },
+                { "data": "Caller_No" },
+                { "data": "Msg_Text" },
+                { "data": "Message_Created_DateTime" },
+                { "data": "ReplyMessages" }
+                //,
+                //{ "data": "Duration" },
+                //{ "data": "Caller_Name" },
+                //{ "data": "DepartmentCategoryName" },
+                //{ "data": "DepartmentSubCategoryName" },
+                //{ "data": "Recording_ID" }
+
+            ],
+            aoColumnDefs: [{
+                "aTargets": [5],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    return '<td style="text-align:center">' +
+                        // '<a href="user-registration.html" ><span class="fa fa-pencil"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<a data-original-title="View Thread" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.Caller_No + '" onclick="OpenEditPopup(this.id);"><span class="glyphicon glyphicon-list-alt"></span></a>' +
+                        '</td>';
+                }
+            }
+            ],
+
+
+        });
+
+    }
+
+
+    function pad(d) {
+        return (d < 10) ? '0' + d.toString() : d.toString();
+    }
+
+    function dtCallBack() {
+
+    }
+
+    function OpenEditPopup(id) {
+        var encodedPhoneNo = encodeURIComponent(id);
+        $('#PopupDiv').load("../Message/GetMessageThreadView?phoneNo=" + encodedPhoneNo);
+        $('#PopupDiv').modal();
+    }
+
+</script>

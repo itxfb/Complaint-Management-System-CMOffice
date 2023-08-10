@@ -1,0 +1,48 @@
+﻿@using PITB.CMS_Common.Helper.Extensions;
+@using PITB.CMS_Common.Models.View.Campaign;
+@model VmAddEditCampaign
+
+@{
+    //Layout = "~/Views/Shared/_AdminCampaignLayout.cshtml";
+}
+
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">View Campaigns</h4>
+            <a href="#" data-url="@Url.Action("AddUser", "AdminStakeholder")" style="margin-top: -40px;" class="btn btn-primary pull-right add-btn"><span class="fa fa-user"></span>&nbsp;Add Campaign</a>
+        </div>
+
+        <div class="box-body-white">
+            <div class="margin_t15px bg-white">
+                <table id="tableToPopulate" class="table display">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Campaign Name</th>
+                            <th>Campaign Abbr</th>
+                            <th>Helpline No</th>
+                            <th>Message Enabled</th>
+                            <th>Edit</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@*<div class="popup-">
+        <div class="popup-detail container">
+            <a href="#" class="popup-close">X</a>
+            <div id="MainInfo">
+
+            </div>
+        </div>
+    </div>*@

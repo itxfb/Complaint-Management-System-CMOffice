@@ -1,0 +1,104 @@
+﻿body {
+    /*font-family: 'Calibri' !important;*/
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    height: 36px;
+    padding: 8px 12px;
+    font-size: 13px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: transparent;
+    background-image: none;
+    border: 1px solid #e2e9e6;
+    border-radius: 0px;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+.btn-default {
+    padding: 0;
+}
+
+    .form-control:focus, .btn-default:focus {
+        border-color: #29a097 !important;
+    }
+
+    .btn-default:focus {
+        background: rgba(0,0,0,0);
+        border: 2px dotted #dfdfdf;
+        border-color: #29a097 !important;
+    }
+
+.page-section.third {
+}
+
+.navbar.navbar-size-large {
+    min-height: 69px;
+}
+
+.vote-btn {
+    color: white;
+    border-radius: 12px;
+    padding: 5px;
+    font-size: 14px;
+}
+
+.upvote {
+    background-color: #009688;
+}
+
+.downvote {
+    background-color: #E65100;
+}
+
+.text-subhead {
+    font-size: 12px !important;
+}
+
+.like-btn {
+    font-size: 13px !important;
+}
+
+.float-right {
+    float: right !important;
+}
+
+.float-left {
+    float: left !important;
+}
+
+.panel-body {
+    padding-bottom: 0 !important;
+}
+@media only screen and (min-width: 768px) {
+
+    .sidebar-fixed {
+        position: fixed;
+        left: 85px;
+        width: 22%;
+    }
+
+    .middle-content {
+        margin-left: 25%;
+    }
+    .fixed-height-card {
+        max-height: 254px;
+        overflow: hidden
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    .sidebar-fixed {
+        position: relative;
+        width: 100%;
+    }
+      .fixed-height-card {
+      
+    }
+
+    .middle-content {
+    }
+}

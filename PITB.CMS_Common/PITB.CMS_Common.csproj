@@ -1,0 +1,663 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B71C1498-572F-4F45-8ECA-60F3FEE5EFA3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PITB.CMS_Common</RootNamespace>
+    <AssemblyName>PITB.CMS_Common</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=4.1.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK, Version=2.3.55.0, Culture=neutral, PublicKeyToken=9f476d3089b52be3, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.2.3.55.0\lib\net45\AWSSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
+      <HintPath>..\packages\Facebook.7.0.6\lib\net45\Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="FoolproofValidation">
+      <HintPath>..\packages\foolproof.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Hashids.net, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hashids.net.1.2.2\lib\net45\Hashids.net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationBlocks.Data.2.0.0\lib\net45\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="pk.gov.punjab.pws.sdk, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sami.PWS.SDK.1.2.0\lib\net40\pk.gov.punjab.pws.sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=4.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Z.BulkOperations">
+      <HintPath>..\packages\Z.BulkOperations.2.13.13\lib\net45\Z.BulkOperations.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApiHandlers\Authentication\ApiAuthenticationHandler.cs" />
+    <Compile Include="ApiHandlers\Business\BlApiDynamicForm.cs" />
+    <Compile Include="ApiHandlers\Business\BlApiHandler.cs" />
+    <Compile Include="ApiHandlers\Business\BlApiStakeholderHander.cs" />
+    <Compile Include="ApiHandlers\Business\BlCallCenter.cs" />
+    <Compile Include="ApiHandlers\Business\BlCNFP.cs" />
+    <Compile Include="ApiHandlers\Business\BlCommons.cs" />
+    <Compile Include="ApiHandlers\Business\BlHealth.cs" />
+    <Compile Include="ApiHandlers\Business\BlMsgApiHandler.cs" />
+    <Compile Include="ApiHandlers\Business\BlToken.cs" />
+    <Compile Include="ApiHandlers\Business\CSSchool\BlCSSchoolHandler.cs" />
+    <Compile Include="ApiHandlers\Business\Datapack\BlDatapack.cs" />
+    <Compile Include="ApiHandlers\Business\FixitNew\BlFixitNew.cs" />
+    <Compile Include="ApiHandlers\Business\LWMC\BlLwmcApiHandler.cs" />
+    <Compile Include="ApiHandlers\Business\LWMC\BlLwmcApiStakeholderHander.cs" />
+    <Compile Include="ApiHandlers\Business\PublicUser\BlApiPublicUser.cs" />
+    <Compile Include="ApiHandlers\Business\PublicUser\BlAPiPublicUserPartial.cs" />
+    <Compile Include="ApiHandlers\Business\SchoolEducation\BlPublicSchools.cs" />
+    <Compile Include="ApiHandlers\Business\SchoolEducation\BlSchoolEducation.cs" />
+    <Compile Include="ApiHandlers\Business\SchoolEducation\BlSchoolEducationResolver.cs" />
+    <Compile Include="ApiHandlers\Location\LocationHandler.cs" />
+    <Compile Include="ApiHandlers\Social\FacebookHandler.cs" />
+    <Compile Include="ApiHandlers\Translation\TranslationHandler.cs" />
+    <Compile Include="ApiModels\AccountViewModels.cs" />
+    <Compile Include="ApiModels\API\Authentication\ApiToken.cs" />
+    <Compile Include="ApiModels\API\Authentication\AuthenticationModel.cs" />
+    <Compile Include="ApiModels\API\BaseMobileApiModel.cs" />
+    <Compile Include="ApiModels\API\CallCenter\CallCenterModel.cs" />
+    <Compile Include="ApiModels\API\CNFP\CNFPApiModel.cs" />
+    <Compile Include="ApiModels\API\ComplaintModel.cs" />
+    <Compile Include="ApiModels\API\ComplaintsForStakeholderFacebookPost.cs" />
+    <Compile Include="ApiModels\API\ComplaintSubmitResponse.cs" />
+    <Compile Include="ApiModels\API\CSSchool\CSSchoolApiModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\CategoryDistributionModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\ClosureAndTimelinessAggregateModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\ClosureAndTimelinessModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\ClosureAndTimelinessParameterModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\ComplaintsModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\SchoolsWithRecurringComplaintsModel.cs" />
+    <Compile Include="ApiModels\API\Datapack\SchoolsWithRecurringComplaintsNewFormModel.cs" />
+    <Compile Include="ApiModels\API\FixitNew\CFNP\GetCNFPComplaintsModel.cs" />
+    <Compile Include="ApiModels\API\FixitNew\CFNP\PostCNFPComplaintFeedbackModel.cs" />
+    <Compile Include="ApiModels\API\FixitNew\CFNP\RequestCNFPComplaintsModel.cs" />
+    <Compile Include="ApiModels\API\FixitNew\CFNP\ResponseCNFPComplaintsModel.cs" />
+    <Compile Include="ApiModels\API\GetComplainantComplaintModel.cs" />
+    <Compile Include="ApiModels\API\GetComplaintStatuses.cs" />
+    <Compile Include="ApiModels\API\GetSchoolEducationComplaintModel.cs" />
+    <Compile Include="ApiModels\API\GetStakeholderComplaintPostModel.cs" />
+    <Compile Include="ApiModels\API\GetStakeholderStatuses.cs" />
+    <Compile Include="ApiModels\API\Health\HealthRequestModel.cs" />
+    <Compile Include="ApiModels\API\Health\HealthResponseModel.cs" />
+    <Compile Include="ApiModels\API\IncomingMsgGroupModel.cs" />
+    <Compile Include="ApiModels\API\IncomingMsgModel.cs" />
+    <Compile Include="ApiModels\API\IncomingSubmitVoteModel.cs" />
+    <Compile Include="ApiModels\API\LwmcModel.cs" />
+    <Compile Include="ApiModels\API\LwmcResponse.cs" />
+    <Compile Include="ApiModels\API\LwmcResponseStakeholderLogin.cs" />
+    <Compile Include="ApiModels\API\LwmcStakeholderComplaintResponse.cs" />
+    <Compile Include="ApiModels\API\PostOnSocialSiteRequestModel.cs" />
+    <Compile Include="ApiModels\API\ReplyGroupModel.cs" />
+    <Compile Include="ApiModels\API\ReplyModel.cs" />
+    <Compile Include="ApiModels\API\RequestComplaintStatusLog.cs" />
+    <Compile Include="ApiModels\API\ResponseComplainantLogin.cs" />
+    <Compile Include="ApiModels\API\ResponseComplaintStatusChangeLog.cs" />
+    <Compile Include="ApiModels\API\ResponseStakeholderLogin.cs" />
+    <Compile Include="ApiModels\API\SchoolApiModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\PMIU\PMIUReportsRequestModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Resolver\SEResponseStakeholderLogin.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Resolver\SEStakeholderComplaintResponseModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Resolver\SEStakeholderComplaintsRequestModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Resolver\SEStakeholderStatusesModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\SISApiModel.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Sync\Request\SyncRequest.cs" />
+    <Compile Include="ApiModels\API\SchoolEducation\Sync\Response\SyncResponse.cs" />
+    <Compile Include="ApiModels\API\StakeholderComplaintsResponse.cs" />
+    <Compile Include="ApiModels\API\StatusHistoryModel.cs" />
+    <Compile Include="ApiModels\API\StatusList.cs" />
+    <Compile Include="ApiModels\API\SubmitComplainantLogin.cs" />
+    <Compile Include="ApiModels\API\SubmitComplaintModel.cs" />
+    <Compile Include="ApiModels\API\SubmitComplaintRemarks.cs" />
+    <Compile Include="ApiModels\API\SubmitGetComplaintModel.cs" />
+    <Compile Include="ApiModels\API\SubmitSchoolEducationStatusModel.cs" />
+    <Compile Include="ApiModels\API\SubmitSEStakeholderLogin.cs" />
+    <Compile Include="ApiModels\API\SubmitStakeHolderLogin.cs" />
+    <Compile Include="ApiModels\API\SubmitStatusModel.cs" />
+    <Compile Include="ApiModels\API\SubmitSyncComplainant.cs" />
+    <Compile Include="ApiModels\API\SubmitVoteResponse.cs" />
+    <Compile Include="ApiModels\API\SyncModel.cs" />
+    <Compile Include="ApiModels\API\ZimmedarShehriModel.cs" />
+    <Compile Include="ApiModels\Custom\ApiComplaintStatusesModel.cs" />
+    <Compile Include="ApiModels\Custom\ApiStatus.cs" />
+    <Compile Include="ApiModels\Custom\FileUploadModel.cs" />
+    <Compile Include="ApiModels\Custom\LocationCoordinate.cs" />
+    <Compile Include="ApiModels\Custom\Picture.cs" />
+    <Compile Include="ApiModels\Custom\TranslatedModel.cs" />
+    <Compile Include="ApiStatusMessages.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Enums\MessageCatalog.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Handler\API\APIHelper.cs" />
+    <Compile Include="Handler\Authentication\AuthenticationHandler.cs" />
+    <Compile Include="Handler\Authorization\AuthorizePermission.cs" />
+    <Compile Include="Handler\Authorization\AuthorizeUser.cs" />
+    <Compile Include="Handler\Business\BIStakeholderAdmin.cs" />
+    <Compile Include="Handler\Business\BlAccount.cs" />
+    <Compile Include="Handler\Business\BlAgent.cs" />
+    <Compile Include="Handler\Business\BlCampaign.cs" />
+    <Compile Include="Handler\Business\BlCampaignDepartments.cs" />
+    <Compile Include="Handler\Business\BlCombinedCampaign.cs" />
+    <Compile Include="Handler\Business\BlCommon.cs" />
+    <Compile Include="Handler\Business\BlCommonReport.cs" />
+    <Compile Include="Handler\Business\BlComplaints.cs" />
+    <Compile Include="Handler\Business\BlComplaintType.cs" />
+    <Compile Include="Handler\Business\BlDashboard.cs" />
+    <Compile Include="Handler\Business\BlDcChiniot.cs" />
+    <Compile Include="Handler\Business\BlDepartment.cs" />
+    <Compile Include="Handler\Business\BlDynamicCategories.cs" />
+    <Compile Include="Handler\Business\BlDynamicForm.cs" />
+    <Compile Include="Handler\Business\BlExecutive.cs" />
+    <Compile Include="Handler\Business\BlExecutiveCampaigns.cs" />
+    <Compile Include="Handler\Business\BlHierarchy.cs" />
+    <Compile Include="Handler\Business\BlLGCD.cs" />
+    <Compile Include="Handler\Business\BlLwmc.cs" />
+    <Compile Include="Handler\Business\BlMaps.cs" />
+    <Compile Include="Handler\Business\BlMessages.cs" />
+    <Compile Include="Handler\Business\BlNotification.cs" />
+    <Compile Include="Handler\Business\BlPermissions.cs" />
+    <Compile Include="Handler\Business\BlPersonInformation.cs" />
+    <Compile Include="Handler\Business\BlPLRA.cs" />
+    <Compile Include="Handler\Business\BlPMIUReports.cs" />
+    <Compile Include="Handler\Business\BlPolice.cs" />
+    <Compile Include="Handler\Business\BlPublicUser.cs" />
+    <Compile Include="Handler\Business\BlReports.cs" />
+    <Compile Include="Handler\Business\BlSchool.cs" />
+    <Compile Include="Handler\Business\BlSchoolReports.cs" />
+    <Compile Include="Handler\Business\BlStakeholderUserParam.cs" />
+    <Compile Include="Handler\Business\BlStatus.cs" />
+    <Compile Include="Handler\Business\BlTag.cs" />
+    <Compile Include="Handler\Business\BlToken.cs" />
+    <Compile Include="Handler\Business\BlUserCategory.cs" />
+    <Compile Include="Handler\Business\BlUsers.cs" />
+    <Compile Include="Handler\Business\BlView.cs" />
+    <Compile Include="Handler\Business\BlWasa.cs" />
+    <Compile Include="Handler\Business\BlZimmedarShehri.cs" />
+    <Compile Include="Handler\Complaint\AgentListingLogic.cs" />
+    <Compile Include="Handler\Complaint\AssignmentHandler.cs" />
+    <Compile Include="Handler\Complaint\EscalationHandler.cs" />
+    <Compile Include="Handler\Complaint\ExtensionsHandler.cs" />
+    <Compile Include="Handler\Complaint\FeedbackHandler.cs" />
+    <Compile Include="Handler\Complaint\FileHandler.cs" />
+    <Compile Include="Handler\Complaint\SchoolEducationStatusHandler.cs" />
+    <Compile Include="Handler\Complaint\StakeholderListingLogic.cs" />
+    <Compile Include="Handler\Complaint\StatusHandler.cs" />
+    <Compile Include="Handler\Complaint\TransferHandler.cs" />
+    <Compile Include="Handler\Complaint\UserWiseComplaintsHandler.cs" />
+    <Compile Include="Handler\Configuration\ConfigurationHandler.cs" />
+    <Compile Include="Handler\Controller\View\Controller.cs" />
+    <Compile Include="Handler\CustomJsonConverter\DynamicJsonConverter.cs" />
+    <Compile Include="Handler\Data Representation\BlDataRepresentation.cs" />
+    <Compile Include="Handler\DataTableJquery\DataTableHandler.cs" />
+    <Compile Include="Handler\DynamicFields\DynamicFieldsHandler.cs" />
+    <Compile Include="Handler\DynamicFields\DynamicFormHandler.cs" />
+    <Compile Include="Handler\DynamicFields\Wasa\DynamicFieldsHandlerWasa.cs" />
+    <Compile Include="Handler\Escalation\EscalationHandler.cs" />
+    <Compile Include="Handler\Export\FileHandler.cs" />
+    <Compile Include="Handler\FileUpload\FileUploadHandler.cs" />
+    <Compile Include="Handler\License\LicenseHandler.cs" />
+    <Compile Include="Handler\Messages\ClientsideMessageHandler.cs" />
+    <Compile Include="Handler\Messages\TextMessageApiHandler.cs" />
+    <Compile Include="Handler\Messages\TextMessageHandler.cs" />
+    <Compile Include="Handler\Notification\NotificationHandler.cs" />
+    <Compile Include="Handler\Permission\PermissionHandler.cs" />
+    <Compile Include="Handler\Route\RouteHandler.cs" />
+    <Compile Include="Handler\StakeHolder\SchoolEducationUsersHandler.cs" />
+    <Compile Include="Handler\StakeHolder\UserComplaintsHandler.cs" />
+    <Compile Include="Handler\StakeHolder\UsersHandler.cs" />
+    <Compile Include="Handler\Sync\SchoolEducation\SyncSchoolDataHandler.cs" />
+    <Compile Include="Handler\Tag\TagHandler.cs" />
+    <Compile Include="Handler\Tag\TagWiseBestMatchHandler.cs" />
+    <Compile Include="Handler\Tag\TagWiseQueryHandler.cs" />
+    <Compile Include="HelperFunctions.cs" />
+    <Compile Include="Helper\Attributes\ExcelReportAttribute.cs" />
+    <Compile Include="Helper\Attributes\HttpRequestHelpers.cs" />
+    <Compile Include="Helper\Authorise.cs" />
+    <Compile Include="Helper\Database\DBExtensions.cs" />
+    <Compile Include="Helper\Database\DBHelper.cs" />
+    <Compile Include="Helper\Dynamic.cs" />
+    <Compile Include="Helper\Extensions\CommonExtension.cs" />
+    <Compile Include="Helper\Extensions\EnumExtension.cs" />
+    <Compile Include="Helper\Extensions\HtmlExtensions.cs" />
+    <Compile Include="Helper\Extensions\StringExentions.cs" />
+    <Compile Include="Helper\License\ZLicenseGenrator.cs" />
+    <Compile Include="Helper\OTPHelper.cs" />
+    <Compile Include="Helper\QueryHelper.cs" />
+    <Compile Include="Helper\SOAPHelper.cs" />
+    <Compile Include="Helper\TraceLogger.cs" />
+    <Compile Include="Helper\UtilityExtensions.cs" />
+    <Compile Include="Helper\Validation\CustomStringLengthAttribute.cs" />
+    <Compile Include="Helper\Validation\MyCustomValidation.cs" />
+    <Compile Include="Helper\ValidatorChecker.cs" />
+    <Compile Include="Helper\XmlHelper.cs" />
+    <Compile Include="Models\ApiModels\Request\ApiReqSyncSEModel.cs" />
+    <Compile Include="Models\ApiModels\Request\PostSmsModel.cs" />
+    <Compile Include="Models\ApiModels\Request\RequestModel.cs" />
+    <Compile Include="Models\ApiModels\Response\ApiResponseSyncSEModel.cs" />
+    <Compile Include="Models\ApiModels\Response\ResponseModel.cs" />
+    <Compile Include="Models\ApiModels\Response\StatusResponseModel.cs" />
+    <Compile Include="Models\Custom\ComplaintWiseEscalationModel.cs" />
+    <Compile Include="Models\Custom\DelegateModel.cs" />
+    <Compile Include="Models\Custom\VmDynamicCheckBox.cs" />
+    <Compile Include="Models\Custom\WindowService\SmsOverDueModel.cs" />
+    <Compile Include="Models\Custom\WindowService\StatusWiseComplaintCount.cs" />
+    <Compile Include="Models\DB\Api\DbApiRequestLogs.cs" />
+    <Compile Include="Models\DB\Api\DbLinearIncrement.cs" />
+    <Compile Include="Models\DB\Api\DbSchoolCategoryUserMapping.cs" />
+    <Compile Include="Models\DB\Api\DbSocialSharing.cs" />
+    <Compile Include="Models\DB\Api\DbUsersVersionMapping.cs" />
+    <Compile Include="Models\DB\Api\DbVersion.cs" />
+    <Compile Include="Models\DB\complaint.cs" />
+    <Compile Include="Models\DB\Configuration_Assignment.cs" />
+    <Compile Include="Models\Custom\AgingReportListingData.cs" />
+    <Compile Include="Models\Custom\AssignmentModel.cs" />
+    <Compile Include="Models\Custom\ClientMesages\ClientMessage.cs" />
+    <Compile Include="Models\Custom\CMSCookie.cs" />
+    <Compile Include="Models\Custom\ConfigCatWiseDynamicForm.cs" />
+    <Compile Include="Models\Custom\ControllerModel.cs" />
+    <Compile Include="Models\Custom\CustomForm\CustomForm.cs" />
+    <Compile Include="Models\Custom\DataStateMVC.cs" />
+    <Compile Include="Models\Custom\DataTable\DataTableParamsModel.cs" />
+    <Compile Include="Models\Custom\DbPermissionValueModel.cs" />
+    <Compile Include="Models\Custom\DbToModel.cs" />
+    <Compile Include="Models\Custom\FileModel.cs" />
+    <Compile Include="Models\Custom\FuncParamsModel.cs" />
+    <Compile Include="Models\Custom\HtmlTable\HtmlTableModel.cs" />
+    <Compile Include="Models\Custom\ListingParamsAgent.cs" />
+    <Compile Include="Models\Custom\ListingParamsModelBase.cs" />
+    <Compile Include="Models\Custom\ListingParamsSchoolEducation.cs" />
+    <Compile Include="Models\Custom\MapData.cs" />
+    <Compile Include="Models\Custom\Notification.cs" />
+    <Compile Include="Models\Custom\OriginHierarchy.cs" />
+    <Compile Include="Models\Custom\Pair.cs" />
+    <Compile Include="Models\Custom\Police\PoliceModel.cs" />
+    <Compile Include="Models\Custom\PostModel.cs" />
+    <Compile Include="Models\Custom\Prop.cs" />
+    <Compile Include="Models\Custom\ReEvaluationAssignmentModel.cs" />
+    <Compile Include="Models\Custom\Reports\MainSummaryReport.cs" />
+    <Compile Include="Models\Custom\Reports\PMIUSummaryReport.cs" />
+    <Compile Include="Models\Custom\SmsModel.cs" />
+    <Compile Include="Models\Custom\UserCategoryModel.cs" />
+    <Compile Include="Models\Custom\UsersHierarchyMapping.cs" />
+    <Compile Include="Models\DB\DbAssignmentMatrix.cs" />
+    <Compile Include="Models\DB\DbAttachments.cs" />
+    <Compile Include="Models\DB\DbCallTagging.cs" />
+    <Compile Include="Models\DB\DbCampaign.cs" />
+    <Compile Include="Models\DB\DbCampaignDepartment.cs" />
+    <Compile Include="Models\DB\DbCampaignMessages.cs" />
+    <Compile Include="Models\DB\DbCampaignWiseCallLogs.cs" />
+    <Compile Include="Models\DB\DbCategory.cs" />
+    <Compile Include="Models\DB\DbCategoryGroupMapping.cs" />
+    <Compile Include="Models\DB\DbCategoryMapping.cs" />
+    <Compile Include="Models\DB\DbClientSystem.cs" />
+    <Compile Include="Models\DB\DbComplainantFeedbackLog.cs" />
+    <Compile Include="Models\DB\DbComplaint.cs" />
+    <Compile Include="Models\DB\DbComplaintCallLogs.cs" />
+    <Compile Include="Models\DB\DbComplaintFollowupLogs.cs" />
+    <Compile Include="Models\DB\DbComplaintsOriginLog.cs" />
+    <Compile Include="Models\DB\DbComplaintStatusChangeLog.cs" />
+    <Compile Include="Models\DB\DbComplaintSubType.cs" />
+    <Compile Include="Models\DB\DbComplaintTransferLog.cs" />
+    <Compile Include="Models\DB\DbComplaintType.cs" />
+    <Compile Include="Models\DB\DbComplaintVote.cs" />
+    <Compile Include="Models\DB\DBContextHelperLinq.cs" />
+    <Compile Include="Models\DB\DbCrmIdsMappingToOtherSystem.cs" />
+    <Compile Include="Models\DB\DbDepartment.cs" />
+    <Compile Include="Models\DB\DbDepartmentCategory.cs" />
+    <Compile Include="Models\DB\DbDepartmentSubCategory.cs" />
+    <Compile Include="Models\DB\DbDistrict.cs" />
+    <Compile Include="Models\DB\DbDivision.cs" />
+    <Compile Include="Models\DB\DbDynamicCategories.cs" />
+    <Compile Include="Models\DB\DbDynamicCategoriesMapping.cs" />
+    <Compile Include="Models\DB\DbDynamicComplaintFields.cs" />
+    <Compile Include="Models\DB\DbDynamicFormControls.cs" />
+    <Compile Include="Models\DB\DbFormControl.cs" />
+    <Compile Include="Models\DB\DbFormPermissionsAssignment.cs" />
+    <Compile Include="Models\DB\DbHealthComplaintCategories.cs" />
+    <Compile Include="Models\DB\DbHealthComplaintSubCategories.cs" />
+    <Compile Include="Models\DB\DbHealthDepartments.cs" />
+    <Compile Include="Models\DB\DbHealthDistricts.cs" />
+    <Compile Include="Models\DB\DbHealthTehsil.cs" />
+    <Compile Include="Models\DB\DbHierarchy.cs" />
+    <Compile Include="Models\DB\DbHierarchyCampaignGroupMapping.cs" />
+    <Compile Include="Models\DB\DbIncomingMessages.cs" />
+    <Compile Include="Models\DB\DbMobileNotificationLogs.cs" />
+    <Compile Include="Models\DB\DbMobileRequest.cs" />
+    <Compile Include="Models\DB\DbNotificationLogs.cs" />
+    <Compile Include="Models\DB\DbPermissions.cs" />
+    <Compile Include="Models\DB\DbPermissionsAssignment.cs" />
+    <Compile Include="Models\DB\DbPersonInformation.cs" />
+    <Compile Include="Models\DB\DbPMIURegion.cs" />
+    <Compile Include="Models\DB\DbPMIURegionMapping.cs" />
+    <Compile Include="Models\DB\DbPoliceAction.cs" />
+    <Compile Include="Models\DB\DbPoliceActionReportLogs.cs" />
+    <Compile Include="Models\DB\DbProvince.cs" />
+    <Compile Include="Models\DB\DbPublicUserOTP.cs" />
+    <Compile Include="Models\DB\DbReplyMessages.cs" />
+    <Compile Include="Models\DB\DbSchoolEducationComplaint.cs" />
+    <Compile Include="Models\DB\DbSchoolEducationHeadMapping.cs" />
+    <Compile Include="Models\DB\DbSchoolsMapping.cs" />
+    <Compile Include="Models\DB\DbSearchCampaign.cs" />
+    <Compile Include="Models\DB\DbStatus.cs" />
+    <Compile Include="Models\DB\DbSystemTokens.cs" />
+    <Compile Include="Models\DB\DbTehsil.cs" />
+    <Compile Include="Models\DB\DbTranslationMapping.cs" />
+    <Compile Include="Models\DB\DbUnionCouncils.cs" />
+    <Compile Include="Models\DB\DbUniqueIncrementor.cs" />
+    <Compile Include="Models\DB\DbUserCategory.cs" />
+    <Compile Include="Models\DB\DbUsers.cs" />
+    <Compile Include="Models\DB\DbUserWiseComplaints.cs" />
+    <Compile Include="Models\DB\DbUserWiseDevices.cs" />
+    <Compile Include="Models\DB\DbUserWiseLogs.cs" />
+    <Compile Include="Models\DB\DbUserWiseNotification.cs" />
+    <Compile Include="Models\DB\DbUserWiseSupervisorMapping.cs" />
+    <Compile Include="Models\DB\DbWards.cs" />
+    <Compile Include="Models\DB\DbWindowServiceError.cs" />
+    <Compile Include="Models\DB\DbTagLookup.cs" />
+    <Compile Include="Models\DB\UserCategory.cs" />
+    <Compile Include="Models\View\Account\VmChangePassword.cs" />
+    <Compile Include="Models\View\Account\VmForgotPasswordChange.cs" />
+    <Compile Include="Models\View\Account\VmRole.cs" />
+    <Compile Include="Models\View\Account\VmUserSettings.cs" />
+    <Compile Include="Models\View\Agent\VmComplaintDetail.cs" />
+    <Compile Include="Models\View\PublicUser\VmComplaintDetailPublicUser.cs" />
+    <Compile Include="Models\View\Agent\VmComplaintDetailAgent.cs" />
+    <Compile Include="Models\View\Agent\VmComplaintPoliceDetailAgent.cs" />
+    <Compile Include="Models\View\Agent\VmComplaintZimmedarShehriDetailAgent.cs" />
+    <Compile Include="Models\View\Campaign\VmAddEditCampaign.cs" />
+    <Compile Include="Models\View\Data Representation\VmAreawiseCategoryModel.cs" />
+    <Compile Include="Models\View\Data Representation\VmResponseTime.cs" />
+    <Compile Include="Models\View\Dynamic\VmDynamicFields.cs" />
+    <Compile Include="Models\View\Executive\VmCampaignStatusWise.cs" />
+    <Compile Include="Models\View\Executive\VmCampaignWiseData.cs" />
+    <Compile Include="Models\View\Executive\VmDashboard.cs" />
+    <Compile Include="Models\View\Form\VmFormControl.cs" />
+    <Compile Include="Models\View\Message\VmMassMessageReply.cs" />
+    <Compile Include="Models\View\Message\VmMessageReply.cs" />
+    <Compile Include="Models\View\Message\VmStakeholderMessageListing.cs" />
+    <Compile Include="Models\View\Message\VmStakeholderMessageThreadListing.cs" />
+    <Compile Include="Models\View\Police\VmPolice.cs" />
+    <Compile Include="Models\View\PublicUser\VmSignUp.cs" />
+    <Compile Include="Models\View\Reports\VmHierarchyWiseReport.cs" />
+    <Compile Include="Models\View\Reports\VmReportListing.cs" />
+    <Compile Include="Models\View\VmPhcipEducationComplaintsData.cs" />
+    <Compile Include="Models\View\VmSearchCampaign.cs" />
+    <Compile Include="Models\View\Select2\VmSelect2ServerSideDropDownLIst.cs" />
+    <Compile Include="Models\View\Table\VmTableStatusHistory.cs" />
+    <Compile Include="Models\View\Table\VmTableTransferHistory.cs" />
+    <Compile Include="Models\View\VmAddComplaint.cs" />
+    <Compile Include="Models\View\VmAddStakeholderUser.cs" />
+    <Compile Include="Models\View\VmAgentComplaintListing.cs" />
+    <Compile Include="Models\View\VmAgentComplaintSearchListing.cs" />
+    <Compile Include="Models\View\VmAgentTagListing.cs" />
+    <Compile Include="Models\View\VmCampaign.cs" />
+    <Compile Include="Models\View\VmCampaignDepartment.cs" />
+    <Compile Include="Models\View\VmComplaint.cs" />
+    <Compile Include="Models\View\VmComplaintBase.cs" />
+    <Compile Include="Models\View\VmComplaintTypePieChart.cs" />
+    <Compile Include="Models\View\VmComplaintTypeWiseData.cs" />
+    <Compile Include="Models\View\VmDynamicBase.cs" />
+    <Compile Include="Models\View\VmEditStakeholderUser.cs" />
+    <Compile Include="Models\View\VmFileModel.cs" />
+    <Compile Include="Models\View\VmInquiry.cs" />
+    <Compile Include="Models\View\VmLoginPublicUser.cs" />
+    <Compile Include="Models\View\VmLogin.cs" />
+    <Compile Include="Models\View\VmMessage.cs" />
+    <Compile Include="Models\View\VmPersonalInfo.cs" />
+    <Compile Include="Models\View\VmResolverDetail.cs" />
+    <Compile Include="Models\View\VmSearch.cs" />
+    <Compile Include="Models\View\VmServerSideDropDownList.cs" />
+    <Compile Include="Models\View\VmSEStakeholderComplaintDetail.cs" />
+    <Compile Include="Models\View\VmStakeholderComplaintDashboard.cs" />
+    <Compile Include="Models\View\VmStakeholderComplaintDetail.cs" />
+    <Compile Include="Models\View\VmStakeholderComplaintListing.cs" />
+    <Compile Include="Models\View\VmStakeholderComplaintListingPLRA.cs" />
+    <Compile Include="Models\View\VmStakeholderBarChart.cs" />
+    <Compile Include="Models\View\VmStakeholderPieChart.cs" />
+    <Compile Include="Models\View\VmStatusWiseComplaintsData.cs" />
+    <Compile Include="Models\View\VmSuggestion.cs" />
+    <Compile Include="Models\View\VmTagEdit.cs" />
+    <Compile Include="Models\View\VmTransferComplaint.cs" />
+    <Compile Include="Models\View\Wasa\Stakeholder\VmWasaStakeholderComplaintListing.cs" />
+    <Compile Include="Models\View\Wasa\VmAddComplaintWasa.cs" />
+    <Compile Include="Models\View\Wasa\VmComplaintBaseWasa.cs" />
+    <Compile Include="Models\View\Wasa\VmComplaintWasa.cs" />
+    <Compile Include="Models\View\Wasa\VmInquiryWasa.cs" />
+    <Compile Include="Models\View\Wasa\VmPersonalInfoWasa.cs" />
+    <Compile Include="Models\View\Wasa\VmSuggestionWasa.cs" />
+    <Compile Include="Models\View\Zimmedar Shehri\VmDistrictComplaintsData.cs" />
+    <Compile Include="Modules\Api\Authentication\ApiAuthenticationMobile.cs" />
+    <Compile Include="Modules\Api\Response\ApiResponseHandlerMobile.cs" />
+    <Compile Include="Modules\Query\Template\QueryParamsTemplateProvider.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbApiRequestLogs.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbLinearIncrement.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbSchoolCategoryUserMapping.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbSocialSharing.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbUsersVersionMapping.cs" />
+    <Compile Include="Modules\Repository\Db\Api\DbVersion.cs" />
+    <Compile Include="Modules\Repository\Db\complaint.cs" />
+    <Compile Include="Modules\Repository\Db\Configuration_Assignment.cs" />
+    <Compile Include="Modules\Repository\Db\DbAssignmentMatrix.cs" />
+    <Compile Include="Modules\Repository\Db\DbAttachments.cs" />
+    <Compile Include="Modules\Repository\Db\DbCallTagging.cs" />
+    <Compile Include="Modules\Repository\Db\DbCampaign.cs" />
+    <Compile Include="Modules\Repository\Db\DbCampaignMessages.cs" />
+    <Compile Include="Modules\Repository\Db\DbCampaignWiseCallLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbCategory.cs" />
+    <Compile Include="Modules\Repository\Db\DbCategoryGroupMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbCategoryMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbClientSystem.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplainantFeedbackLog.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaint.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintCallLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintFollowupLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintsOriginLog.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintStatusChangeLog.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintSubType.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintTransferLog.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintType.cs" />
+    <Compile Include="Modules\Repository\Db\DbComplaintVote.cs" />
+    <Compile Include="Modules\Repository\Db\DbCrmIdsMappingToOtherSystem.cs" />
+    <Compile Include="Modules\Repository\Db\DbDepartment.cs" />
+    <Compile Include="Modules\Repository\Db\DbDepartmentCategory.cs" />
+    <Compile Include="Modules\Repository\Db\DbDepartmentSubCategory.cs" />
+    <Compile Include="Modules\Repository\Db\DbDistrict.cs" />
+    <Compile Include="Modules\Repository\Db\DbDivision.cs" />
+    <Compile Include="Modules\Repository\Db\DbDynamicCategories.cs" />
+    <Compile Include="Modules\Repository\Db\DbDynamicCategoriesMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbDynamicComplaintFields.cs" />
+    <Compile Include="Modules\Repository\Db\DbDynamicFormControls.cs" />
+    <Compile Include="Modules\Repository\Db\DbFormControl.cs" />
+    <Compile Include="Modules\Repository\Db\DbFormPermissionsAssignment.cs" />
+    <Compile Include="Modules\Repository\Db\DbHealthComplaintCategories.cs" />
+    <Compile Include="Modules\Repository\Db\DbHealthComplaintSubCategories.cs" />
+    <Compile Include="Modules\Repository\Db\DbHealthDepartments.cs" />
+    <Compile Include="Modules\Repository\Db\DbHealthDistricts.cs" />
+    <Compile Include="Modules\Repository\Db\DbHealthTehsil.cs" />
+    <Compile Include="Modules\Repository\Db\DbHierarchy.cs" />
+    <Compile Include="Modules\Repository\Db\DbHierarchyCampaignGroupMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbIncomingMessages.cs" />
+    <Compile Include="Modules\Repository\Db\DbMobileNotificationLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbMobileRequest.cs" />
+    <Compile Include="Modules\Repository\Db\DbNotificationLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbPermissions.cs" />
+    <Compile Include="Modules\Repository\Db\DbPermissionsAssignment.cs" />
+    <Compile Include="Modules\Repository\Db\DbPersonInformation.cs" />
+    <Compile Include="Modules\Repository\Db\DbPMIURegion.cs" />
+    <Compile Include="Modules\Repository\Db\DbPMIURegionMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbPoliceAction.cs" />
+    <Compile Include="Modules\Repository\Db\DbPoliceActionReportLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbProvince.cs" />
+    <Compile Include="Modules\Repository\Db\DbPublicUserOTP.cs" />
+    <Compile Include="Modules\Repository\Db\DbReplyMessages.cs" />
+    <Compile Include="Modules\Repository\Db\DbSchoolEducationComplaint.cs" />
+    <Compile Include="Modules\Repository\Db\DbSchoolEducationHeadMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbSchoolsMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbStatus.cs" />
+    <Compile Include="Modules\Repository\Db\DbSystemTokens.cs" />
+    <Compile Include="Modules\Repository\Db\DbTagLookup.cs" />
+    <Compile Include="Modules\Repository\Db\DbTehsil.cs" />
+    <Compile Include="Modules\Repository\Db\DbTranslationMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbUnionCouncils.cs" />
+    <Compile Include="Modules\Repository\Db\DbUniqueIncrementor.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserCategory.cs" />
+    <Compile Include="Modules\Repository\Db\DbUsers.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserWiseComplaints.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserWiseDevices.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserWiseLogs.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserWiseNotification.cs" />
+    <Compile Include="Modules\Repository\Db\DbUserWiseSupervisorMapping.cs" />
+    <Compile Include="Modules\Repository\Db\DbWards.cs" />
+    <Compile Include="Modules\Repository\Db\DbWindowServiceError.cs" />
+    <Compile Include="Modules\Repository\Db\UserCategory.cs" />
+    <Compile Include="Modules\Repository\GenericRepository.cs" />
+    <Compile Include="UiUtility.cs" />
+    <Compile Include="Utility.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CommonClass.cs" />
+    <Compile Include="WindowServiceHandlers\ImageTransferHandler.cs" />
+    <Compile Include="WindowServiceHandlers\SchoolEducationHandler.cs" />
+    <Compile Include="WindowServiceHandlers\SchoolEducationSMSHandler.cs" />
+    <Compile Include="WindowServiceHandlers\SmsHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ApiHandlers\Assignment\" />
+    <Folder Include="ApiHandlers\Complaint\" />
+    <Folder Include="ApiHandlers\FileUpload\" />
+    <Folder Include="ApiHandlers\Messages\" />
+    <Folder Include="BusinessLogic\" />
+    <Folder Include="Handler\DB\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

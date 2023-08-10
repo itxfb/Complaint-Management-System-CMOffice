@@ -1,0 +1,136 @@
+﻿
+<div class="box-header-blue with-border btn-header">
+    <h4 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;">Complainant Feedback (@ViewBag.Hierarchy1)</h4>
+</div>
+<div class="box-body-white">
+    <table id="RegionWiseFeedback_@(ViewBag.divTag)" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+        <thead>
+            <tr role="row" class="tableHeader">
+                <th class="nosort">Sr No</th>
+                <th>@ViewBag.Hierarchy1</th>
+                <th>Satisfied</th>
+                <th>Dissatisfied</th>
+                <th>No Answer</th>
+                <th>Busy</th>
+                <th>Cancel</th>
+                <th>Congestion</th>
+                <th>Not Complete</th>
+                <th>Pending</th>
+                <th>Not Applicable</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th>
+                </th>
+                <th>
+                    Total
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<script type="text/javascript">
+    $(function () {
+        LoadData@(ViewBag.divTag)();
+    });
+    function LoadData@(ViewBag.divTag)()
+    {
+        LoadTable@(ViewBag.divTag)("@Url.Action("RegionWiseFeedbackReport", "ApiZimmedarShehri")");
+    }
+    function LoadTable@(ViewBag.divTag)(apiUrl) {
+        var table = $("#RegionWiseFeedback_@(ViewBag.divTag)").dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+            },
+            drawCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                //debugger;
+                data = api.column(2).data();
+                var totalcount = data.length ? data.reduce(function (a, b) {
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;
+                }) : 0;
+                api.columns('.sum', { page: 'current' }).every(function () {
+                    var sum = api
+                        .cells(null, this.index(), { page: 'current' })
+                        .render('display')
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+                    var val = sum * 100 / totalcount;
+                    
+                    //$(this.footer()).html(sum +'  ('+ Math.floor(val) + '%)');
+                    $(this.footer()).html(sum);
+                });
+
+            },
+
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "serverSide": false,
+            "order": [[2, "desc"]],
+            'columnDefs': [{
+                "targets": [], //first column / numbering column
+                "orderable": true, //set not orderable
+            }],
+            "ajax": {
+                "url": apiUrl,//'../GeneralApi/GetStakeholderComplaints',
+                "type": "POST",
+                data: {
+                    startDate: $('#pieDateRange').val().split('To')[0].trim(),
+                    endDate: $('#pieDateRange').val().split('To')[1].trim(),
+                    provinceid: @((int)ViewBag.provinceid),
+                    campaignId: @((int)ViewBag.campaignId),
+                    hierarchyId: @((int)ViewBag.hierarchyId),
+                    upperHierarchyId: @((int)ViewBag.UpperHierarchyId),
+                }
+            },
+            "columns": [
+                {
+                    "data": "SrNo",
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }, "bSortable": true
+                },
+                { "data": "Hierarchy1Data" },
+                { "data": "Satisfied", className: "sum" },
+                { "data": "Dissatisfied", className: "sum" },
+                { "data": "NoAnswer", className: "sum" },
+                { "data": "Busy", className: "sum" },
+                { "data": "Cancel", className: "sum" },
+                { "data": "Congestion", className: "sum" },
+                { "data": "NotComplete", className: "sum" },
+                { "data": "Pending", className: "sum" },
+                { "data": "NotApplicable", className: "sum" },
+            ],
+        });
+        debugger;
+        DivData.push(table);
+    }
+</script>

@@ -1,0 +1,104 @@
+﻿
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        @Scripts.Render("~/bundles/bridgeLibs")
+        <meta name="viewport" content="width=device-width" />
+        <title>AddDynamic2</title>
+        
+    </head>
+    <body>
+        @Scripts.Render("~/bundles/bridgeFormBuilder")
+        @*<div id="FormFields" style="display: none;"></div>*@
+        <div class="jumbotron">
+            <h1>ASP.NET</h1>
+            <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+            <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+        </div>
+
+        <div class="row">
+            @*@{ Html.RenderAction("AddDynamicChild", "DynamicForm", new { paramsStr = "FormId::form1__FormTag::Add_Complaint_caller" });}*@
+            
+            
+            <form action="/Police/OnAddComplaintSubmit" enctype="multipart/form-data" id="AddComplaintForm" method="post" novalidate="novalidate">
+                <div class="row">
+                    <div>
+
+                        <div class="box box-primary">
+                            <div class="box-header-blue with-border btn-header">
+                                <h4 class="box-title">Caller's Information</h4>
+                            </div>
+                            <div class="box-body-white" style="margin-top:5px;">
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>CNIC *</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control numbers-only" data-val="true" data-val-length="Provide complete CNIC No" data-val-length-max="13" data-val-length-min="13" id="CnicTxtBox" maxlength="13" name="PersonalInfoVm.Cnic_No" placeholder="ex 3520174842579" required="true" type="text" value="" aria-required="true">
+                                        <span class="field-validation-valid label label-warning" data-valmsg-for="PersonalInfoVm.Cnic_No" data-valmsg-replace="true"></span>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Complainant Gender*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <select class="form-control" id="PersonalInfoVm_Gender" name="PersonalInfoVm.Gender" placeholder="ex 3520174842579">
+                                            <option value="">--Select--</option>
+                                            <option value="0">Female</option>
+                                            <option value="1">Male</option>
+                                        </select>
+                                        <span class="field-validation-valid label label-warning" data-valmsg-for="PersonalInfoVm.Gender" data-valmsg-replace="true"></span>
+
+
+                                    </div>
+                                </div>
+
+                                <br clear="all">
+
+                            </div>
+                            <!--Inquiry tab content-->
+
+
+                        </div>
+                        <!-- /.tab-content -->
+                    </div>
+
+
+                    <!--Tabs End-->
+
+                </div>
+            </form>
+            
+
+            
+            @*<div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading"><h1 class="panel-title">Bridge.NET Form Builder</h1></div>
+            <div class="panel-body">
+                <form id="form1" class="form-horizontal" role="form"></form>
+            </div>
+        </div>
+        </div>*@
+        </div>
+    
+        @*<div class="row">
+        @{ Html.RenderAction("AddDynamicChild", "DynamicForm", new { paramsStr = "FormId::form2__FormTag::Add_Complaint_caller" });}
+      
+    </div>
+    
+    <div class="row">
+        @{ Html.RenderAction("AddDynamicChild", "DynamicForm", new { paramsStr = "FormId::form3__FormTag::Add_Complaint_caller" });}
+
+    </div>*@
+    </body>
+</html>

@@ -1,0 +1,221 @@
+﻿@using PITB.CMS_Common
+
+<div id="Content@(ViewBag.graphName)" @*style="height:600px !important;"*@ class="MultiGraphContent margin-bottom GraphLevel_@(ViewBag.graphLevel)">
+
+
+</div>
+
+<script type="text/javascript">
+    debugger;
+    var campaignId = @(ViewBag.campaignId);
+    var hierarchyId@(ViewBag.graphName) = @(ViewBag.HierarchyId);
+
+    $(function () {
+        debugger;
+        //$.LoadBarChart();
+        LoadBarChart@(ViewBag.graphName)();
+
+    });
+
+    //$.LoadBarChart@(ViewBag.graphName) = function () {
+    function LoadBarChart@(ViewBag.graphName)() {
+
+
+        var UserList@(ViewBag.graphName) = [];
+        var StatusList@(ViewBag.graphName) = [];
+        var colorList = [];
+        var graphLevel = @(ViewBag.graphLevel);
+
+        //$(".pie-overlay@(ViewBag.graphName)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("BarChartUserWiseTeachingQuality", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $("#dateRangeOwn").val().split('To')[0].trim(),
+                datemax: $("#dateRangeOwn").val().split('To')[1].trim(),
+                campaignId: campaignId,
+                UserId:@(ViewBag.UserId),
+                hierarchyId: @(ViewBag.HierarchyId)
+                },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var statusList = data.AllStatusList;
+                var resultlist=[];
+                var resultObj;
+
+                var dict = []; // create an empty array
+
+
+
+                if(data.Total !=null)
+                {
+                    $.each(data.Total.ListUserWiseData, function (idx, obj) {
+                        //New Object
+
+                        var UserCount = new Object();
+                        
+                        obj.Name = obj.Name.trim();
+                        var test = obj.Name +"-"+obj.UserId;
+                        UserCount.name = (test);
+
+                        //Add in list
+                        UserList@(ViewBag.graphName).push(UserCount.name);
+                        var isPresent = false;
+                        debugger;
+                        $.each(obj.ListVmStatusWiseCount, function (idxa, objSub) {
+
+                            isPresent = false;
+                            if(dict.length>0)
+                            {
+                                for(var obj1 in dict)
+                                {
+                                    if(dict[obj1].name==objSub.StatusString)
+                                    {
+                                        dict[obj1].data.push(objSub.Count);
+                                        isPresent =true;
+                                    }
+                                }
+                                if(!isPresent)
+                                {
+                                    var obj2 =  {name:objSub.StatusString, data:[]}
+                                    obj2.data.push(objSub.Count);
+                                    dict.push(obj2);
+
+                                }
+                            }
+                            else{
+                                var obj3 =  {name:objSub.StatusString, data:[]}
+                                obj3.data.push(objSub.Count);
+                                dict.push(obj3);
+                            }
+                            /*$.each(obj.statusList,function (idxb,str)
+                            {
+                                if(str == objSub)
+                                {
+                                    resultObj = new Object();
+                                    resultObj.Status = objSub.StatusString;
+                                }
+                            });*/
+                            //New Object
+
+                        });
+
+
+                    });
+
+                    if (data.Total.AllStatusColorList != null) {
+                        $.each(data.Total.AllStatusColorList, function (idx, obj) {
+                            debugger;
+                            colorList.push(obj);
+                        });
+
+                    }
+                    debugger;
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: colorList //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+                    Highcharts.chart('Content@(ViewBag.graphName)', {
+                        chart: {
+                            type: 'bar',
+                            height: $.GetBarChartHeight(dict)
+                        },
+                        title: {
+                            text: '@(ViewBag.graphName)'
+                        },
+                        xAxis: {
+                            //tickInterval: 6,
+                            //allowDecimals: false,
+                            categories: UserList@(ViewBag.graphName),  //['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                            labels: {
+                                formatter: function () {
+                                    var text = this.value,
+
+
+                                        //formatted = text.length > 100 ? text.substring(0, 100) + '...' : text;
+
+                                        formatted = text.split('-')[0];
+                                    return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' + formatted + '</div>';
+                                },
+                                style: {
+                                    width: '150px'
+                                },
+                                useHTML: true
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Status'
+                            }
+                        },
+                        legend: {
+                            reversed: true
+                        },
+                        plotOptions: {
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer',
+                                point: {
+                                    events: {
+                                        click: function () {
+                                            var temp = this.category.split('-');
+
+                                            //hierarchyId@(ViewBag.graphName)++;
+                                            var hierarchyIdToCopy@(ViewBag.graphName) = hierarchyId@(ViewBag.graphName) + 1;
+                                            if (hierarchyIdToCopy@(ViewBag.graphName) == parseInt('@((int) Config.Hierarchy.Division)')) {
+                                                hierarchyIdToCopy@(ViewBag.graphName)++;
+                                            }
+                                            if (hierarchyIdToCopy@(ViewBag.graphName) != parseInt('@((int) Config.Hierarchy.UnionCouncil)')) {
+                                                clickHandler(campaignId, temp[0], 1, temp[1], hierarchyIdToCopy@(ViewBag.graphName),graphLevel);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series: dict
+                        /*[{
+                        name: 'Pending',
+                        data: [5, 3, 4, 7, 2]
+                    }, {
+                        name: 'Resolve',
+                        data: [2, 2, 3, 2, 1]
+                    }, {
+                        name: 'Solve',
+                        data: [3, 4, 4, 2, 5]
+                    }]*/
+                    });
+
+                    $('html,body').animate({
+                        scrollTop: $(".scroll").offset().top
+                    }, 1500);
+                }
+                else
+                {
+                 
+                    //@ViewBag.UserId
+                    @*var from = $("#Piedatepickerlowerother").val();
+                    var to = $("#Piedatepickermaxother").val();
+                    var userId =  @ViewBag.UserId;
+
+                    LoadGridView( from, to, userId, -1);*@
+                }
+            }
+
+        });
+    }
+
+</script>

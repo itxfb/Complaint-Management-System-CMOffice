@@ -1,0 +1,485 @@
+﻿@using System.Web.Mvc;
+@using PITB.CMS_Common;
+@{
+    dynamic campaignForm = ViewBag.campaignForm;
+}
+
+<input data-force-post="True" id="complaintType" name="complaintType" type="hidden" value="">
+<input data-force-post="True" id="campaignId" name="campaignId" type="hidden" value="@campaignForm.campaignId">
+
+
+<div class="nav-tabs-custom">
+    <ul class="nav nav-tabs">
+        <li class="active Complaint"><a href="#complaintArea" data-toggle="tab" aria-expanded="true">Complaint</a></li>
+        <li class="Suggestion"><a href="#suggestionArea" data-toggle="tab" aria-expanded="false">Suggestion</a></li>
+        <li class="Inquiry"><a href="#InquiryArea" data-toggle="tab" aria-expanded="false">Inquiry</a></li>
+
+    </ul>
+    <div class="tab-content">
+        <!--Complaint tab content-->
+        <div class="tab-pane active" id="complaintArea">
+            <!--<div class="form-group col-md-6">
+            <div class="col-md-4">
+                <label>In Person *</label>
+            </div>
+            <div class="col-md-8">
+                <input id="RadioInPerson" name="RadioInPerson" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="InPerson" value="6266___No" data-val-config="controlId::99__isDynamic::true__controlType::radio">
+                <label class="normalFont"><input type="radio"  name="InPerson" checked="checked" value="6265___Yes"> Yes </label>-->
+            @*<br>*@
+            <!--<label class="normalFont"><input type="radio"  name="InPerson" value="6266___No"> No </label>--> @*<br>*@
+            <!--<span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select In Person" data-val-for-name="InPerson">
+
+                    </span>
+                </div>
+
+            </div>-->
+            <div class="row">
+                @*<div class="form-group col-md-6">
+
+                        @{
+
+                            <div class="col-md-4">
+                                <label>@campaignForm.listDynamicControl[0].FieldName</label>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.DropDownList("campaignForm.listDynamicControl[0].selectedItemId", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDynamicControl[0].Data.listCategories, "Id", "Name", "-- Select--", "-1"), new { @Id = "campaignForm.listDynamicControl[0].selectedItemId", @class = "form-control",
+                               @data_val_tag = "T1",
+                               @data_val_is_required = "True",
+                               @data_val_config = "controlId::106__isDynamic::true__controlType::dropDown"
+                           })
+
+                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Test Txt is required" data-validation-for-type="text" data-val-for-name="campaignForm.listDynamicControl[0].selectedItemId">
+
+                                </span>
+                            </div>
+                        }
+
+
+                    </div>*@
+
+
+                @if (campaignForm.listDepartment != null && campaignForm.listDepartment.Count > 0)
+                {
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Department</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DropDownList("complaint__Department", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDepartment, "Id", "Name", "-- Select--", "-1"), new { @Id = "complaint__Department", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                        </div>
+                    </div>
+                }
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("complaint__category", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listCategory, "Complaint_Category", "Name", "-- Select--", "-1"), new { @Id = "complaint__category", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="complaint__category">
+
+                        </span>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Sub Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select class="form-control" type="select" name="complaint__subcategory" data-val-tag="T1" data-val-repopulate-onchange-of="complaint__category" @*data-val-config="combineIdWithVal::True"*@ data-val-api-url="../GeneralApi/ComplaintSubType?id={id}&campaignId=99&complaintType=1" data-val-is-required="True">
+                            <option value="-1">--Select--</option>
+                        </select>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Subcategory is required" data-validation-for-type="text" data-val-for-name="complaint__subcategory">
+
+                        </span>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Province</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("complaint__province", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listProvince, "Province_Id", "Province_Name", "-- Select--", "1"), new { @Id = "complaint__province", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="complaint__province">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>District</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("complaint__district", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDistrict, "District_Id", "District_Name", "-- Select--", campaignForm.districtId), new { @Id = "complaint__district", @class = "form-control", @data_val_repopulate_onchange_of = "complaint__province", data_val_api_url = "../GeneralApi/Districts?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="complaint__district">
+
+                        </span>
+                    </div>
+                    @*<div class="col-md-8">
+                            <select class="form-control" type="select" name="complaintDistrict" data-val-tag="T1" data-val-repopulate-onchange-of="complaintProvince" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/Districts?id={id}&campaignId=99" data-val-is-required="True">
+                                <option value="-1">--Select--</option>
+                            </select>
+                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="complaintDistrict">
+
+                            </span>
+
+
+                        </div>*@
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Tehsil</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("complaint__tehsil", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listTehsil, "Tehsil_Id", "Tehsil_Name", "-- Select--", campaignForm.tehsilId), new { @Id = "complaint__tehsil", @class = "form-control", @data_val_repopulate_onchange_of = "complaint__district", data_val_api_url = "../GeneralApi/TownTehsils?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Tehsil is required" data-validation-for-type="text" data-val-for-name="complaint__tehsil">
+
+                        </span>
+                        <!--<select class="form-control" type="select" name="complaint__tehsil" data-val-tag="T1" data-val-repopulate-onchange-of="complaint__district"--> @*data-val-config="combineIdWithVal::True"*@
+                        <!--data-val-api-url="../GeneralApi/TownTehsils?id={id}&campaignId=99" data-val-is-required="True">
+                            <option value="-1">--Select--</option>
+                        </select>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Tehsil is required" data-validation-for-type="text" data-val-for-name="complaint__tehsil">
+
+                        </span>-->
+
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Comments</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" data-val-tag="T1" class="form-control textDetail" name="complaint__agentComments" data-val-is-required="True" />
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter comments" data-validation-for-type="text" data-val-for-name="complaint__agentComments">
+
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="row">
+                <div class="form-group col-md-12 col-lg-12">
+                    <div class="col-md-2">
+                        <label>Detail </label>
+                    </div>
+                    <div class="col-md-10">
+                        <textarea class="form-control col-md-12 col-xs-12" cols="20" id="complaint__detail" name="complaint__detail" rows="3" data-val-tag="T1"></textarea>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="complaint__detail">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row">
+                <div class="form-group col-md-12 col-lg-12">
+                    <div class="col-md-2 col-lg-2">
+                        <label>Attach File </label>
+                    </div>
+
+                    <div class="col-md-4">
+                        <input data-val-tag="T1" class="form-control" @*data-val-is-required="True"*@ type="file" id="FileUpload1" name="FileUpload1" data-val-file-ext="png,jpg,jpeg,pdf,doc,docx,txt" />
+                        <span class="field-validation-valid label label-warning hidden" data-val-format-voilation-message="Only following files are allowed png,jpg,jpeg,pdf,doc,docx,txt" data-validation-for-type="file" data-val-for-name="FileUpload1">
+                        </span>
+                    </div>
+                    <div class="col-md-4">
+                        <input data-val-tag="T1" class="form-control" type="file" id="FileUpload2" name="FileUpload2" data-val-file-ext="png,jpg,jpeg,pdf,doc,docx,txt" />
+                        <span class="field-validation-valid label label-warning hidden" data-val-format-voilation-message="Only following files are allowed png,jpg,jpeg,pdf,doc,docx,txt" data-validation-for-type="file" data-val-for-name="FileUpload2">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                </div>
+            </div>
+
+            <br clear="all">
+        </div>
+
+
+
+
+
+
+        <!--End Complaint-->
+        <!--Suggestion tab content-->
+        <div class="tab-pane" id="suggestionArea">
+            @if (campaignForm.listDepartment != null && campaignForm.listDepartment.Count > 0)
+            {
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Department</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("suggestion__Department", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDepartment, "Id", "Name", "-- Select--", "-1"), new { @Id = "suggestion__Department", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                    </div>
+                </div>
+            }
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("suggestion__category", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listCategory, "Complaint_Category", "Name", "-- Select--", "-1"), new { @Id = "suggestion__category", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="suggestion__category">
+
+                        </span>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Sub Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select class="form-control" type="select" name="suggestion__subcategory" data-val-tag="T1" data-val-repopulate-onchange-of="suggestion__category" @*data-val-config="combineIdWithVal::True"*@ data-val-api-url="../GeneralApi/ComplaintSubType?id={id}&campaignId=99&complaintType=1" data-val-is-required="True">
+                            <option value="-1">--Select--</option>
+                        </select>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Subcategory is required" data-validation-for-type="text" data-val-for-name="suggestion__subcategory">
+
+                        </span>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Province</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("suggestion__province", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listProvince, "Province_Id", "Province_Name", "-- Select--", "1"), new { @Id = "suggestion__province", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="suggestion__province">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>District</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("suggestion__district", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDistrict, "District_Id", "District_Name", "-- Select--", campaignForm.districtId), new { @Id = "suggestion__district", @class = "form-control", @data_val_repopulate_onchange_of = "suggestion__province", data_val_api_url = "../GeneralApi/Districts?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="suggestion__district">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Tehsil</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("suggestion__tehsil", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listTehsil, "Tehsil_Id", "Tehsil_Name", "-- Select--", campaignForm.tehsilId), new { @Id = "suggestion__tehsil", @class = "form-control", @data_val_repopulate_onchange_of = "suggestion__district", data_val_api_url = "../GeneralApi/TownTehsils?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Tehsil is required" data-validation-for-type="text" data-val-for-name="suggestion__tehsil">
+
+                        </span>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Comments</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" data-val-tag="T1" class="form-control textDetail" name="suggestion__agentComments" data-val-is-required="True" />
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter comments" data-validation-for-type="text" data-val-for-name="suggestion__agentComments">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="col-md-2">
+                        <label>Detail </label>
+                    </div>
+                    <div class="col-md-10">
+                        <textarea class="form-control col-md-12 col-xs-12" cols="20" id="suggestion__detail" name="suggestion__detail" rows="3" data-val-tag="T1"></textarea>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="suggestion__detail">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                </div>
+            </div>
+
+            <br clear="all">
+
+        </div>
+        <!--End Suggestion tab content-->
+        <!--Inquiry tab content-->
+        <div class="tab-pane" id="InquiryArea">
+            @if (campaignForm.listDepartment != null && campaignForm.listDepartment.Count > 0)
+            {
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Department</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("inquiry__Department", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDepartment, "Id", "Name", "-- Select--", "-1"), new { @Id = "inquiry__Department", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                    </div>
+                </div>
+            }
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("inquiry__category", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listCategory, "Complaint_Category", "Name", "-- Select--", "-1"), new { @Id = "inquiry__category", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="inquiry__category">
+
+                        </span>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Sub Category</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select class="form-control" type="select" name="inquiry__subcategory" data-val-tag="T1" data-val-repopulate-onchange-of="inquiry__category" @*data-val-config="combineIdWithVal::True"*@ data-val-api-url="../GeneralApi/ComplaintSubType?id={id}&campaignId=99&complaintType=1" data-val-is-required="True">
+                            <option value="-1">--Select--</option>
+                        </select>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Subcategory is required" data-validation-for-type="text" data-val-for-name="inquiry__subcategory">
+
+                        </span>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Province</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("inquiry__province", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listProvince, "Province_Id", "Province_Name", "-- Select--", "1"), new { @Id = "inquiry__province", @class = "form-control", data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="inquiry__province">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>District</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("inquiry__district", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listDistrict, "District_Id", "District_Name", "-- Select--", campaignForm.districtId), new { @Id = "inquiry__district", @class = "form-control", @data_val_repopulate_onchange_of = "inquiry__province", data_val_api_url = "../GeneralApi/Districts?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="inquiry__district">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Complaint Tehsil</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("inquiry__tehsil", (List<SelectListItem>)UiUtility.GetSelectList(campaignForm.listTehsil, "Tehsil_Id", "Tehsil_Name", "-- Select--", campaignForm.tehsilId), new { @Id = "inquiry__tehsil", @class = "form-control", @data_val_repopulate_onchange_of = "inquiry__district", data_val_api_url = "../GeneralApi/TownTehsils?id={id}&campaignId=" + campaignForm.campaignId, data_val_tag = "T1", data_val_is_required = "True" })
+
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Tehsil is required" data-validation-for-type="text" data-val-for-name="inquiry__tehsil">
+
+                        </span>
+
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Comments</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" data-val-tag="T1" class="form-control textDetail" name="inquiry__agentComments" data-val-is-required="True" />
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter comments" data-validation-for-type="text" data-val-for-name="inquiry__agentComments">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <div class="col-md-2">
+                        <label>Detail </label>
+                    </div>
+                    <div class="col-md-10">
+                        <textarea class="form-control col-md-12 col-xs-12" cols="20" id="inquiry__detail" name="inquiry__detail" rows="3" data-val-tag="T1"></textarea>
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="inquiry__detail">
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                </div>
+            </div>
+
+            <br clear="all">
+
+        </div>
+        <!--Inquiry tab content-->
+
+
+    </div>
+    <!-- /.tab-content -->
+</div>

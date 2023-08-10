@@ -1,0 +1,71 @@
+﻿@model IEnumerable<VmCampaign>
+    @{
+        //if (Request.IsAjaxRequest())
+        //{
+        //    Layout = null;
+        //}
+        //else
+        {
+            <div class="callout callout-success">
+                <h4>Tip!</h4>
+                <p>Before proceeding to new registration, please check previous information of user from <a href="@Url.Action("Search","Complaint")">Search</a> page.</p>
+            </div>
+        }
+        int count = 0;
+        int col = 6;
+    }
+    @foreach (VmCampaign c in Model)
+    {
+        count = count % col;
+        if (count == 0)
+        {
+            @Html.Raw("<div class='row'>");
+        }
+        <div class="col-sm-6 col-md-4 col-lg-2 campaignBox" style="cursor: pointer;" onmouseover="setStyle('box_'+@c.Id, { 'opacity': '1', 'box-shadow': '0px 0px 10px 3px #cccccc' });" onmouseout="setStyle('box_'+@c.Id, { 'opacity': '0.8', 'box-shadow': 'none' });" id="@c.Id">
+            @using (Html.BeginForm("AddComplaint", "Complaint", FormMethod.Post, new { @style = "" }))
+            {
+                c.PersonId = (int)ViewBag.PersonId;
+                @Html.Hidden("personId", c.PersonId);
+                @Html.Hidden("campaign", c.Id);
+
+
+                <div class="box box-warning" style="border: none" id="box_@c.Id">
+                    <div class="box-header bg-navy" style="min-height:52px;">
+                        <h6 class="box-title">@c.Campaign_Name</h6>
+                    </div>
+                    <div class="box-body-white" style="margin-top: 5px;">
+                        <div style="text-align: center;height: 100px">
+                            <img src="@Url.Content(c.LogoUrl)" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                        </div>
+                        @*<div style="margin: 0;padding: 0; height:100px; background-size: cover;background: url(@Url.Content(c.LogoUrl)) no-repeat center"></div>*@
+                        @*<img class="img-responsive" src="@Url.Content(c.LogoUrl)"/>*@
+                    </div>
+                    <div class="box-footer" style="background-color: #F7F7F7">
+                        <div class="text-center" style="font-size: 15px; font-weight: bold"><i class="fa fa-phone-square"></i>&nbsp;@c.Campaign_HelpLine</div>
+                    </div>
+                </div>
+
+            }
+        </div>
+        if (count == col-1)
+        {
+            @Html.Raw("</div>");
+            //count = 0;
+        }
+        count++;
+    }
+    <script>
+    $(function () {
+
+        $(".campaignBox").on('click', function () {
+            @*window.location.href="@Url.Action("Add","Complaint")?personId="+@ViewBag.PersonId+"&campaign="+$(this).attr('id');*@
+            $(this).find('form').submit();
+        });
+    });
+    function setStyle(objId, propertyObject) {
+        var elem = document.getElementById(objId);
+
+        for (var property in propertyObject)
+            elem.style[property] = propertyObject[property];
+    }
+    </script>

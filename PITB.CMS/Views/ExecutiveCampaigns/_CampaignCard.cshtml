@@ -1,0 +1,366 @@
+﻿@using PITB.CMS_Common.Handler.Complaint;
+@using PITB.CMS_Common;
+@model PITB.CMS_Common.Models.View.Executive.VmCampaignWiseData
+@{
+    string Satisfied = null;
+    string NotSatisfied = null;
+    string totalFeedbackCount = null;
+    string SatisfiedCount = null;
+    string NotSatisfiedCount = null;
+    if (Model.ListfeedbackCategoryWiseCounts != null)
+    {
+        FeedbackCategoryWiseCount satisfiedModel = Model.ListfeedbackCategoryWiseCounts.Find(m => m.CategoryName.Equals("Satisfied"));
+        FeedbackCategoryWiseCount notSatisfiedModel = Model.ListfeedbackCategoryWiseCounts.Find(m => m.CategoryName.Equals("NotSatisfied"));
+        if (satisfiedModel != null)
+        {
+            Satisfied = satisfiedModel.CategoryRelativePercentage + "%";
+            SatisfiedCount = satisfiedModel.CategoryCount.ToString("#,##0");
+        }
+        if (notSatisfiedModel != null)
+        {
+            NotSatisfied = notSatisfiedModel.CategoryRelativePercentage + "%";
+            NotSatisfiedCount = notSatisfiedModel.CategoryCount.ToString("#,##0");
+        }
+        totalFeedbackCount = Model.FeedbackTotalCount.ToString("#,##0");
+
+        /** usman **/
+        if (Model.CampaignId == (int)Config.Campaign.DcoOffice)
+        {
+            int iFeedbackTotalCount = satisfiedModel.CategoryCount + notSatisfiedModel.CategoryCount;
+            totalFeedbackCount = iFeedbackTotalCount.ToString("#,##0");
+
+            int iSatisfiedCount = satisfiedModel.CategoryCount;
+            double iSatisfied = ((double)iSatisfiedCount * 100) / iFeedbackTotalCount;
+            Satisfied = iSatisfied.ToString("#.#") + "%";
+
+            int iNotSatisfiedCount = notSatisfiedModel.CategoryCount;
+            double iNotSatisfied = ((double)iNotSatisfiedCount * 100) / iFeedbackTotalCount;
+            NotSatisfied = iNotSatisfied.ToString("#.#") + "%";
+        }
+
+        Satisfied = Satisfied.Replace("NaN", "0");
+        NotSatisfied = NotSatisfied.Replace("NaN", "0");
+    }
+
+    string margins = "margin-top:0px";
+}
+
+
+<div id="CardParent" class="col-lg-4 col-md-4">
+    <form id=@("FormCampaignCard" + Model.FormId) method="post">
+        <input type="hidden" id="@("CampaignId" + Model.FormId)" name="CampaignId" value=@Model.CampaignId>
+        <div class="item-wrapper">
+            <div class="item-head cursor-pointer" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'>
+                @if (Model.CampaignId == (int)Config.Campaign.PLRA)
+                {
+
+                    <span onclick="ComplaintDetailsClick(this);">
+                        @Model.CampaignName
+                        <span class="pull-right">
+                            <i class="glyphiconSpan glyphicon glyphicon-dashboard"></i>
+                        </span>
+                    </span>
+                }
+                else
+                {
+                    <span >
+                        @Model.CampaignName
+                    </span>
+                }
+            </div>
+            <div class="item-inner clearfix">
+                <div class="calls-container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="calls">Calls Landed</div>
+                        </div>
+                        <div class="col-md-6 col-lg-6">
+                            <div class="calls-total">@Model.CallsLandedCount.Count <span>Total</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-lg-12 col-md-12" style="text-align: center;">
+                        <span class="main-count">
+                            <a id="TagStatus__Total__@Model.CampaignId" onclick='OnBtnClick(this)' class="complaints cursor-pointer">@Model.ListStatusWiseCount[0].Count.ToString("#,##0") <span>Total Complaints</span> </a>
+                        </span>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    @for (int i = 1; i < Model.ListStatusWiseCount.Count; i++)
+                    {
+                        var statusWiseCount = Model.ListStatusWiseCount[i];
+                        <div class="col-lg-4 col-md-4 linkEffect">
+                            <a id='TagStatus__@(statusWiseCount.StatusName)__@Model.CampaignId' onclick='OnBtnClick(this)' class="status cursor-pointer">
+                                <div class="status-title">
+                                    <h5>@statusWiseCount.StatusName</h5>
+                                    <div class="figure @(statusWiseCount.CSSClassName=="count-Resolved"?"green-gred":(statusWiseCount.CSSClassName=="count-Overdue"?"red-gred":"yellow-gred"))">
+                                        @statusWiseCount.Count.ToString("#,##0")
+                                    </div>
+                                    <div class="percentage">@(statusWiseCount.Percentage + "%")</div>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+                @if (Model.ListfeedbackCategoryWiseCounts != null)
+                {
+                    <div class="complaints-feedback">
+                        <div class="calls-container">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="calls feedback">Complainant <br> Feedback</div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="calls-total">@totalFeedbackCount <span>Total</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer-wrap">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-6 col-md-6">
+                                <a id="TagFeedback__Satisfied__@Model.CampaignId" onclick='OnBtnClick(this)' class="card-foot cursor-pointer" title="@SatisfiedCount">
+                                    <img src="~/img/thumb-up.png"> @Satisfied
+                                    @*<span class="tooltip-text">@SatisfiedCount</span>*@
+                                </a>
+                            </div>
+                            <div class="col-lg-6 col-md-6 border-left">
+                                <a id="TagFeedback__Dissatisfied__@Model.CampaignId" onclick='OnBtnClick(this)' class="card-foot cursor-pointer" title="@NotSatisfiedCount">
+                                    <img src="~/img/thumb-down.png"> @NotSatisfied
+                                    @*<span class="tooltip-text">@NotSatisfiedCount</span>*@
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </form>
+</div>
+
+
+@*<div id="CardParent" class="col-lg-4 col-md-4  ">
+        <form id=@("FormCampaignCard" + Model.FormId) method="post">
+            <input type="hidden" id="@("CampaignId" + Model.FormId)" name="CampaignId" value=@Model.CampaignId>
+            <div class="data-section">
+                @if (Model.CampaignId == (int)Config.Campaign.PLRA)
+                {
+
+                    <a class="cellHeader" onclick="ComplaintDetailsClick(this);">
+                        @Model.CampaignName
+                        <div class="pull-right">
+                            <i class="glyphiconSpan glyphicon glyphicon-dashboard" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'></i>
+                        </div>
+                    </a>
+                }
+                else
+                {
+                    <input type="hidden" name="someName" value="helloworld" />
+                    <a class="cellHeader" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'>
+                        @Model.CampaignName
+                    </a>
+                }
+
+                @if (Model.ListfeedbackCategoryWiseCounts != null)
+                {
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <div>
+                                <span style="font-weight:bold;color:#565656;">Complainant Feedback</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <a id="TagFeedback__Satisfied__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                                <div class="tooltip-my satisfyText">
+                                    <div>
+                                        <img src="~/img/Thumbs-up-icon.png" alt="Yes" width="30" height="30" />
+                                    </div>
+                                    <span class="text-muted">@Satisfied</span>
+                                    <span class="tooltip-text">@SatisfiedCount</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                            <a id="TagFeedback__Dissatisfied__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                                <div class="tooltip-my ">
+                                    <div>
+                                        <img src="~/img/Thumbs-down-icon.png" alt="No" width="30" height="30" />
+                                    </div>
+                                    <span class="text-muted" style="margin-left:2px">@NotSatisfied</span>
+                                    <span class="tooltip-text">@NotSatisfiedCount</span>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <div class="">
+                                <p class="feedback-count">@totalFeedbackCount <span class="total-ind">Total</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Line"></div>
+                    margins = "margin-top:0px;";
+                }
+                else
+                {
+                    margins = "margin-top:65px;";
+                }
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="" style="">
+                            <span style="font-weight:bold;color:#565656;padding-top: 11px;display: inline-block;">Calls Landed</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                        <div class="">
+                            <p class="feedback-count">@Model.CallsLandedCount.Count<span class="total-ind">Total</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="Line"></div>
+                <div class="data-content-area" style="@margins">
+                    <a id="TagStatus__Total__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                        <p class="main-count">@Model.ListStatusWiseCount[0].Count.ToString("#,##0")<span class="total-ind">@Model.ListStatusWiseCount[0].StatusName</span></p>
+                    </a>
+                </div>
+                <div class="row">
+                    @for (int i = 1; i < Model.ListStatusWiseCount.Count; i++)
+                    {
+                        var statusWiseCount = Model.ListStatusWiseCount[i];
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <a id='TagStatus__@(statusWiseCount.StatusName)__@Model.CampaignId' class="" onclick='OnBtnClick(this)'>
+                                <div class="sub-count-area">
+                                    <p class="label-head">@statusWiseCount.StatusName</p>
+                                    <p class="@statusWiseCount.CSSClassName">@statusWiseCount.Count.ToString("#,##0")</p>
+                                    <p class="percetage">@(statusWiseCount.Percentage + "%")</p>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </form>
+    </div>*@
+
+<script type="text/javascript">
+    var modulesArrToSkip = ["Resolved", "Overdue", "Pending", "Satisfied", "Dissatisfied"];
+    $(document).ready(function () {
+
+    });
+
+    @*function OnCampaignSelectSuccess() {
+        HideLoading();
+        window.location.href = '@Url.Action("DashboardMain", "Report")' + '?campaignId=' + @cmsCookie.Campaigns.Split(',')[0];
+    }*@
+
+    function OnBtnClick(element) {
+        //alert("sdf");
+        debugger;
+        var tagId = element.id;
+        var tagSplitArr = tagId.split('__');
+        //alert(tagId);
+        if (tagSplitArr[2] == 80) { // skip for plra
+            if (modulesArrToSkip.includes(tagSplitArr[1])) {
+                return;
+            }
+        }
+        //alert(element.id);
+        var campaignId = $("#CampaignId" + @Model.FormId).val();
+        var startDate = $('#dateRange').val().split('To')[0].trim();
+        var endDate = $('#dateRange').val().split('To')[1].trim();
+
+        $.ajax({
+            type: "POST",
+            url: "/Executive/OnStatsLinkClick",
+            data: {
+                tagId: tagId,
+                startDate: startDate,
+                endDate: endDate
+            }, // serializes the form's elements.
+            success: function(data,status)
+            {
+                //alert("Data: " + data + "\nStatus: " + status);
+                $('#PopupDiv2').empty();
+                $('#PopupDiv2').html(data);
+                $('#PopupDiv2').modal();
+                //alert("data = " + data);
+                //$('#PopupDiv3_Content').empty();
+                //$('#PopupDiv3_Content').html(data);
+                //$('#PopupDiv3').modal();
+            }
+        });
+
+        //$.post("/ExecutiveCampaigns/OnStatsLinkClick",
+        //    {
+        //        itemId: element.id,
+        //        //clickedItemId: statsId
+        //    },
+        //    function (data, status) {
+        //        alert("Data: " + data + "\nStatus: " + status);
+        //    });
+
+
+        //$('#PopupDiv2').empty();
+        //$('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + 600056 + "&detailType=" + 1);
+        //$('#PopupDiv2').modal();
+
+        //alert("campaignId = " + campaignId);
+        switch (element.id) {
+            case "linkSatisfied":
+                //$('#PopupDiv').modal('hide');
+                //$('#PopupDiv2').empty();
+                //$('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + 600056+"&detailType="+1));
+                //$('#PopupDiv2').modal();
+                break;
+            case "linkDissatisfied":
+                break;
+            case "Resolved":
+                break;
+            case "Overdue":
+                break;
+            case "Pending":
+                break;
+
+                //else
+                //alert(element.id);
+        }
+    }
+
+    function ComplaintDetailsClick(element) {
+        debugger;
+        var url = "/ExecutiveCampaigns/GetPLRAComplaintDetails";
+        window.open(url,'_blank');
+    }
+
+    $("#FormCampaignCard" + @Model.FormId).submit(function (e) {
+        //alert( "Handler for .submit() called."+@Model.CampaignId );
+        debugger;
+        var form = $(this);
+        //var url = form.attr('action');
+        debugger;
+        var campaignId = $("#CampaignId" + @Model.FormId).val();
+        if(campaignId == 80){
+            window.open('http://cms.punjab-zameen.gov.pk/External_Dashboard.aspx','_blank');
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: ApplicationPathFolderPrefix+"/Account/SwitchUser",
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+
+                //alert(data); // show response from the php script.
+                window.location.href = '@Url.Action("Login", "Account")';
+            }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
+    $("#CardParent").click(function () {
+        //var campaignId = $("#")
+
+    });
+</script>

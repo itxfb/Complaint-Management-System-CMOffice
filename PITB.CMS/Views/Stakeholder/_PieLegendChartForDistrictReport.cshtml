@@ -1,0 +1,189 @@
+﻿<div class="cust-overlay pie-overlay@(ViewBag.divTag)">Loading...</div>
+<div class="position-r">
+    <div id="@(ViewBag.divTag)" style="width:100%; height:450px; margin-top:20px;" graph-name="@(ViewBag.divTag)">
+
+
+    </div>
+</div>
+<script>
+    var campaignId@(ViewBag.divTag) = '@(ViewBag.campaignId)';
+    var graphname@(ViewBag.divTag) = '@(ViewBag.divTag)';
+    $(function () {
+        debugger;
+        LoadData@(ViewBag.divTag)();
+    });
+    function LoadData@(ViewBag.divTag)()
+    {
+        $.LoadPieChart@(ViewBag.divTag)();
+    }
+
+    $.LoadPieChart@(ViewBag.divTag) = function () {
+        var totalList = [];
+        var colorList = [];
+        //debugger;
+        if ("@(ViewBag.divTag)" == "other")
+            $(".Others-Graphs").html("");
+
+        $(".pie-overlay@(ViewBag.divTag)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("PieLegentChartProgress", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $("#Piedatepickerlower").val(),
+                datemax: $("#Piedatepickermax").val(),
+                campaignId: campaignId@(ViewBag.divTag),
+                graphName: graphname@(ViewBag.divTag),
+                graphType: @(Convert.ToInt32(ViewBag.graphType))
+                },
+            async: false,
+            success: function (data) {
+                debugger;
+                data = $.parseJSON(data);
+                var detailObj;
+                //debugger;
+                if (data.Total.ListStatusWiseCount != null) {
+
+
+                    $.each(data.Total.ListStatusWiseCount, function (idx, obj) {
+                        //New Object
+                        var statusCount = new Object();
+                        
+                        statusCount.name = (obj.name);
+                        statusCount.y = (obj.y);
+                        //Add in list
+                        totalList.push(statusCount);
+
+                        //New Object
+
+
+                    });
+                    if (data.Total.AllStatusColorList != null) {
+                        $.each(data.Total.AllStatusColorList, function (idx, obj) {
+                            //debugger;
+                            colorList.push(obj);
+                        });
+
+                    }
+                    $(".pie-overlay@(ViewBag.divTag)").fadeOut(1000);
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: colorList //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+                    Highcharts.chart('@(ViewBag.divTag)', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie'
+                        },
+                        title: {
+                            text: ' ' //'@(ViewBag.divTag) Graph'
+                        },
+                        tooltip: {
+                            pointFormat: '{series.name}:  ({point.percentage:.0f}%) <br> Count: <b>{point.y}</b>'
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                showInLegend: true
+                            },
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer',
+                                point: {
+                                    events: {
+                                        click: function () {
+                                            if('@(ViewBag.divTag)' == 'Own')
+                                            {
+                                                var temp = this.name.split('-');
+                                                var from =$('#Piedatepickerlower').val();
+                                                var to = $('#Piedatepickermax').val();
+                                                var statutId = temp[0];
+                                                var userId =  '@PITB.CMS_Common.Handler.Authentication.AuthenticationHandler.GetCookie().UserId';
+                                                LoadGridView( from, to, userId, statutId);
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series:
+                        [{
+                            name: 'Status',
+                            colorByPoint: true,
+                            data: totalList,
+                            labels: {
+                                formatter: function () {
+                                    
+                                    var text = this.value,
+
+
+                                        //formatted = text.length > 100 ? text.substring(0, 100) + '...' : text;
+
+                                        formatted = text.split('-')[0];
+                                    return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' + formatted + '</div>';
+                                },
+                                style: {
+                                    width: '150px'
+                                },
+                                useHTML: true
+                            }
+
+                            //[{
+                            //    name: 'Microsoft Internet Explorer',
+                            //    y: 56.33
+                            //}, {
+                            //    name: 'Chrome',
+                            //    y: 24.03,
+                            //    sliced: true,
+                            //    selected: true
+                            //}, {
+                            //    name: 'Firefox',
+                            //    y: 10.38
+                            //}, {
+                            //    name: 'Safari',
+                            //    y: 4.77
+                            //}, {
+                            //    name: 'Opera',
+                            //    y: 0.91
+                            //}, {
+                            //    name: 'Proprietary or Undetectable',
+                            //    y: 0.2
+                            //}]
+                        }]
+                    });
+                    var valuesArr = $('#@(ViewBag.divTag)').find("g.highcharts-legend-item").find("text").find("tspan");
+
+                    for (var i = 0; i < valuesArr.length; i++) {
+                                                var lblArr = valuesArr[i].innerHTML.split('-');
+                        if(lblArr.length>1)
+                        {
+                            valuesArr[i].innerHTML = lblArr[1];
+                        }
+                    }
+
+                    /* valuesArr.each(function( vals ) {
+                         
+                     });*/
+                }
+            }
+        });
+    }
+</script>

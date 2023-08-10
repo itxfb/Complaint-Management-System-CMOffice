@@ -1,0 +1,441 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Enums
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Helper.Extensions
+@using PITB.CMS_Common.Models
+
+@{
+    Layout = null;
+    var user = AuthenticationHandler.GetCookie();
+    bool canShowMessages = false;
+    bool showOnlyCompalintsAll = PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowOnlyComplaintsAllInResolver, user.UserId, user.Role);
+
+    DbPermissionsAssignment dbPermission = AuthenticationHandler.GetCookie().ListPermissions.
+        Where(n => n.Type == Convert.ToInt32(Config.PermissionsType.Campaign) && n.Permission_Id == Convert.ToInt32(Config.CampaignPermissions.ShowStakeholderMessagesView)).FirstOrDefault();
+    if (dbPermission != null)
+    {
+        canShowMessages = true;
+    }
+    DbCampaign dbCampaign = DbCampaign.GetStakeholderLogoUrlByCampaignId(Utility.GetIntByCommaSepStr(user.Campaigns));
+    string logoUrl = "/img/crm-logo.png";
+
+    if (dbCampaign != null && dbCampaign.StakeholderLogoUrl != null)
+    {
+        logoUrl = dbCampaign.StakeholderLogoUrl;
+    }
+
+
+    List<DbCampaign> listUserCampaigns = DbCampaign.GetByUserId(user.UserId);
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Executive</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/css")
+    @Styles.Render("~/css/AdminLTE")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/inlineStyler")
+    <style type="text/css">
+        .main-logo {
+            width: 334px;
+            margin: -15px;
+        }
+
+        .content-header h1 {
+            text-align: center;
+        }
+
+        .data-section {
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 25px 10px;
+            float: left;
+            width: 100%;
+            margin-bottom: 20px;
+            box-shadow: 0px 2px 10px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-content-feedback {
+            width: 35%;
+            margin-left: 3%;
+            float: left;
+            border-right: 1px solid #cccccc;
+        }
+
+        .data-logo-area {
+            border-bottom: 1px solid #cccccc;
+            float: left;
+            width: 100%;
+            min-height: 105px;
+        }
+
+        .data-logo {
+            width: 35%;
+            float: left;
+        }
+
+        .data-logo-styling {
+            /*max-width: 60%;*/
+            /* float: left; */
+            margin: 0 auto;
+            display: block;
+        }
+
+        .data-content {
+            width: 60%;
+            margin-left: 3%;
+            float: left;
+        }
+
+        .data-feedback {
+            /* display: block; */
+            margin-top: -30px;
+            position: relative;
+        }
+
+        .feedback-icons {
+            position: absolute;
+            right: 30px;
+            bottom: -50px;
+        }
+
+        .project-name {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 20px;
+            margin-top: 10px;
+        }
+
+        .project-hotline {
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 8px;
+        }
+
+        .hotline {
+            font-size: 16px;
+        }
+
+        .data-content-area {
+            float: left;
+            width: 100%;
+        }
+
+        .data-head {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .main-count {
+            font-size: 60px;
+            font-weight: bold;
+            text-align: center;
+            color: #4c6bc1;
+            margin: 0;
+        }
+
+        .feedback-count {
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+            /*margin-left: 40px;*/
+            margin-top: 10px;
+        }
+
+
+
+        .tooltip-my .tooltip-text {
+            visibility: hidden;
+            width: auto;
+            padding: 10px;
+            background-color: #f2f3f0;
+            text-align: center;
+            padding: 3px 8px;
+            border-radius: 7px;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .tooltip-my:hover .tooltip-text {
+            visibility: visible;
+        }
+
+        .total-ind {
+            font-size: 12px;
+            font-weight: normal;
+            color: #333333;
+        }
+
+        .sub-count-area {
+            margin-top: 20px;
+        }
+
+        .label-head {
+            color: #333333;
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 0;
+        }
+
+        .count-Resolved {
+            text-align: center;
+            font-weight: bold;
+            font-size: 32px;
+            margin: 0;
+            color: #18b524;
+        }
+
+        .count-Overdue {
+            text-align: center;
+            font-weight: bold;
+            font-size: 32px;
+            margin: 0;
+            color: red;
+        }
+
+        .count-Pending {
+            text-align: center;
+            font-weight: bold;
+            font-size: 32px;
+            margin: 0;
+            color: #e8a323;
+        }
+
+        .percetage {
+            background: #999999;
+            padding: 0px;
+            font-size: 19px;
+            color: #ffffff;
+            text-align: center;
+            border-radius: 5px;
+            width: 80%;
+            margin-left: 10%;
+        }
+
+        .margin-bottom {
+            margin-bottom: 30px !important;
+        }
+
+        span.text-minister {
+            display: block;
+            font-size: 26px;
+            line-height: 30px;
+            font-weight: 300;
+        }
+
+        span.logo-img {
+            display: inline-block;
+            position: relative;
+            top: -6px;
+        }
+
+        span.text-logo {
+            display: inline-block;
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+            position: relative;
+            top: -18px;
+            left: 10px;
+        }
+
+        span.text-number {
+            font-size: 24px;
+            line-height: 28px;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 3px;
+            position: relative;
+            top: -5px;
+        }
+
+        .pitb-logo img {
+            float: right;
+            margin: 7px 0 0 0;
+        }
+
+
+        .navbar-nav > .user-menu > .dropdown-menu {
+            width: auto;
+        }
+
+
+        .spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            margin-left: -50px; /* half width of the spinner gif */
+            margin-top: -50px; /* half height of the spinner gif */
+            text-align: center;
+            z-index: 1234;
+            overflow: auto;
+            width: 100px; /* width of the spinner gif */
+            height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+        }
+
+        .gradient-header {
+            background: rgb(0,97,36);
+            background: linear-gradient(94deg, rgba(0,97,36,1) 30%, rgba(0,151,58,1) 100%);
+        }
+    </style>
+
+</head>
+<body class="skin-green layout-top-nav">
+    <div id="PopupDiv" class="modal fade" style="overflow: auto;z-index: 3030" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-content">
+            <div class="modal-header">
+                @*<h5 class="modal-title">Modal title</h5>*@
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="PopupDiv_Content" class="modal-body">
+                @*<p>Modal body text goes here.</p>*@
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>*@
+        </div>
+    </div>
+
+    <div id="PopupDiv2" style="overflow: auto;z-index: 2020" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        @*<div id="PopupDiv2_Content" style="margin:0px;" class="modal-content">
+
+            </div>*@
+    </div>
+
+
+    <div id="PopupDiv3" style="overflow: auto;z-index: 4000" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    @*<h5 class="modal-title">Modal title</h5>*@
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="PopupDiv3_Content" class="modal-body">
+                    @*<p>Modal body text goes here.</p>*@
+                </div>
+                @*<div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrapper">
+        <header class="main-header">
+            <nav class="navbar navbar-static-top gradient-header">
+                <div class="blink">
+                    <a class="navbar-brand" href="#">
+                        <span class="logo-img"><img src="~/img/crm-logo-3.png" class="img-responsive" alt="Logo" width="80px" /></span>
+                        <span class="text-logo">Centralized Complaint Center (CCC)</span>
+                    </a>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+                    <div class="collapse navbar-collapse" id="navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <!--<li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span class="fa fa-1x glyphicon glyphicon-file"></span>Reports</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="@Url.Action("DistrictResponseTimeReport", "DataRepresentation")">District Performance Report</a></li>
+                                    <li><a href="@Url.Action("GetViewRegionWiseResolvedComplaintReport", "Report")">Region Wise Resolved Complaints</a></li>-->
+                            @*<li><a href="@Url.Action("AreawiseCategoryReport","DataRepresentation")">Areawise Category Report</a></li>*@
+                            <!--</ul>
+
+                            </li>-->
+                            <li class="dropdown user user-menu">
+                                <a href="@Url.Action("Dashboard", "ExecutiveCampaigns")"><span class="glyphicon glyphicon-home"></span>Home</a>
+                            </li>
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                    <span class="fa fa-user"></span>
+                                    <span>@user.Name</span>
+                                </a>
+                                <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                    <li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                    @*<li><a href="@Url.Action("Roles", "account")"><span class="glyphicon glyphicon-user"></span>Select Role</a></li>*@
+                                    <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="content-wrapper" style="min-height: 166px;">
+            <div class="container-fluid">
+                <section class="content">
+                    @RenderBody()
+                    <div id="Loading" style="display:none;" class="LoadingBlock">
+
+                    </div>
+                </section>
+            </div>
+        </div>
+        <footer class="main-footer">
+            <div class="container-fluid">
+                <strong>@DateTime.Now.Year Copyright © PITB</strong> All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/plugins")
+    @Scripts.Render("~/bundles/custom")
+    @Scripts.Render("~/bundles/MvcFoolproof")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //alert('zeeshi123');
+            HideLoading();
+            //alert('on doc ready');
+            
+        });
+
+        /*$(window).load(function () {
+            alert('on window load');
+            
+        });
+        */
+
+        var url = window.location;
+        $('ul.nav a[href="' + this.location.pathname + this.location.search + '"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().parent().parent().addClass('active');
+
+        $.enableMultiselect();
+
+        function ShowLoading() {
+            $('#Loading').fadeIn('slow');
+        }
+        function HideLoading() {
+            $('#Loading').fadeOut('slow');
+        }
+    </script>
+
+    @RenderSection("scripts", false)
+    @if (ViewBag.Message != null)
+    {
+        Html.RenderPartial("~/Views/Shared/ViewUserControls/_MessageBox.cshtml", (VmMessage)ViewBag.Message);
+    }
+</body>
+</html>

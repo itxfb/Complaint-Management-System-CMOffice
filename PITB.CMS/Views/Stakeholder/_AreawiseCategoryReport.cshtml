@@ -1,0 +1,293 @@
+﻿@{
+}
+<div id="controls" class="nicebox">
+    <div id="legend">
+        <div id="data-min">
+            min
+        </div>
+        <div class="color-key">
+            <span id="data-caret">&#x25c6</span>
+        </div>
+        <div id="data-max">
+            max
+        </div>
+    </div>
+    <div id="data-box" class="nicebox">
+        <span id="data-label" for="data-value"></span>
+        <span id="data-value"></span>
+    </div>
+</div>
+    <div id="area_wise_map">
+        
+    </div>
+<style>
+    #area_wise_map{
+        height:400px;
+        width:100%;
+        margin:70px auto 0px;
+        padding:0;
+        background-color:rgb(229,229,229);
+    }
+    .nicebox{
+        position:absolute;
+        text-align:center;
+        font-family:"Roboto",Arial,sans-serif;
+        font-size:13px;
+        z-index:5;
+        box-shadow:0 4px 6px -4px #333;
+        padding:5px 10px;
+        background:rgb(255,255,255);
+        background:linear-gradient(to bottom,rgba(255,255,255,1)0%,rgba(245,245,245,1)100%);
+        border:rgb(229,229,229) 1px solid;
+    }
+    #controls{
+        top:10px;/*
+        left:110px;*/
+        width:360px;
+        height:45px;
+    }
+    #data-box{
+        top:10px;
+        left:500px;
+        height:45px;
+        line-height:45px;
+        display:none;
+    }
+    #data-variable{
+        width:360px;
+        height:20px;
+    }
+    #legend{
+        display:flex;
+        display:-webkit-box;
+        padding-top:7px;
+    }
+    .color-key{
+        background:linear-gradient(to right,
+        hsl(5, 69%, 54%) 0%,
+            hsl(29, 71%, 51%) 17%,
+            hsl(54, 74%, 47%) 33%,
+            hsl(78, 76%, 44%) 50%,
+            hsl(102, 78%, 41%) 67%,
+            hsl(127, 81%, 37%) 83%,
+            hsl(151, 83%, 34%) 100%
+        );
+        flex:1;
+        -webkit-box-flex:1;
+        margin:0 5px;
+        text-align:left;
+        font-size:1.0em;
+    }
+    #data-value { 
+        font-size:2.0em;
+        font-weight:bold;
+    }
+    #data-label{
+        font-size:2.0em;
+        font-weight:normal;
+        padding-right:10px;
+    }
+    #data-label:after{
+        content:':'
+    }
+    #data-caret{
+        margin-left: -5px;
+        display:none;
+        font-size:14px;
+        width:14px;
+    }
+</style>
+<script>
+    debugger;
+    var mapStyle = [{
+        'stylers': [{'visibility':'off'}]
+    }, {
+        'featureType': 'landscape',
+        'elementType': 'geometry',
+        'stylers': [{ 'visibility': 'on' }, {'color':'#fcfcfc'}]
+    }, {
+        'featureType': 'water',
+        'elementType': 'geometry',
+        'stylers': [{ 'visibility': 'on' }, {'color':'#bfd4ff'}]
+    }];
+    var map;
+    var dataMin = Number.MAX_VALUE;
+    var dataMax = -Number.MAX_VALUE;
+
+    function LoadMapFromInternet() {
+        var campaignId = $('#CampaignIds option:selected').val();
+        var statusId = $('#StatusId option:selected').val();
+        if (campaignId.length == 0 || campaignId == ' ') {
+            $("#campaignMsg").css("display", "block");
+            return;
+        } else {
+            $("#campaignMsg").css("display", "none");
+        }
+        if (statusId.length == 0 || statusId == ' ') {
+            $("#statusMsg").css("display", "block");
+            return;
+        } else {
+            $("#statusMsg").css("display", "none");
+        }
+        var startDate = $('#datepickerFrom input').val();
+        var endDate = $("#datepickerTo input").val();
+        if (startDate.length == 0 || startDate == undefined) {
+            return;
+        }
+        if (endDate.length == 0 || endDate == undefined) {
+            return;
+        }
+        CreateMapElement();
+    }
+    function CreateMapElement() {
+        var mapElement = document.getElementById("mapElement");
+        if (mapElement != null)
+        {
+            mapElement.parentNode.removeChild(mapElement);
+        }
+        var script = document.createElement('script');
+        script.setAttribute("id","mapElement");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyBhTgUfV0FhPi_hUWl8CquwjGvVEuws3V8&callback=initMap";
+        document.getElementsByTagName('head')[0].appendChild(script);
+    }
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('area_wise_map'), {
+            zoom: 6,
+            center: new google.maps.LatLng(31.1704, 72.7097),
+            styles:mapStyle
+        });
+        LoadMapShapes();                     
+    }
+    function LoadMapShapes() {
+        map.data.loadGeoJson("/DataRepresentation/GetGeoJsonData", { idPropertyName: 'Id' });
+        google.maps.event.addListenerOnce(map.data, 'addfeature', function () {
+            ClearData();
+            LoadData();
+        });
+    }
+    function ClearData() {
+        dataMin = Number.MAX_VALUE;
+        dataMax = -Number.MAX_VALUE;
+        map.data.forEach(function (row) {
+            row.setProperty('data_variable',undefined);
+        });
+        document.getElementById('data-box').style.display = 'block';
+        document.getElementById('data-caret').style.display = 'block';
+    }
+    function LoadData(value) {
+        var url = '/DataRepresentation/GetMapDataWithParams';
+        var campaignId = $('#CampaignIds option:selected').val();
+        var statusId = $('#StatusId option:selected').val();
+        var startDate = $('#datepickerFrom input').val();
+        var endDate = $("#datepickerTo input").val();
+        if (campaignId.length == 0 || campaignId == ' ') {
+            $("#campaignMsg").css("display", "block");
+            return;
+        } else {
+            $("#campaignMsg").css("display", "none");
+        }
+        if (statusId.length == 0 || statusId == ' ') {
+            $("#statusMsg").css("display", "block");
+            return;
+        } else {
+            $("#statusMsg").css("display", "none");
+        }
+        var xhqr = $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            async:true,
+            data:{campaignIds:campaignId,statusId:statusId,startDate:startDate,endDate:endDate},
+            success: function (result) {
+                result.forEach(function (row) {
+                    debugger;
+                    var Id = row['Id'];
+                    var dataValue = row['dataValue'];
+                    if (dataValue != null) {
+                        if (dataValue < dataMin) {
+                            dataMin = dataValue;
+                        }
+                        if (dataValue > dataMax) {
+                            dataMax = dataValue;
+                        }
+                    }
+                    var feature = map.data.getFeatureById(Id);
+                    if (feature != null) {
+                        feature.setProperty('data_variable', dataValue);
+                    }
+
+                });
+                document.getElementById('data-min').textContent =
+                dataMin.toLocaleString();
+                document.getElementById('data-max').textContent =
+                    dataMax.toLocaleString();
+            },
+            error: function (result) {
+                debugger;
+                var json = result.responseText;
+                
+            },
+            complete: function (jqXHR, textStatus) {
+                map.data.setStyle(styleFeature);
+                map.data.addListener('mouseover', mouseInToRegion);
+                map.data.addListener('mouseout', mouseOutOfRegion);
+                map.data.addListener('click', function (e) {
+                    var fearureVal = e.feature.getProperty('data_variable');
+                    var name = e.feature.getProperty('Name');
+                    var contentString = 'asif';
+                });
+            }
+        });
+    }
+    function styleFeature(feature) {
+        debugger;
+        var low = [5, 69, 54];
+        var high = [151, 83, 34];
+        var featureVal = feature.getProperty('data_variable');
+        
+        var featureName = feature.getProperty('Name');
+        var delta = (featureVal - dataMin) / (dataMax - dataMin);
+        debugger;
+        var color = [];
+        for (var i = 0; i < 3; i++) {
+            color[i] = (high[i] - low[i]) * delta + low[i];
+        }
+        var showRow = true;
+        if (featureVal == null || isNaN(featureVal)) {
+            showRow = false;
+        }
+        var outlineWeight = 0.5;
+        var zIndex = 1;
+        if(feature.getProperty('Id') === 'hover'){
+            outlineWeight = zIndex = 2;
+        }
+
+        return{
+            strokeWeight:outlineWeight,
+            strokeColor:'#fff',
+            zIndex:zIndex,
+            fillColor:'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
+            fillOpacity: 0.75,
+            visible : showRow
+        };
+    }
+    function mouseInToRegion(e) {
+
+        e.feature.setProperty('Id', 'hover');
+
+        var percent = (e.feature.getProperty('data_variable') - dataMin) /
+            (dataMax - dataMin) * 100;
+
+        document.getElementById('data-label').textContent =
+            e.feature.getProperty('Name');
+        document.getElementById('data-value').textContent =
+            e.feature.getProperty('data_variable').toLocaleString();
+        document.getElementById('data-box').style.display = 'block';
+        document.getElementById('data-caret').style.display = 'block';
+        document.getElementById('data-caret').style.paddingLeft = percent + '%';
+    }
+
+    function mouseOutOfRegion(e) {
+        e.feature.setProperty('Id', 'normal');
+    }
+</script>

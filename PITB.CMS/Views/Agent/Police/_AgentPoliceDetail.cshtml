@@ -1,0 +1,813 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Handler.Authentication
+@model VmComplaintPoliceDetailAgent
+@{
+    var user = AuthenticationHandler.GetCookie();
+    //Layout = null;
+    bool isProfileHidden = (PermissionHandler.IsPermissionAllowedInCampagin(Config.CampaignPermissions.HideProfileInfoFromStakeholderDetail) &&
+                            !PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowProfileInfoInStakeholderDetail, user.UserId, user.Role)
+                            ); ;
+}
+<style>
+    .dynamicDivAdded {
+        background: #e3f1cd; /*#efefee*/
+        /*padding: 10px 0px; */
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+
+    .dynamicDiv {
+        background: #f7f7f7; /*#efefee*/
+        /*padding: 10px 0px; */
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+</style>
+<div id="ComplaintDetail" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.ComplaintId)
+            @if (!isProfileHidden && !Model.Is_Anonymous)
+            {
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title">Personal Information</h4>
+
+                    </div>
+                    <div class="box-body-white" style="margin-top: 5px;">
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Father/Husband Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Father_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>CNIC No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Cnic_No)
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Gender)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Contact No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Secondary contact</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Secondary_Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Province</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Province.Province_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>District</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.District.District_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Landline No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.LandLine_No)
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Person address</label>
+                            </div>
+                            <div class="col-md-6">
+
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Address)
+                            </div>
+                        </div>
+
+                        <br style="clear: both;" />
+
+                    </div>
+                </div>
+            }
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    @if (isProfileHidden || Model.Is_Anonymous)
+                    {
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    }
+                    <h4 class="modal-title">Complaint Information [<span id="complaintId">@Model.complaintIdStr</span>]</h4>
+                </div>
+
+
+
+                <div class="box-body-white" style="margin-top:5px;">
+
+                    @if (Model.ListDynamicComplaintFields != null && Model.ListDynamicComplaintFields.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ListDynamicComplaintFields.Count; i++)
+                        {
+                            <div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>@Model.ListDynamicComplaintFields[i].FieldName</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (!String.IsNullOrEmpty(Model.ListDynamicComplaintFields[i].FieldValue))
+                                    {
+                                        @Html.DisplayFor(m => m.ListDynamicComplaintFields[i].FieldValue)
+                                    }
+                                    else
+                                    {
+                                        <div> N/A </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Type</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_Type)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complaint Category</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.ComplaintCategoryName)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complaint Sub Category</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_SubCategoryName)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Province</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Province_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>District</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.District_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Town/Tehsil</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Tehsil_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>UC</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.UnionCouncil_Name)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complete address</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.Complaint_Address)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Details of Complaint</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.Complaint_Remarks)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Agent's comments </label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Agent_Comments)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Current Status </label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.currentStatusStr)
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.currStatusCommentsStr))
+                    {
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label> Status Comments </label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.currStatusCommentsStr)
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up count</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupCount)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up comments</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupComment)
+                        </div>
+                    </div>
+
+                    <br style="clear: both;" />
+
+                </div>
+
+
+            </div>
+            @if (!@Model.CanShowFeedbackSubmitView)
+            {
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <h4 class="modal-title">Complainant Feedback</h4>
+
+                    </div>
+                    <br clear="all">
+                    <div id="CallComplainantWithinTime">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                @*<label>*@@Model.FeedbackNotSumbmitViewMessage @*</label>*@
+                            </div>
+                        </div>
+                    </div>
+                    @if (@Model.DbFeedbackLog != null)
+                    {
+                        <div id="Step0NonEditable" class="form-group dynamicDivAdded">
+                            @{
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Conference call arranged</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    string str = Utility.GetN_A(@Model.DbFeedbackLog.ConferenceCallArrangedIdStr);
+                                                    @Html.DisplayFor(m => str)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Call (within 08 Hours)</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DisplayFor(m => m.DbFeedbackLog.CallWithin08HoursStatusIdStr)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Reason</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    string reason = Utility.GetN_A(@Model.DbFeedbackLog.CallWithin08HoursStatusComments);
+                                                    @Html.DisplayFor(m => reason)
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Meeting (within 24 Hours)</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DisplayFor(m => m.DbFeedbackLog.MeetingWithin24HoursStatusIdStr)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Reason</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    reason = Utility.GetN_A(@Model.DbFeedbackLog.MeetingWithin24HoursStatusComments);
+                                                    @Html.DisplayFor(m => reason)
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Proceeding (within 48 Hours)</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DisplayFor(m => m.DbFeedbackLog.ProceedingWithin48HoursStatusIdStr)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Reason</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    reason = Utility.GetN_A(@Model.DbFeedbackLog.ProceedingWithin48HoursStatusComments);
+                                                    @Html.DisplayFor(m => reason)
+                                                }
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Satisfaction of complainant</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @Html.DisplayFor(m => m.DbFeedbackLog.FeedbackStatusIdStr)
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Reason</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                @{
+                                                    reason = Utility.GetN_A(@Model.DbFeedbackLog.FeedbackStatusComments);
+                                                    @Html.DisplayFor(m => reason)
+                                                }
+                                                @*@Html.DisplayFor(m => Utility.GetN_A(m.DbFeedbackLog.FeedbackStatusComments))*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                using (Html.BeginForm("OnSubmitComplaintFeedback", "Police", FormMethod.Post, new { id = "FormSubmitComplaintFeedback", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::PostActionCallback||url::../Police/PostComplaintFeedback?complaintId=" + @Model.ComplaintId }))
+                {
+                    <div class="box box-primary" style="box-shadow: none;">
+                        <div class="box-header-blue with-border btn-header">
+                            <h4 class="modal-title">Complainant Feedback</h4>
+
+                        </div>
+                        <div id="CallComplainantWithinTime">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>1) Conference call arranged*</u></h5>
+                                </div>
+                            </div>
+                            <div id="ConferenceCallArranged" class="form-group row">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <label>Conference call arranged* </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="RadioConferenceCallArranged" name="RadioConferenceCallArranged" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ConferenceCallArranged" value="">
+                                            <label class="normalFont"><input type="radio" name="ConferenceCallArranged" value="1___Yes"> Yes </label>@*<br>*@
+                                            <label class="normalFont"><input type="radio" name="ConferenceCallArranged" value="2___No"> No </label>@*<br>*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="ConferenceCallArranged">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    @*<div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioCallWithin08Hours::2___No">
+                                            <div class="col-md-4">
+                                                <label>Give reason*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <input type="text" data-val-tag="T1" class="form-control" name="CallWithin08HoursReason" data-val-is-required="True" />
+                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="CallWithin08HoursReason">
+
+                                                </span>
+                                            </div>
+                                        </div>*@
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="CallComplainantWithinTime">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>2) Call (within 08 Hours)*</u></h5>
+                                </div>
+                            </div>
+                            <div id="Step0Editable" class="form-group row">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <label>Call to the complainant with in time </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="RadioCallWithin08Hours" name="RadioCallWithin08Hours" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="CallWithin08Hours" value="">
+                                            <label class="normalFont"><input type="radio" name="CallWithin08Hours" value="1___Yes"> Yes </label>@*<br>*@
+                                            <label class="normalFont"><input type="radio" name="CallWithin08Hours" value="2___No"> No </label>@*<br>*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="CallWithin08Hours">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioCallWithin08Hours::2___No">
+                                        <div class="col-md-4">
+                                            <label>Give reason*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" data-val-tag="T1" class="form-control" name="CallWithin08HoursReason" data-val-is-required="True" />
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="CallWithin08HoursReason">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="DivMeetingWithin48Hours">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>3) Meeting (within 24 Hours)*</u></h5>
+                                </div>
+                            </div>
+                            <div id="Step1Editable" class="form-group row ">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <label>Complainant was called & meeting was made (heard in person) </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="RadioMeetingWithin24Hours" name="RadioMeetingWithin24Hours" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="MeetingWithin24Hours" value="">
+                                            <label class="normalFont"><input type="radio" name="MeetingWithin24Hours" value="1___Yes"> Yes </label>@*<br>*@
+                                            <label class="normalFont"><input type="radio" name="MeetingWithin24Hours" value="2___No"> No </label>@*<br>*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="MeetingWithin24Hours">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioMeetingWithin24Hours::2___No">
+                                        <div class="col-md-4">
+                                            <label>Give reason*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" data-val-tag="T1" class="form-control" name="MeetingWithin24HoursReason" data-val-is-required="True" />
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="MeetingWithin24HoursReason">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="DivProceedingWithin48Hours">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>4) Proceeding (within 48 Hours)*</u></h5>
+                                </div>
+                            </div>
+                            <div id="Step2Editable" class="form-group row ">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="col-md-6">
+                                            <label>Proceeding is started  </label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="RadioProceedingWithin48Hours" name="RadioProceedingWithin48Hours" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ProceedingWithin48Hours" value="">
+                                            <label class="normalFont"><input type="radio" name="ProceedingWithin48Hours" value="1___Yes"> Yes </label>@*<br>*@
+                                            <label class="normalFont"><input type="radio" name="ProceedingWithin48Hours" value="2___No"> No </label>@*<br>*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="ProceedingWithin48Hours">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioProceedingWithin48Hours::2___No">
+                                        <div class="col-md-4">
+                                            <label>Give reason*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" data-val-tag="T1" class="form-control" name="ProceedingWithin48HoursReason" data-val-is-required="True" />
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="ProceedingWithin48HoursReason">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="DivSatisfactionOfComplainant">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <h5><u>5) Satisfaction of complainant *</u></h5>
+                                </div>
+                            </div>
+                            <div id="SatisfactionOfComplainant" class="form-group row">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Select One *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input id="RadioSatisfactionOfComplainant" name="RadioSatisfactionOfComplainant" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="SatisfactionOfComplainant" value="">
+                                            <label class="normalFont"><input type="radio" name="SatisfactionOfComplainant" value="1___Yes"> Satisfied </label>@*<br>*@
+                                            <label class="normalFont"><input type="radio" name="SatisfactionOfComplainant" value="2___No"> Dissatisfied </label>@*<br>*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="SatisfactionOfComplainant">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioSatisfactionOfComplainant::2___No">
+                                        <div class="col-md-4">
+                                            <label>Give reason*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" data-val-tag="T1" class="form-control" name="SatisfactionOfComplainantReason" data-val-is-required="True" />
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="SatisfactionOfComplainantReason">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="form-group row">
+                                <div class="col-md-12">
+                                    <hr>
+                                </div>
+                            </div>*@
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right" @*onclick="OnSumitClick()"*@><span class="fa fa-save"></span>&nbsp;Submit Feedback</button>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+            }
+
+            @if (@Model.CanShowFollowUpView)
+            {
+                using (Html.BeginForm("OnFollowUp", "Complaint", FormMethod.Post, new { enctype = "multipart/form-data", id = "StatusChangeForm" }))
+                {
+                    @Html.HiddenFor(n => n.ComplaintId)
+                    <div class="box box-primary" style="box-shadow: none;">
+                        <div class="box-header-blue with-border btn-header">
+                            <h4 class="modal-title">Follow Up</h4>
+
+                        </div>
+                        <div class="box-body-white" style="margin-top:5px;">
+                            <div class="form-group col-md-6">
+                                <div class="col-md-3">
+                                    <label>Comments </label>
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.TextAreaFor(m => m.FollowupComments, new { @class = "form-control", @placeholder = "Follow up comments" })
+
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary" id="StatusChangeBtn"><span class="glyphicon glyphicon-edit"></span>&nbsp;Follow Up</button>
+                            </div>
+                            <br style="clear: both;" />
+                        </div>
+                    </div>
+                }
+            }
+
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    <h4 class="modal-title">Status History</h4>
+                </div>
+                @*@if (@Model.hasStatusHistory)
+                    {*@
+                <div class="box-body-white" style="margin-top: 5px;">
+                    <a class="btn btn-default btn-sm margin_b" role="button" data-toggle="collapse" href="#Filters3" aria-expanded="true" aria-controls="Filters3">
+                        <span class="fa fa-sliders"></span>Status History
+                    </a>
+                    <div id="Filters3" class="collapsed collapsed in" area-expanded="true">
+                        <div class="">
+                            <div>
+                                <div id="DivStatusLogs" style="margin-top: 20px">
+                                    <div class="" style="margin: 0 auto; width: 100%;">
+
+                                        <table id="StatusHistoryTable" style="width: 100%;" class="table responsive table-hover table-striped table-bordered table-condensed margin_t">
+                                            <thead>
+                                                <tr style="background-color: #8b0000; color: #ffffff">
+                                                    <th>User Name</th>
+                                                    <th>User Hierarchy</th>
+                                                    <th>Hierarchy Value</th>
+                                                    <th>Status</th>
+                                                    <th>Status Change Date</th>
+                                                    <th>Comments</th>
+                                                    <th>Active</th>
+                                                    <th>Show Files</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br clear="all" />
+                    <hr>
+                </div>
+                @*}
+                    else
+                    {
+                        <div class="box-body-white" style="margin-top:5px;">
+                            <div class=" margin_t15px">
+                                <div class="form-group col-md-12">
+                                    <label> No Status History Found </label>
+                                </div>
+                            </div>
+                        </div>
+                    }*@
+            </div>
+            <div class="box-footer">
+                <div style="font-size: 12px;">Created by : <b>@Model.Created_By</b> &nbsp; <i>@Model.Created_DateTime.Value.ToString("dd-MMM-yyyy hh:mm:tt")</i></div>
+            </div>
+
+        </div>
+
+
+        @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <div class="modal-header"><h4>Detail</h4></div>*@
+
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        debugger;
+        RegisterLocalValidation("#FormSubmitComplaintFeedback", "T1");
+        //alert($('#ComplaintId').val());
+        ReloadDataForStatusChange('#StatusHistoryTable');
+    });
+    $("#FormSubmitComplaintFeedback").submit(function (event) {
+        debugger;
+        event.preventDefault();
+        var elementsToPost = [];
+        var isValid = ValidateFormOnSubmit("#FormSubmitComplaintFeedback", "T1", elementsToPost);
+        if (isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+            SubmitForm("#FormSubmitComplaintFeedback", elementsToPost);
+        }
+        return isValid;
+    });
+    function PostActionCallback(data) {
+        if (data != null) {
+            //$("#ComplaintAction").html(data);
+            //data.RedirectUrl = '';
+        }
+        HideLoading();
+    }
+
+    function ReloadDataForStatusChange(divId) {
+        $(divId).dataTable().fnDestroy();
+        var table = $(divId).dataTable({
+            "bSort": true,
+            "ajax": "@Url.Action("GetComlaintsStatusChangeHistoryTable", "GeneralApi")?" + "complaintId=" + $('#ComplaintId').val(),
+            "contentType": "application/json",
+        "type": "GET",
+        "bLengthChange": false,
+        "columns": [
+           { "data": "UserName" },
+            { "data": "UserHierarchy" },
+            { "data": "UserHierarchyValue" },
+            { "data": "Status" },
+            { "data": "StatusChangeDateTime" },
+            { "data": "Comments" },
+            { "data": "IsCurrentlyActive" }
+            //{ "data": "Id" }
+        ],
+        "aoColumnDefs": [
+            {
+                "aTargets": [7],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    //alert('zeeshi');
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+                   // alert(data.id);
+                    return '<td>' +
+                        '<button type="submit" name="Show" value="' + data.Id + '" id="' + data.Id + '" class="btn btn-primary btn-sm" onclick="OpenStatusAttachments(this.id);">' +
+                        '<span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;View</b>&nbsp;&nbsp;&nbsp;&nbsp;</button>' +
+                        '</td>';
+                }
+            }
+        ]
+    });
+    }
+    function OpenStatusAttachments(id) {
+        $('#PopupDiv2').empty();
+        $('#PopupDiv2').load("../Complaint/FileViewer?complaintId=" + $('#ComplaintId').val() + "&attachmentRefType=" +@Convert.ToInt32(Config.AttachmentReferenceType.ChangeStatus) +"&attachmentRefTypeId=" + id);
+        $('#PopupDiv2').modal();
+    }
+
+</script>
+

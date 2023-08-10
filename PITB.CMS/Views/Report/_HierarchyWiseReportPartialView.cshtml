@@ -1,0 +1,303 @@
+﻿@{
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+    //string startDate = DateTime.Parse("09/01/2018").ToString("yyyy-MM-dd");
+    //string endDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+}
+<div class="row" style="margin-top:20px;">
+    <div class="col-lg-2 col-md-2 col-sm-6" id="startdate">
+        @*<span>From Date</span>
+                <input type="text" id="Piedatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6" id="enddate">
+                <span>To Date</span>
+                <input type="text" id="Piedatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">*@
+        <span>Select Date</span>
+        <input type="text" id="pieDateRange" placeholder="" class="form-control">
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-12">
+        <br />
+        <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+    </div>
+</div>
+<div id="PrintableDiv">
+    <link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/responsive.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="http://@a/css/crm.css">
+
+    <style type="text/css">
+        .table > thead > tr > th,
+        .table > tbody > tr > th,
+        .table > tfoot > tr > th {
+            background-color: rgb(65, 94, 97);
+            color: rgb(255,255,255);
+        }
+
+        .table > thead > tr > th,
+        .table > tfoot > tr > th,
+        .table > thead > tr > td,
+        .table > tbody > tr > td,
+        .table > tfoot > tr > td {
+            page-break-inside: avoid;
+        }
+
+        .table > thead > tr {
+            page-break-inside: avoid;
+        }
+
+        .table > tbody > tr {
+            page-break-inside: avoid;
+        }
+
+        .table > tfoot > tr {
+            page-break-inside: avoid;
+        }
+        /*.table > thead { display: table-header-group; }
+                        .table thead, .table tfoot { display: table-row-group; }*/
+    </style>
+    <div>
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;">Complaints by @ViewBag.HierarchyName</h4>
+        </div>
+
+        <div class="box-body-white">
+
+            <table id="HierarchyWiseTable" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Sr No</th>
+                        <th>
+                            @ViewBag.HierarchyName
+                        </th>
+                        @*@foreach (var status in ViewBag.StatusesHeaderName)
+                            {
+                                <th>
+                                    @status.Value
+                                </th>
+                            }*@
+                        <th>Pending (Fresh)</th>
+                        <th>Pending (Reopened)</th>
+                        <th>Overdue</th>
+                        <th>Resolved</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                            Total
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </tfoot>
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+
+<style>
+    th {
+        font-size: 17px;
+    }
+
+    tr {
+        font-size: 17px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#pieDateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#pieDateRange').on('apply.daterangepicker', function (ev, picker) {
+            LoadData();
+        });
+        //$('#Piedatepickerlower').datepicker()
+        //     .on("changeDate", function(e) {
+        //         debugger;
+        //         LoadData();
+        //     });
+        //$('#Piedatepickermax').datepicker()
+        //    .on("changeDate", function(e) {
+        //        debugger;
+        //        LoadData();
+        //    });
+    });
+
+
+    $(function () {
+        LoadData();
+    })
+    function LoadData() {
+        LoadTable("@Url.Action("GetHierarchyWiseReportData", "GeneralApi")");
+    }
+    function LoadTable(apiUrl, from, to, campaign, cateogries, statuses) {
+        debugger;
+        var table = $('#HierarchyWiseTable').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+                //   debugger;
+                //alert('Asif');
+                //alert(json);
+                
+                //fnCallback(json.data)
+            },
+            drawCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                debugger;
+                data = api.column(2).data();
+                var totalcount = data.length ? data.reduce(function (a, b) {
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;
+                }) : 0;
+                api.columns('.sum', { page: 'current' }).every(function () {
+                    var sum = api
+                        .cells(null, this.index(), { page: 'current' })
+                        .render('display')
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+                    var val = sum * 100 / totalcount;
+                    
+                    //$(this.footer()).html(sum +'  ('+ Math.floor(val) + '%)');
+                    $(this.footer()).html(sum);
+                });
+
+            },
+            "footerCallback": function () {
+                debugger;
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "bServerSide": false,
+            "order": [[0, "asc"]],
+            "ajax": {
+                "url": apiUrl,
+                //"dataSrc": "data",
+                "type": "GET",
+                "data": {
+                    startDate: $('#pieDateRange').val().split('To')[0].trim(),
+                    endDate: $('#pieDateRange').val().split('To')[1].trim(),
+                    campaignIds: '@((string)ViewBag.CampaignIds)',
+                    hierarchyId: @((int)ViewBag.HierarchyId),
+                    statusIds: '@((string)ViewBag.StatusIds)',
+                },
+                "contentType": "application/json",
+                //success:function(data){
+                //    //alert(data);
+                //    //var obj = JSON.parse(data.data);
+                //    //alert(obj[0]);
+                //    //alert(data);
+                //    //alert(data.data);
+
+                //},
+                //error:function(err){
+                //    alert('Error');
+
+                //    alert(err.data);
+                //}
+
+            },
+
+            "columns": [
+                { "data": "SrNo" },
+                { "data": 'DistrictName' },
+                { "data": "PendingFresh", className: "sum" },
+                { "data": "PendingReopened", className: "sum" },
+                { "data": "Overdue", className: "sum" },
+                { "data": "Resolved", className: "sum" },
+
+
+                @*@foreach (var s in ViewBag.StatusesDBColumnName)
+                {
+                  <text>
+
+                {   "data": "@s.Value"},
+                </text>
+
+                }*@
+                { "data": "Total", className: "sum" },
+
+
+            ],
+        });
+        debugger;
+        //DivData.push(table);
+    }
+
+    function PrintPage() {
+        debugger;
+        try {
+            ShowLoading();
+            var i;
+            for (i = 0; i < DivData.length; i++) {
+                disableEnableDataTablePaginationAndFilters(DivData[i], true);
+            }
+            debugger;
+
+            var lObjPageHeader = $('#pageHeader').html();
+
+            var printContents = $('#PrintableDiv').html();
+            var lObjHtmlStr = lObjPageHeader + printContents;
+            var filename = "District Report.pdf"
+            var htmlData = {
+                id: 1,
+                htmlStr: GetLinkStrOnPage() + printContents
+            };
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: '@Url.Action("ExportPdfWithHtml", "generalapi")',
+                data: { htmlData: htmlData },
+                success: function (dataId) {
+                    //alert(dataId);
+                    debugger;
+                    window.location = '@Url.Action("ExportPdfWithHtml", "generalapi")?dataId=' + dataId + '&filename=' + filename;
+                    HideLoading();
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    HideLoading();
+                }
+
+            });
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>

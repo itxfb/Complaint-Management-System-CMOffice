@@ -1,0 +1,887 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Handler.Business
+@using PITB.CMS_Common.Handler.Notification
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Models.Custom
+@using PITB.CMS_Common.Models
+@model VmSEStakeholderComplaintDetail
+@{
+    var user = AuthenticationHandler.GetCookie();
+    Layout = null;
+    bool isProfileHidden = (//PermissionHandler.IsPermissionAllowedInCampagin(Config.CampaignPermissions.HideProfileInfoFromStakeholderDetail) &&
+                            !PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.HideProfileInfoInStakeholderDetail, user.UserId, user.Role)
+                            );
+    CMSCookie cookie = new AuthenticationHandler().CmsCookie;
+}
+
+
+<div id="ComplaintDetail" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+
+            @Html.HiddenFor(m => m.ComplaintId)
+            @Html.HiddenFor(m => m.Compaign_Id)
+            @Html.HiddenFor(m => m.Complaint_Category)
+
+
+            @if (isProfileHidden) //(false)
+            {
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Complainant Information</h4>
+
+                    </div>
+                    <div class="box-body-white" style="margin-top: 5px;">
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Name)
+                            </div>
+                        </div>
+                        @*<div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>Father/Husband Name</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DisplayFor(m => m.vmPersonlInfo.Person_Father_Name)
+                                </div>
+                            </div>*@
+                        @*<div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>CNIC No</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DisplayFor(m => m.vmPersonlInfo.Cnic_No)
+                                </div>
+                            </div>*@
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Gender)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Contact No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Secondary Contact</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Secondary_Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Province</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Province.Province_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>District</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.District.District_Name)
+                            </div>
+                        </div>
+                        @*<div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>Landline No</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DisplayFor(m => m.vmPersonlInfo.LandLine_No)
+                                </div>
+                            </div>*@
+
+                        @*<div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>Person Address</label>
+                                </div>
+                                <div class="col-md-6">
+
+                                    @Html.DisplayFor(m => m.vmPersonlInfo.Person_Address)
+                                </div>
+                            </div>*@
+
+                        <br style="clear: both;" />
+
+                    </div>
+                </div>
+            }
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    @if (isProfileHidden)
+                    {
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    }
+                    <h4 class="modal-title">Complaint Information [@Model.complaintIdStr]</h4>
+                </div>
+
+                @if (Model.ListEscalationModel != null && Model.ListEscalationModel.Count > 0)
+                {
+                    <div class="box-body-white" style="margin-top:5px;">
+
+
+                        <div class="col-md-12 form-group">
+                            <a class="btn btn-default btn-sm " role="button" data-toggle="collapse" href="#FiltersShowEscalation" aria-expanded="true" aria-controls="FiltersShowEscalation">
+                                <span class="fa fa-sliders"></span>Show Escalation
+                            </a>
+                        </div>
+
+
+
+                        <div id="FiltersShowEscalation" class="collapsed collapsed in" area-expanded="true">
+                            @for (int i = 0; i < Model.ListEscalationModel.Count; i++)
+                            {
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-6">
+                                        <label>@Model.ListEscalationModel[i].HierarchyStr</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @Html.DisplayFor(m => m.ListEscalationModel[i].UserNameCommaSep)
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+
+                    </div>
+                    <br clear="all" />
+                    <hr>
+                }
+
+
+                <div class="box-body-white" style="margin-top:5px;">
+                    <h5 class="modal-title">School Information</h5>
+                    <hr>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Province</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Province_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>District</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.District_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Town/Tehsil</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Tehsil_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Markaz</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.UnionCouncil_Name)
+                        </div>
+                    </div>
+                    @if (Model.ListDynamicComplaintFields != null && Model.ListDynamicComplaintFields.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ListDynamicComplaintFields.Count; i++)
+                        {
+                            if (@Model.ListDynamicComplaintFields[i].FieldName == "Teaching Quality")
+                            {
+                                if (((int)cookie.Hierarchy_Id == 3 && cookie.User_Hierarchy_Id >= 20) || (int)cookie.Hierarchy_Id < 3)
+                                {
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-6">
+                                            <label>@Model.ListDynamicComplaintFields[i].FieldName</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            @if (!String.IsNullOrEmpty(Model.ListDynamicComplaintFields[i].FieldValue))
+                                            {
+                                                @Html.DisplayFor(m => m.ListDynamicComplaintFields[i].FieldValue)
+                                            }
+                                            else
+                                            {
+                                                <div> N/A </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-6">
+                                        <label>@Model.ListDynamicComplaintFields[i].FieldName</label>
+                                    </div>
+                                    <div class="col-md-6">
+                                        @if (!String.IsNullOrEmpty(Model.ListDynamicComplaintFields[i].FieldValue))
+                                        {
+                                            @Html.DisplayFor(m => m.ListDynamicComplaintFields[i].FieldValue)
+                                        }
+                                        else
+                                        {
+                                            <div> N/A </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>School Head Name</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.SchoolHeadName)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>School Head PhoneNo</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.SchoolHeadPhoneNo)
+                        </div>
+                    </div>
+                    <br clear="all" />
+
+                    <h5 class="modal-title">Responsible Person Information</h5>
+                    <hr>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.VmComplaintResponsiblePerson.Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Contact No</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.VmComplaintResponsiblePerson.MobileNo)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Designation</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.VmComplaintResponsiblePerson.Designation)
+                        </div>
+                    </div>
+                    <br clear="all" />
+                    <h5 class="modal-title">Complaint Information</h5>
+                    <hr>
+
+
+                    @*<div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Complaint Type</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.Complaint_Type)
+                            </div>
+                        </div>*@
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Category</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.DepartmentName)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Type</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.ComplaintCategoryName)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>SubType</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_SubCategoryName)
+                        </div>
+                    </div>
+
+
+
+                    @*<div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Complete Address</label>
+                            </div>
+                            <div class="col-md-6">
+
+                                @Html.DisplayFor(m => m.Complaint_Address)
+                            </div>
+                        </div>*@
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Details Of Complaint</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.Complaint_Remarks)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Required Action</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_IdealAction)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up count</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupCount)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up comments</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupComment)
+                        </div>
+                    </div>
+                    @*<div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Agent's Comments </label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.Agent_Comments)
+                            </div>
+                        </div>*@
+                    @*<div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Attachments </label>
+                            </div>
+                            <div class="col-md-6">
+                                @if (@Model.VmStatusChange.vmFileModel.ListFileModel == null || @Model.VmStatusChange.vmFileModel.ListFileModel.Count == 0)
+                                {
+                                    <span>None </span>
+                                }
+                                else
+                                {
+                                    <button type="submit" name="Show" value="@Model.ComplaintId" id="@Model.ComplaintId" class="btn btn-primary btn-sm" onclick=" OpenComplaintAttachments(this.id); ">
+                                        <span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;View&nbsp;&nbsp;&nbsp;&nbsp;
+                                    </button>
+                                }
+                            </div>
+                        </div>*@
+
+                    <br clear="all" />
+
+                    <h5 class="modal-title">Status Information</h5>
+                    <hr>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Current Status </label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.currentStatusStr)
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.currStatusCommentsStr))
+                    {
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label> Status Comments </label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.currStatusCommentsStr)
+                            </div>
+                        </div>
+                    }
+
+
+                    <br style="clear: both;" />
+
+                </div>
+
+
+            </div>
+
+            @*@if (@Model.currDetailType == VmStakeholderComplaintDetail.DetailType.AssignedToMe || PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowStatusChangeInComplaintsAllStakeholder))*@
+            @if (Convert.ToInt32(ViewBag.canShowStatusChange) == 1)
+            {
+
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <h4 class="modal-title">Change Status</h4>
+                    </div>
+
+
+
+                    <div class="box-body-white" style="margin-top: 5px;">
+                        @*@using (Ajax.BeginForm("OnStatusChange", "Complaint", new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                //InsertionMode = InsertionMode.Replace,
+                                //UpdateTargetId = "detail",
+                                //LoadingElementId = "loading",
+                                OnSuccess = "OnStatusChangeComplete(data);"
+                            }, new { enctype = "multipart/form-data" }))*@
+                        @using (Html.BeginForm("OnStatusChange", "SchoolEducationComplaint", FormMethod.Post, new { enctype = "multipart/form-data", id = "StatusChangeForm" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.VmStatusChange.Compaign_Id)
+                            @Html.HiddenFor(m => m.VmStatusChange.ComplaintId)
+                            @Html.HiddenFor(m => m.VmStatusChange.Complaint_Category)
+                            @Html.HiddenFor(m => m.VmStatusChange.Complaint_SubCategory)
+                            @Html.HiddenFor(m => m.VmStatusChange.returnUrl)
+                            <div class="form-group col-md-12">
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-3">
+                                        <label>Status </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.VmStatusChange.statusID, Model.VmStatusChange.ListStatus, new { @Id = "statusList", @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-3">
+                                        <label>Comments* </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.TextAreaFor(m => m.VmStatusChange.statusChangeComments, new { @class = "form-control", @placeholder = "Comments" })
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group col-md-12 text-right">
+
+                                <button type="submit" class="btn btn-primary" id="FilterBtn" onclick="OnStatusChangeSubmit()"><span class="glyphicon glyphicon-edit"></span>&nbsp;Change</button>
+
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <a class="btn btn-default btn-sm " role="button" data-toggle="collapse" href="#Filters4" aria-expanded="True" aria-controls="Filters4">
+                                    <span class="fa fa-sliders"></span>Attach Files *
+                                </a> 5 Mb Maximum Limit
+                            </div>
+
+                            @*<div class="row">
+                                <div class="progress progress-striped">
+                                    <div class="progress-bar progress-bar-success">0%</div>
+                                </div>
+
+                                <div id="status"></div>
+                                </div>*@
+
+                            <div id="Filters4" class="collapsed collapsed in" area-expanded="true">
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        <div class="col-md-1">
+                                            <label>1) </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="file" name="FileUpload1" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        <div class="col-md-1">
+                                            <label>2) </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="file" name="FileUpload2" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        <div class="col-md-1">
+                                            <label>3) </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="file" name="FileUpload3" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        <div class="col-md-1">
+                                            <label>4) </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="file" name="FileUpload4" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-5 form-group">
+                                        <div class="col-md-1">
+                                            <label>5) </label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input class="form-control" type="file" name="FileUpload5" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                        <br style="clear: both;" />
+                    </div>
+
+
+                </div>
+
+            }
+
+
+            @if (/*@Model.currDetailType == VmStakeholderComplaintDetail.DetailType.AssignedToMe ||*/ PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ChangeCategoryInStakeholderDetail, user.UserId, user.Role))
+            {
+
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <h4 class="modal-title">Change Category</h4>
+                    </div>
+
+
+
+                    <div class="box-body-white" style="margin-top: 5px;">
+                        @*@using (Ajax.BeginForm("OnStatusChange", "Complaint", new AjaxOptions
+                            {
+                                HttpMethod = "POST",
+                                //InsertionMode = InsertionMode.Replace,
+                                //UpdateTargetId = "detail",
+                                //LoadingElementId = "loading",
+                                OnSuccess = "OnStatusChangeComplete(data);"
+                            }, new { enctype = "multipart/form-data" }))*@
+
+                        @using (Html.BeginForm("OnCategoryChange", "Complaint", FormMethod.Post, new { enctype = "multipart/form-data", id = "CategoryChangeForm" }))
+                        {
+                            @Html.HiddenFor(m => m.VmCategoryChange.ComplaintId)
+                            @Html.HiddenFor(m => m.VmCategoryChange.Compaign_Id)
+                            @Html.HiddenFor(m => m.VmCategoryChange.Complaint_Category)
+                            @Html.HiddenFor(m => m.VmCategoryChange.Complaint_SubCategory)
+                            <div class="form-group col-md-12">
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-3">
+                                        <label>Category*</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.VmCategoryChange.selectedComplaintCategory, Model.VmCategoryChange.ComplaintCategoriesSelectList, "--Select--", new { @Id = "userControlCategory", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmCategoryChange.selectedComplaintCategory, "", new { @class = "label label-warning" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-3">
+                                        <label>Sub Category*</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(m => m.VmCategoryChange.selectedComplaintSubCategory, Model.VmCategoryChange.ComplaintSubCategoriesSelectList, "--Select--", new { @Id = "userControlSubCategory", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmCategoryChange.selectedComplaintSubCategory, "", new { @class = "label label-warning" })
+                                    </div>
+                                </div>
+
+                                @*<div class="col-md-1">
+                                        <label>Status </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.DropDownListFor(m => m.statusID, Model.ListStatus, new { @Id = "statusList", @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Comments </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        @Html.TextAreaFor(m => m.statusChangeComments, new { @class = "form-control", @placeholder = "Comments" })
+
+                                    </div>*@
+                                @*<div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary widthFull pull-right" id="FilterBtn" onclick="OnCategoryChangeSubmit()"><span class="glyphicon glyphicon-edit"></span>&nbsp;Change</button>
+                                    </div>*@
+                            </div>
+
+                            <div class="form-group col-md-12 text-right">
+
+                                <button type="submit" class="btn btn-primary" id="FilterBtn" onclick=" OnCategoryChangeSubmit() "><span class="glyphicon glyphicon-edit"></span>&nbsp;Change</button>
+
+                            </div>
+                        }
+
+                        <br style="clear: both;" />
+                    </div>
+
+
+                </div>
+
+            }
+
+
+
+
+            @Html.Partial("_StatusHistory", @Model)
+
+
+
+            @*<div class="box-header-blue with-border btn-header">
+                    <h4 class="modal-title">Transfer History</h4>
+                </div>
+                <div class="box-body-white" style="margin-top:5px;">
+                    @if (Model.hasTransferHistory)
+                    {
+                        <a class="btn btn-default btn-sm margin_b" role="button" data-toggle="collapse" href="#Filters2" aria-expanded="true" aria-controls="Filters2">
+                            <span class="fa fa-sliders"></span>Transfer History
+                        </a>
+                        <div id="Filters2" class="collapsed collapsed in" area-expanded="true">
+                            <div class="">
+                                <div>
+                                    <div id="DivAttendanceLogs" style="margin-top: 20px">
+                                        <div class="" style="margin: 0 auto; width: 100%;">
+
+                                            <table id="forwardToLogs2" style="width: 100%;" class="table responsive table-hover table-striped table-bordered table-condensed margin_t">
+                                                <thead>
+                                                    <tr style="background-color: #8b0000; color: #ffffff">
+                                                        <th>Name</th>
+                                                        <th>From</th>
+                                                        <th>From Detail</th>
+                                                        <th>To</th>
+                                                        <th>To Detail</th>
+                                                        <th>Date Time</th>
+                                                        <th>Comments</th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    }
+                    else
+                    {
+                        <div class=" margin_t15px">
+                            <div class="form-group col-md-12">
+                                <label> No Transfer History Found </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <br clear="all" />
+                <hr>
+            *@
+
+
+
+
+
+
+            <div class="box-footer">
+                <div class="form-group col-md-4">
+                    <div style="font-size: 12px;">Created by : <b>@Model.Created_By</b> &nbsp; <i>@Model.Created_DateTime.Value.ToString("dd-MMM-yyyy hh:mm:tt")</i></div>
+                </div>
+                <div class="form-group col-md-8">
+                    <h5 class="modal-title text-danger">* refers mandatory information</h5>
+                </div>
+            </div>
+        </div>
+
+
+        @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <div class="modal-header"><h4>Detail</h4></div>*@
+
+    </div>
+
+</div>
+
+
+@*<script>
+        (function () {
+
+            var bar = $('.progress-bar');
+            var percent = $('.progress-bar');
+            //var status = $('#status');
+
+            $('form').submit({
+                beforeSend: function () {
+                    status.empty();
+                    var percentVal = '0%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                },
+                uploadProgress: function (event, position, total, percentComplete) {
+                    var percentVal = percentComplete + '%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                },
+                success: function () {
+                    var percentVal = '100%';
+                    bar.width(percentVal)
+                    percent.html(percentVal);
+                    alert('zeeshi12');
+                },
+                complete: function (xhr) {
+                    alert('zeeshi');
+                    status.html(xhr.responseText);
+                }
+            });
+
+        })();
+    </script>*@
+
+
+<script type="text/javascript">
+    var dropDownDict = [];
+    $(document).ready(function () {
+        $('.content-wrapper').css("min-height", 2000 + "px");
+        $('form').removeData('validator');
+        $('form').removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse('form');
+
+        OnComplaintNotificationSeen();
+
+
+        $(".collapse").collapse();
+        $('#Filters3').collapse({ hide: true });
+
+        $(".collapse").collapse();
+        $('#FiltersShowEscalation').collapse({ hide: true });
+
+        PopulateDropDownDictionary();
+        RegisterDropDownListChangeEventsCustomDictionaryWithSkipCount(dropDownDict, 1);
+
+        //$(".collapse").collapse();
+        $('#Filters4').collapse({ hide: false });
+
+        @if (@Model.hasStatusHistory)
+        {
+            <text>
+        ReloadDataForStatusChange('#StatusHistoryTable');
+        </text>
+        }
+
+
+        @if (Model.hasTransferHistory)
+        {
+            <text>
+        ReloadDataTableAbsent('#forwardToLogs2');
+        $(".collapse").collapse();
+        $('#Filters2').collapse({ hide: true })
+        </text>
+        }
+    });
+
+    function OnComplaintNotificationSeen() {
+        @{
+            if (Model.currDetailType == VmStakeholderComplaintDetail.DetailType.AssignedToMe)
+            {
+                BlNotification.SetUserNotifictionStatus((int)Model.Compaign_Id, Config.NotificationType.Complaint, Config.NotificationSubType.Launch, Model.ComplaintId, (int)Config.NotificationStatus.DontSend);
+            }
+        }
+    }
+
+    function PopulateDropDownDictionary() {
+        //alert(dropDownDict);
+        dropDownDict.push({
+            key: "userControlCategory",
+            value: "ComplaintSubType"
+        });
+
+        dropDownDict.push({
+            key: "userControlSubCategory",
+            value: null,
+        });
+
+    }
+
+    function OnCategoryChangeSubmit() {
+        if ($('#CategoryChangeForm').valid()) {
+            ShowLoading();
+        }
+    }
+
+    function OnStatusChangeSubmit() {
+        if ($('#StatusChangeForm').valid()) {
+            ShowLoading();
+        }
+    }
+
+    function OnStatusChangeComplete(data) {
+        //alert('zeeshi');
+        $('#PopupDiv').modal('hide');
+        //$('.modal-content').Hide();
+    }
+
+
+
+
+    function ReloadDataTableAbsent(divId) {
+        $(divId).dataTable().fnDestroy();
+        var table = $(divId).dataTable({
+            "bSort": false,
+            "ajax": "@Url.Action("GetComlaintsTransferedHistoryTable", "GeneralApi")?" + "complaintId=" + $('#ComplaintId').val(),
+            "contentType": "application/json",
+            "type": "GET",
+            "bLengthChange": false,
+            "columns": [
+                { "data": "UserName" },
+                { "data": "AssignedFromMedium" },
+                { "data": "AssignedFromMediumValue" },
+                { "data": "AssignedToMedium" },
+                { "data": "AssignedToMediumValue" },
+                { "data": "AssignedDate" },
+                { "data": "Comment" }
+
+            ],
+        });
+    }
+
+
+
+    function OpenComplaintAttachments(id) {
+        $('#PopupDiv2').empty();
+        $('#PopupDiv2').load("../Complaint/FileViewer?complaintId=" + @Model.ComplaintId + "&attachmentRefType=" +@Convert.ToInt32(Config.AttachmentReferenceType.Add) +"&attachmentRefTypeId=" + id);
+        $('#PopupDiv2').modal();
+    }
+
+</script>

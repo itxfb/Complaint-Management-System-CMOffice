@@ -1,0 +1,130 @@
+﻿@model PITB.CMS_Common.Models.View.Data_Representation.VmAreawiseCategoryModel
+@using System.Web.Mvc;
+@{
+    ViewBag.Title = "AreawiseCategoryReport";
+    //Layout = "~/Views/Shared/Executive/_ExecutiveDashboardLayout.cshtml";
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+    DateTime startDate = new DateTime(2018, 01, 01);
+}
+
+<style>
+    .btn-load {
+        font-size: 14px;
+        margin-top: 22px;
+        padding: 6px 25px;
+    }
+
+        .btn-load span {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+    #datepicker > span:hover {
+        cursor: pointer;
+    }
+</style>
+<div id="spinner" class="spinner" style="display:none; width:100%;height:100%;top:50px;left:50px; background-color:rgba(60,60,60,0.5)">
+</div>
+<div class="container-fluid">
+    <div class="box box-solid" style="padding:25px;">
+        <div class="row" style="padding-bottom:15px;padding-left:25px;padding-right:25px">
+            <div class="col-md-6">
+                <h3 style="font-size: 20px; font-weight:600; color:#404040; line-height:1px;">Areawise Category Report</h3>
+            </div>
+        </div>
+
+        <div class="row margin-bottom" style="padding-left:25px; padding-right:25px;">
+            <div class="col-md-4">
+                @Html.Label("SelectedCampaignIds")
+                @Html.DropDownListFor(x => Model.SelectedCampaignIds, new SelectList(Model.CampaignList, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "CampaignIds" })
+                <label id="campaignMsg" class="text-danger" style="display:none">Please select campaign</label>
+            </div>
+            <div class="col-md-4">
+                @Html.Label("SelectedStatusLevel")
+                @Html.DropDownListFor(x => Model.SelectedStatusLevel, new SelectList(Model.StatusLevelList, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "StatusId" })
+                <label id="statusMsg" class="text-danger" style="display:none">Please select Status</label>
+            </div>  
+        </div>
+        <div class="row margin-bottom" style="padding:0px 25px">
+
+            <div class="col-md-4">
+                <div class="">
+                    <label>From Date</label>
+
+                    <div id="datepickerFrom" class="input-group date">
+                        <input class="form-control" type="text" readonly value="@startDate.ToString("MM/dd/yyyy")" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="">
+                    <label>To Date</label>
+
+                    <div id="datepickerTo" class="input-group date">
+                        <input class="form-control" type="text" readonly value="@DateTime.Now.ToString("MM/dd/yyyy")" />
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4" style="display:inline-block">
+                <button type="button" value="Load" onclick="LoadMapData()" class="btn btn-success" style="margin-top:25px;"><span class="glyphicon glyphicon-refresh"></span>&nbsp Load</button>                
+            </div>
+            <div class="col-md-12">
+                @Html.Action("LoadAreawiseCategoryReportPartialView", "DataRepresentation")
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#datepickerFrom").datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+        });
+        $("#datepickerTo").datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            onSelect: function (e) {
+                debugger;
+                document.getElementById('docDate').innerText = e;
+            }
+        });
+        $("#datepickerFrom").on("dp.change", function (e) {
+            $('#datepickerTo').data("DateTimePicker").minDate(e.date);
+        });
+        $("#datepickerTo").on("dp.change", function (e) {
+            $('#datepickerFrom').data("DateTimePicker").maxDate(e.date);
+        });
+    });
+    $('#CampaignIds').change(function () {
+        var selectedCampaign = $('#CampaignIds option:selected').text();
+        var StatusId = $('#StatusId');
+        StatusId.empty();
+        if (selectedCampaign != null && selectedCampaign != '') {
+            $.getJSON('@Url.Action("GetStatusList", "DataRepresentation")', { campaignText: selectedCampaign }, function (statusList) {
+                if (statusList != null && !jQuery.isEmptyObject(statusList)) {
+                    $.each(statusList, function (index, item) {
+                        StatusId.append($('<option/>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                };
+            });            
+        }
+    });
+
+    function LoadMapData() {
+        debugger;
+        LoadMapFromInternet();
+    }   
+</script>
+

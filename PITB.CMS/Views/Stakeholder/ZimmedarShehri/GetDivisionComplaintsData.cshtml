@@ -1,0 +1,199 @@
+﻿@using PITB.CMS_Common
+@{
+    ViewBag.Title = "GetDivisionComplaintsData";
+    //Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+}
+@{
+    //string startDate = DateTime.Parse("01/08/2018").ToString("yyyy-MM-dd");// DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd");
+    //string endDate = @DateTime.Now.ToString("yyyy-MM-dd");
+}
+@{
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+}
+
+<div class="container-fluid">
+    <div class="box-body-white clearfix">
+        <div class="col-md-12 col-sm-12">
+            <div class="Complaints">
+                <div class="box-header-blue with-border btn-header">
+                    <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.ProvinceName Province Report</h3>
+                    @*<div class="form-group col-md-12 col-xs-12 col-sm-12">
+                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                <div class="pull-right">
+                                    <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+
+                <div class="row" style="margin-top: 20px;">
+                    <div class="col-lg-2 col-md-2 col-sm-2" id="startdate">
+                        @*<span>From Date</span>
+                                <input type="text" id="Piedatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6" id="enddate">
+                                <span>To Date</span>
+                                <input type="text" id="Piedatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">*@
+                        <span>Select Date</span>
+                        <input type="text" id="pieDateRange" placeholder="" class="form-control">
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-xs-12 col-sm-12">
+                        <span></span>
+                        <br />
+                        <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+                    </div>
+                </div>
+                <script>
+                    $(document).ready(function () {
+                        $('#pieDateRange').daterangepicker({
+                            startDate: '@ViewBag.StartDate',
+                            endDate: '@ViewBag.EndDate',
+                            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+                            showDropdowns: true,
+                            locale: {
+                                format: 'YYYY-MM-DD',
+                                separator: ' To ',
+                            }
+                        });
+                        $('#pieDateRange').on('apply.daterangepicker', function (ev, picker) {
+                            document.getElementById("docDate").innerHTML = GetDateFormat(new Date($('#pieDateRange').val().split('To')[1].trim()));
+                            for (i = 1; i <= 2; i++) {
+                                window["LoadData" + i].apply(null, null);
+                            }
+                        });
+                    });
+                </script>
+                <div id="PrintableDiv" style="margin:auto">
+                    <link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.css">
+                    <link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.min.css">
+                    <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/dataTables.bootstrap.css">
+                    <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/responsive.bootstrap.css">
+                    <link rel="stylesheet" type="text/css" href="http://@a/css/crm.css">
+
+                    <style type="text/css">
+
+                        .table > thead > tr > th,
+                        .table > tfoot > tr > th,
+                        .table > thead > tr > td,
+                        .table > tbody > tr > td,
+                        .table > tfoot > tr > td {
+                            page-break-inside: avoid;
+                        }
+
+                        .table > thead > tr {
+                            page-break-inside: avoid;
+                        }
+
+                        .table > tbody > tr {
+                            page-break-inside: avoid;
+                        }
+
+                        .table > tfoot > tr {
+                            page-break-inside: avoid;
+                        }
+                        /*.table > thead { display: table-header-group; }
+                        .table thead, .table tfoot { display: table-row-group; }*/
+                    </style>
+                    <div id="pageHeader" class="box-body-white clearfix">
+                        <div style="display:compact;">
+                            <img src="http://@a/img/PITB-LOGO.gif" style="max-width:70px; max-height:70px; margin-top: -3px; margin-right: 15px;position:absolute" />
+
+                            <p style="position:relative; text-align:center;margin:0px"><b>Provincial Complaints Summary <i>as of <span id="docDate">@DateTime.Now.AddDays(-1).Date.ToString("D")</span></i></b></p>
+                            <p style="position:relative;text-align:center;margin:0px"><b> Province of @ViewBag.ProvinceName</b></p>
+                        </div>
+                    </div>
+                    <div class="BarMainCategory">
+                        @{ Html.RenderAction("RegionAndStatusWiseCountSummaryDivision", "ZimmedarShehri", new { divName = "RegionStatusWiseCountDivision", startDate = ViewBag.StartDate, endDate = ViewBag.EndDate, provinceid = ViewBag.provinceid, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "1,6,7,8,21,22", reportType = (int)Config.SummaryReportType.General, divTag = "1" });}
+                    </div>
+                    <div class="feedback">
+                        @{Html.RenderAction("RegionWiseFeedbackSummary", "ZimmedarShehri", new { divTag = "2", startDate = ViewBag.StartDate, endDate = ViewBag.EndDate, provinceid = ViewBag.provinceid, campaignId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, upperHierarchyId = -1 });}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p id="ProvinceName" hidden>@ViewBag.ProvinceName</p>
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        //$('#Piedatepickerlower').datepicker()
+        //     .on("changeDate", function (e) {
+        //         debugger;
+        //         for (i = 1; i <=2; i++) {
+        //             window["LoadData" + i].apply(null, null);
+        //         }
+        //     });
+        //$('#Piedatepickermax').datepicker()
+        //    .on("changeDate", function (e) {
+        //        debugger;
+        //        document.getElementById("docDate").innerHTML = GetDateFormat(e.date);
+        //        for (i = 1; i <= 2; i++) {
+        //            window["LoadData" + i].apply(null, null);
+        //        }
+        //    });
+        jQuery.fn.dataTable.Api.register('sum()', function () {
+            return this.flatten().reduce(function (a, b) {
+                if (typeof a === 'string') {
+                    a = a.replace(/[^\d.-]/g, '') * 1;
+                }
+                if (typeof b === 'string') {
+                    b = b.replace(/[^\d.-]/g, '') * 1;
+                }
+
+                return a + b;
+            }, 0);
+        });
+
+    });
+
+    function PrintPage() {
+        debugger;
+        try {
+            ShowLoading();
+            var i;
+            for (i = 0; i < DivData.length; i++) {
+                disableEnableDataTablePaginationAndFilters(DivData[i], true);
+            }
+            debugger;
+
+            var lObjPageHeader = $('#pageHeader').html();
+
+            var printContents = $('#PrintableDiv').html();
+            var lObjHtmlStr = lObjPageHeader + printContents;
+            var filename = document.getElementById("ProvinceName").innerHTML + " Province.pdf"
+            var htmlData = {
+                id: 1,
+                htmlStr: GetLinkStrOnPage() + printContents
+            };
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: '@Url.Action("ExportPdfWithHtml", "generalapi")',
+                data: { htmlData: htmlData },
+                success: function (dataId) {
+                    debugger;
+                    window.location = '@Url.Action("ExportPdfWithHtml", "generalapi")?dataId=' + dataId + '&filename=' + filename;
+                    HideLoading();
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    HideLoading();
+                }
+
+            });
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+</script>
+

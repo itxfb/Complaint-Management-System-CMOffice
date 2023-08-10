@@ -1,0 +1,60 @@
+﻿@model PITB.CMS_Common.Models.View.VmPhcipEducationComplaintsData
+@{
+    int count = 1;
+}
+@*<div class="cust-overlay pie-overlay@(ViewBag.graphName)">Loading...</div>*@
+<div class="position-r">
+    <div class="box-body-white">
+
+        <table width="100%" class="table table-condensed table-hover table-bordered responsive" role="grid" aria-describedby="">
+            <thead style="text-align:center">
+                <tr class="tableHeader">
+                    <th rowspan="2">Sr. No.</th>
+                    <th rowspan="2">Complaints Categories</th>
+                    <th colspan="6">
+                        Complaints Status
+                    </th>
+                </tr>
+                <tr class="tableHeader">
+                    <th>Resolved</th>
+                    <th>New</th>
+                    <th>Overdue</th>
+                    @*<th>Re-opened</th>*@
+                    <th>Closed</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ComplaintsStats)
+                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.Complaints_Category</td>
+                        <td>@item.Resolved</td>
+                        <td>@item.New</td>
+                        <td>@item.Overdue</td>
+                        @*<td>@item.Reopened</td>*@
+                        <td>@item.Closed</td>
+                        <td>@(item.Resolved + item.New + item.Overdue + item.Closed)</td>
+                    </tr>
+                    count++;
+                }
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td>@Model.TotalResolved</td>
+                    <td>@Model.TotalNew</td>
+                    <td>@Model.TotalOverdue</td>
+                    @*<td>@Model.TotalReopened</td>*@
+                    <td>@Model.TotalClosed</td>
+                    <td>@(Model.TotalResolved + Model.TotalNew + Model.TotalOverdue + Model.TotalClosed)</td>
+                </tr>
+            </tbody>
+
+        </table>
+    </div>
+</div>
+<script>
+
+
+</script>

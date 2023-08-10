@@ -1,0 +1,104 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Helper.Extensions;
+
+@model VmTagEdit
+@using (Html.BeginForm("OnEditTag", "Tagging", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.HasAlreadyAdded)
+    @Html.HiddenFor(m => m.RecordId)
+    
+    <div id="TagEdit" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+
+
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                    <h4 class="modal-title">Tagg Edit [@Model.RecordId]</h4>
+
+                </div>
+                <div class="box-body-white" style="margin-top:5px;">
+                    <div class="row margin-bottom">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            Caller  Name
+                            @Html.TextBoxFor(m => m.CallerName, new {@class = "form-control characters-only-with-space", @placeholder = "Full Name"})
+                            @Html.ValidationMessageFor(m => m.CallerName, "", new {@class = "label label-warning"})
+                        </div>
+                        
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                Select Department
+                                @Html.DropDownListFor(m => m.DepartmentId, Model.DepartmentList, "--Select--", new {@Id = "DepartmentList", @class = "form-control"})
+                                @Html.ValidationMessageFor(m => m.DepartmentId, "", new {@class = "label label-warning"})
+                            </div>
+                        </div>
+
+
+                        <div class="row margin-bottom">
+
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                Select PPMRP service
+                                @Html.DropDownListFor(m => m.PpmrpServiceId, Model.PpmrpServiceList, "--Select--", new {@Id = "PpmrpServiceList", @class = "form-control"})
+                                @Html.ValidationMessageFor(m => m.PpmrpServiceId, "", new {@class = "label label-warning"})
+                            </div>
+                            
+                            <div class="row margin-bottom">
+                                <div class="form-group col-md-12">
+                                    <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Edit</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+        }
+
+        <script type="text/javascript">
+            var dropDownDict = [];
+            $(document).ready(function () {
+                $('form').removeData('validator');
+                $('form').removeData('unobtrusiveValidation');
+                $.validator.unobtrusive.parse('form');
+
+                PopulateDropDownDictionary();
+                debugger;
+                if ($('#HasAlreadyAdded').val() == 'True') {
+                    RegisterDropDownListChangeEventsCustomDictionaryWithSkipCount(dropDownDict, 1);
+                }
+                else {
+                    RegisterDropDownListChangeEventsCustomDictionary(dropDownDict);
+                }
+                
+            });
+
+            function PopulateDropDownDictionary() {
+                /*
+                dropDownDict.push({
+                    key: "DepartmentList",
+                    value: "DepartmentCategory"
+                });
+
+                dropDownDict.push({
+                    key: "PpmrpServiceList",
+                    value: "DepartmentSubCategory"
+                });
+                */
+                dropDownDict.push({
+                    key: "DepartmentList",
+                    value: "DepartmentSubCategory"
+                });
+
+                dropDownDict.push({
+                    key: "PpmrpServiceList",
+                    value: null
+                });
+            }
+
+
+        </script>

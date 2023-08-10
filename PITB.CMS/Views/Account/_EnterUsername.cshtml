@@ -1,0 +1,52 @@
+﻿@model PITB.CMS_Common.Models.View.Account.VmUserSettings
+
+<div class="form-group" style="text-align:center;">
+    <div>
+        <p style="color:white">Please enter your <b>username</b></p>
+    </div>
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Username" })
+        <label id="error" style="display:none;color:#FBF87F;"></label>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button id="Next_btn" class="btn btn-primary" onclick="NextClick()">Next</button>
+        </div>
+    </div>
+    <br style="clear:both" />
+</div>
+
+<script>
+    function NextClick() {
+        var username = document.getElementById("Username").value;
+        jQuery.ajax({
+            datatype: 'Json',
+            type: 'POST',
+            url: '@Url.Action("AuthenticateUsernameCheck", "Account")',
+            data: { username: username },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    jQuery.ajax({
+                        datatype: 'html',
+                        type: 'POST',
+                        url: '@Url.Action("AuthenticateUsername", "Account")',
+                        data: { username: username },
+                        success: function (result) {
+                            $("#title").innerHTML = "Password > Confirmation";
+                            $("#ContentPartialView").html(result);
+                        }
+                    });
+                } else {
+                    document.getElementById("error").innerHTML = result.Message;
+                    document.getElementById("error").style.display = "block";
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("error");
+                var err = eval("(" + xhr.responseText + ")");
+                HideLoading();
+            }
+        });
+    }
+</script>
+

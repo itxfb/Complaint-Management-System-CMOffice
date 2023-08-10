@@ -1,0 +1,17 @@
+﻿
+@model PITB.CRM.Public_Web.Models.ViewModels.VmDropdown
+
+@using (Ajax.BeginForm("LoadUcs", "General",
+new AjaxOptions { UpdateTargetId = "SubCategories" }))
+{
+    @Html.DropDownListFor(
+            m => m.SelectedValue,
+            new SelectList(Model.DropdownValuesList, "Value", "Text"),
+                "-- UC --", new { @class = "form-control", id = "UcDDL" }
+        )
+}
+<script type="text/javascript">
+    $('#UcDDL').change(function () {
+      
+    });
+</script>

@@ -1,0 +1,501 @@
+﻿@{
+    string baseController = (ViewBag.CampaignController != null ? ViewBag.CampaignController.ToString() : "PublicUser");
+}
+
+<div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+    <form id="signUpForm" name="signUpForm" autocomplete="off">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" id="modelDiv">
+                <div class="box box-primary" style="box-shadow: none;">
+                    @*<div class="box-header-blue with-border btn-header">
+                            <button type="button" id="closeBtn" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                            <h4 class="modal-title">Sign Up</h4>
+
+                        </div>*@
+                    <div class="row">
+                        <div id="alert-message" style="display:none; margin-top:20px" class="alert alert-success">
+                            Indicates a successful or positive action.
+                        </div>
+                    </div>
+
+                    @Html.AntiForgeryToken()
+                    <div class="row box-body-white" style="margin-right: 0px !important; margin-left: 0px !important;">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userName">
+                                    Name/<span class="urdu-font">نام</span>
+                                </label>
+                                <input type="text" class="form-control formField" onfocus="this.value = this.value;" id="userName" name="userName" placeholder="Name">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userCnic">CNIC<span class="urdu-font">شناختی کارڈ</span></label>
+                                <input type="text" class="form-control formField" onfocus="this.value = this.value;" id="userCnic" name="userCnic" placeholder="CNIC" maxlength="13">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userMobileNo">Mobile No/<span class="urdu-font">موبائل نمبر</span></label>
+                                <input type="text" class="form-control formField" onfocus="this.value = this.value;" id="userMobileNo" name="userMobileNo" placeholder="Mobile No" maxlength="11">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userEmail">
+                                    Email/<span class="urdu-font">
+                                        ای-میل
+                                    </span>
+                                </label>
+                                <input type="text" class="form-control formField" onfocus="this.value = this.value;" id="userEmail" name="userEmail" placeholder="Email">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userGender">Gender/<span class="urdu-font">جنس</span></label>
+                                <select class="form-control formField" name="userGender" id="userGender">
+                                    <option value="-1" id="-1" selected disabled>Select Gender</option>
+                                    <option value="1" id="1">Male</option>
+                                    <option value="0" id="0">Female</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                <label for="userProvince">
+                                    Province/<span class="urdu-font">صوبہ</span>
+                                </label>
+                                <select class="form-control formField" name="userProvince" id="userProvince">
+                                    <option value="" id="" selected disabled>Select Province</option>
+                                    @foreach (var item in ViewBag.Provinces)
+                                    {
+                                        <option value="@item.Province_Id" id="@item.Province_Id">@item.Province_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-12 mb-3">
+                                <label for="userDistrict">District/<span class="urdu-font">ضلع</span></label>
+                                <select class="form-control formField" name="userDistrict" id="userDistrict">
+                                    <option value="" id="" selected disabled>Select District</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label for="userPassword">
+                                    Password/<span class="urdu-font">پاس ورڈ</span>
+                                </label>
+                                <input type="password" class="form-control formField" onfocus="this.value = this.value;" id="userPassword" name="userPassword" placeholder="Password">
+                            </div>
+                            <div class="col-md-6 col-sm-12 mb-3">
+                                <label for="confirmPassword">
+                                    Confirm Password/<span class="urdu-font">تصدیقی پاس ورڈ</span>
+                                </label>
+                                <input type="password" class="form-control formField" onfocus="this.value = this.value;" id="confirmPassword" name="confirmPassword" placeholder="Password">
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 mb-4">
+                                <label for="userAddress">Address/<span class="urdu-font">پتہ</span></label>
+                                <textarea type="text" class="form-control formField" id="userAddress" name="userAddress" value="" placeholder="Address"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4" id="optRow" style="display:none;">
+                            <div class="text-center col-md-8 mx-auto">
+                                <input type="text" class="form-control" id="otpInput" name="otpInput" onfocus="this.value = this.value;" value="" placeholder="OTP" style="width: 50%; margin: 0 auto;" />
+                                <p>An OTP has been sent to your email, OTP only valid for</p>
+                                <div id="countdown" class="mb-3">
+                                    <span class="minutes">00</span>
+                                    <span class="minutes_text">Minutes</span>
+                                    <span class="seperator">:</span>
+                                    <span class="seconds">00</span>
+                                    <span class="seconds_text">Seconds</span>
+                                </div>
+                                <div class="text-center">
+                                    <button type="button" id="resetOTP" class="btn btn-primary" disabled>Resend OTP</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="submitBtnForm" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="~/plugins/countdown/jquery.countdown.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script>
+    function bootstrapAlert(selector, messageType, message) {
+
+        $(selector).removeClass('alert-success');
+        $(selector).removeClass('alert-info');
+        $(selector).removeClass('alert-warning');
+        $(selector).removeClass('alert-danger');
+        $(selector).addClass(messageType);
+        $(selector).text(message);
+        $(selector).css('display', 'block');
+    }
+    var count = 0;
+    $("#closeBtn").click(function () {
+        debugger
+        $("#modelDiv").hide();
+    })
+    $(document).ready(function () {
+
+
+        $('#userProvince').change(function () {
+
+            $('#userDistrict').html('');
+            $.ajax({
+                type: "GET",
+                url: "../PublicUser/GetDistrict?ProvinceId=" + $('#userProvince').val(),
+                success: function (response) {
+                    var distHtml = '<option value="" id="" selected disabled>Select District</option>';
+                    distHtml += '';
+                    for (var i = 0; i < response.length; i++) {
+                        distHtml += '<option value="' + response[i].DistrictId + '" id="' + response[i].DistrictId + '">' + response[i].DistrictName + '</option>';
+                    }
+                    $('#userDistrict').append(distHtml);
+                },
+                failure: function (response) {
+                },
+                error: function (response) {
+                }
+            });
+        })
+
+        function sendOTP() {
+            $.ajax({
+                type: "POST",
+                url: "../PublicUser/SendOtp",
+                data: {
+                    Email: $('#userEmail').val(),
+                    Cnic: $('#userCnic').val(),
+                    Phone: $('#userMobileNo').val()
+                },
+                success: function (response) {
+                    count = 0;
+                    debugger
+                    if (response == 'otp already sent') {
+                        //toastr.warning('OTP has been sent already !!!');
+                        bootstrapAlert('#alert-message', 'alert-warning', 'OTP has been sent already !!!');
+                        $('#optRow').css('display', 'initial');
+                        $('#submitBtnForm').prop('disabled', false)
+                        $('.formField').prop('disabled', true);
+                    }
+                    else if (response == 'email exists') {
+                        //toastr.warning('User with this email already exists !!!');
+                        bootstrapAlert('#alert-message', 'alert-warning', 'User with this email already exists !!!');
+                        $('#submitBtnForm').prop('disabled', false)
+                        $('.formField').prop('disabled', false);
+                    }
+                    else if (response == 'cnic exists') {
+                        //toastr.warning('User with this CNIC already exists !!!');
+                        bootstrapAlert('#alert-message', 'alert-warning', 'User with this CNIC already exists !!!');
+                        $('#submitBtnForm').prop('disabled', false)
+                        $('.formField').prop('disabled', false);
+                    }
+                    else if (response == true) {
+                        $('#resetOTP').prop('disabled', true);
+                        $('#countdown').countdown({
+                            date: new Date(new Date().getTime() + 3 * 60000),
+                            hideOnComplete: false,
+                            resendButtonEnable: true
+                        }, function (container) {});
+                        count++;
+                        //toastr.info('OPT has been sent to your email. Please enter OTP to complete your signup')
+                        bootstrapAlert('#alert-message', 'alert-info', 'OPT has been sent to your email. Please enter OTP to complete your signup')
+                        $('#optRow').css('display', 'initial');
+                        $('#submitBtnForm').prop('disabled', false)
+                        $('.formField').prop('disabled', true);
+                    }
+                    else if (response == false) {
+                        //toastr.warning('Something went wrong while sending OTP, try again later')
+                        bootstrapAlert('#alert-message', 'alert-warning', 'Something went wrong while sending OTP, try again later')
+                        $('.formField').prop('disabled', false);
+                        $('#submitBtnForm').prop('disabled', false)
+                    }
+                }
+            });
+        }
+
+        $('#resetOTP').click(function () {
+            sendOTP();
+        });
+
+        $('#signUpForm').bootstrapValidator({
+            // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
+            //excluded: ':disabled',
+            //ignore: ":hidden:not(select)",
+            feedbackIcons: {
+                valid: 'fa fa-check',
+                invalid: 'fa fa-times',
+                validating: 'fa fa-refresh'
+            },
+            fields: {
+                userName: {
+                    validators: {
+                        regexp: {
+                            regexp: /^([a-zA-Z ,.'/-]{1,20}$)/,
+                            message: 'Name accept letter only with max 20 letters'
+                        },
+                        notEmpty: {
+                            message: 'Name is required'
+                        }
+                    }
+                },
+                userCnic: {
+                    validators: {
+                        regexp: {
+                            regexp: /^\d{13}$/,
+                            message: 'Enter valid CNIC'
+                        },
+                        notEmpty: {
+                            message: 'CNIC is required'
+                        }
+                    }
+                },
+                userMobileNo: {
+                    validators: {
+                        regexp: {
+                            regexp: /^\d{11}$/,
+                            message: 'Enter valid mobile number'
+                        },
+                        notEmpty: {
+                            message: 'Mobile no is required'
+                        }
+                    }
+                },
+               // userEmail: {
+                    //validators: {
+                  //      regexp: {
+                         //   regexp: /^([\w-]+(?:\.[\w-]+)*)@('@')((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/,
+                          //  message: 'Enter valid email'
+                      //  },
+                       // notEmpty: {
+                      //      message: 'Email is required'
+                     //   }
+                   // }
+              //  },
+                userPassword: {
+                    validators: {
+                        regexp: {
+                            regexp: /^[A-Za-z!@('@')#$%^&*_\d]{6,20}$/,
+                            message: 'Password contains at least one number with min length 6, max length 20'
+                        },
+                        notEmpty: {
+                            message: 'Password is required'
+                        }
+                    }
+                },
+                confirmPassword: {
+                    validators: {
+                        callback: {
+                            callback: function (input) {
+                                if ($('#userPassword').val() == '' || $('#userPassword').val().trim() == '') {
+                                    return {
+                                        valid: false,
+                                        message: 'First provide a password',
+                                    }
+                                }
+                                else if ($('#userPassword').val() != $('#confirmPassword').val()) {
+                                    return {
+                                        valid: false,
+                                        message: 'Password and confirm password must be same'
+                                    }
+                                }
+                                else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                userGender: {
+                    validators: {
+                        callback: {
+                            callback: function (input) {
+                                if ($('#userGender').val() == null || $('#userGender').val().trim() == ''||$('#userGender').val().trim() == '-1') {
+                                    return {
+                                        valid: false,
+                                        message: 'Gender is required',
+                                    }
+                                }
+                                else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                userProvince: {
+                    validators: {
+                        callback: {
+                            callback: function (input) {
+                                if ($('#userProvince').val() == null || $('#userProvince').val().trim() == '') {
+                                    return {
+                                        valid: false,
+                                        message: 'Province is required',
+                                    }
+                                }
+                                else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                userDistrict: {
+                    validators: {
+                        callback: {
+                            callback: function (input) {
+                                if ($('#userDistrict').val() == null || $('#userDistrict').val().trim() == '') {
+                                    return {
+                                        valid: false,
+                                        message: 'District is required',
+                                    }
+                                }
+                                else {
+                                    return {
+                                        valid: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                userAddress: {
+                    validators: {
+                        regexp: {
+                            regexp: /^([a-zA-Z0-9'\.\-\s\,\#\/\w]{15,200})$/,
+                            message: 'Address contains character with min length 15 and max 200'
+                        },
+                        notEmpty: {
+                            message: 'Address is required'
+                        }
+                    }
+                },
+            }
+        })
+            .on('change', '[name="userProvince"]', function () {
+                $('#signUpForm').bootstrapValidator('revalidateField', 'userDistrict');
+            }).on('change', '[name="userPassword"]', function () {
+                $('#signUpForm').bootstrapValidator('revalidateField', 'confirmPassword');
+            })
+            .on('success.form.bv', function (e) {
+                // Prevent form submission
+                e.preventDefault();
+
+                // Get the form instance
+                var $form = $(e.target);
+                // Get the BootstrapValidator instance
+                var bv = $form.data('bootstrapValidator');
+
+                $('.formField').prop('disabled', true);
+
+                if (count == 0) {
+                    sendOTP();
+                }
+
+                if (count > 0) {
+                    debugger
+                    if ($('#otpInput').val() == '' || $('#otpInput').val().trim() == '') {
+                        //toastr.warning('Please provide OTP')
+                        bootstrapAlert('#alert-message', 'alert-warning', 'Please provide OTP')
+                        $('#submitBtnForm').prop('disabled', false)
+                    }
+                    else {
+                        debugger
+                        var formParams = {
+                            UserName: $('#userName').val(),
+                            UserCnic: $('#userCnic').val(),
+                            UserMobileNo: $('#userMobileNo').val(),
+                            UserEmail: $('#userEmail').val(),
+                            UserPassword: $('#userPassword').val(),
+                            ConfirmPassword: $('#confirmPassword').val(),
+                            UserGender: $('#userGender').val(),
+                            UserProvince: $('#userProvince').val(),
+                            UserDistrict: $('#userDistrict').val(),
+                            UserAddress: $('#userAddress').val(),
+                            OTP: $('#otpInput').val()
+                        };
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SignUpUser", baseController)',
+                            beforeSend: function (xhr) { xhr.setRequestHeader("__RequestVerificationToken", $('input:hidden[name="__RequestVerificationToken"]').val()); },
+                            data: {
+                                data: formParams
+                            },
+                            success: function (response) {
+                                if (response == 'notValid') {
+                                    //toastr.info('Form values are not valid !!!');
+                                    bootstrapAlert('#alert-message', 'alert-info', 'Form values are not valid !!!');
+                                }
+                                else if (response == 'error' || response == false) {
+                                    //toastr.error('Something went wrong please try again later !!!');
+                                    bootstrapAlert('#alert-message', 'alert-danger', 'Something went wrong please try again later !!!');
+                                }
+                                else if (response == 'user saved') {
+                                    //$('#signUpModal').modal('hide');
+                                    //toastr.success('Congradulations !!! You have been signed up successfullyyyy');
+                                    swal({
+                                        text: "'Congratulations. You have been registered successfully. Please login to lodge a complaint",
+                                        icon: "success",
+                                        button: "OK",
+                                    }).then(function (isConfirmed) {
+                                        if (isConfirmed) {
+                                            window.location.href = "/PublicUser/LoginRedirect";
+                                        } else {
+                                            debugger
+                                            swal("Cancelled", "Something went wrong!!)", "error");
+                                            e.preventDefault();
+                                        }
+                                    });
+                                    bootstrapAlert('#alert-message', 'alert-success', 'Congradulations !!! You have been signed up successfully');
+                                     // Replace 'login.html' with your actual login page URL
+
+                                }
+                                else if (response == 'email exists') {
+                                    //toastr.warning('User with this email already exists !!!');
+                                    bootstrapAlert('#alert-message', 'alert-warning', 'User with this email already exists !!!');
+                                }
+                                else if (response == 'cnic exists') {
+                                    //toastr.warning('User with this CNIC already exists !!!');
+                                    bootstrapAlert('#alert-message', 'alert-warning','User with this CNIC already exists !!!');
+                                }
+                                else if (response == 'invalid otp') {
+                                    //toastr.warning('OTP is not valid !!!');
+                                    bootstrapAlert('#alert-message', 'alert-warning','OTP is not valid !!!');
+                                }
+                                else if (response == 'expired otp') {
+                                    //toastr.warning('OTP is expired !!!');
+                                    bootstrapAlert('#alert-message', 'alert-warning','OTP is expired !!!');
+                                }
+                                else if (response == 'empty otp') {
+                                    //toastr.warning('OTP is empty !!!');
+                                    bootstrapAlert('#alert-message', 'alert-warning','OTP is empty !!!');
+                                }
+                                $('#submitBtnForm').prop('disabled', false);
+                            },
+                            failure: function (response) {
+                                //toastr.error('Something went wrong please try again later !!!');
+                                bootstrapAlert('#alert-message', 'alert-danger','Something went wrong please try again later !!!');
+                            },
+                            error: function (response) {
+                                //toastr.error('Something went wrong please try again later !!!');
+                                bootstrapAlert('#alert-message', 'alert-danger','Something went wrong please try again later !!!');
+                            }
+                        });
+                    }
+                }
+                //count++;
+            });
+    });
+</script>
+@*regexp: /^(?=.*[A-Za-z0-9!@('@')#$%^&*_])(?=.*\d)[A-Za-z!@('@')#$%^&*_\d]{8,20}$/,*@

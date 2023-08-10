@@ -1,0 +1,233 @@
+﻿
+<div class="cust-overlay pie-overlay@(ViewBag.graphName)">Loading...</div>
+<h3 class="text-center">@(ViewBag.StatusName) </h3>
+<div class="position-r ">
+
+    <div class="row">
+
+        @*<div class="col-lg-6 col-md-6 col-sm-6">
+                <span>From Date</span>
+                <input type="text" id="Piedatepickerlower@(ViewBag.graphName)" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>To Date</span>
+                <input type="text" id="Piedatepickermax@(ViewBag.graphName)" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+            </div>*@
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <span>Select Date</span>
+            <input type="text" id="dateRange@(ViewBag.graphName)" placeholder="" class="form-control">
+        </div>
+    </div>
+
+    <div id="Content@(ViewBag.graphName)" class="MultiGraphContent margin-bottom">
+
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#dateRange@(ViewBag.graphName)').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#dateRange@(ViewBag.graphName)').on('apply.daterangepicker', function (ev, picker) {
+            LoadBarChart@(ViewBag.graphName)();
+        });
+    });
+
+    @*var oldStart@(ViewBag.graphName) = $('#Piedatepickerlower@(ViewBag.graphName)').val();
+    var oldenddate@(ViewBag.graphName) = $('#Piedatepickermax@(ViewBag.graphName)').val();*@
+    var campaignId@(ViewBag.graphName) = '@(ViewBag.campaignId)';
+    var graphname@(ViewBag.graphName) = '@(ViewBag.graphName)';
+
+    @*jQuery('#Piedatepickerlower@(ViewBag.graphName)').change(function () {
+        if (oldStart@(ViewBag.graphName) != $('#Piedatepickerlower@(ViewBag.graphName)').val()) {
+            LoadBarChart@(ViewBag.graphName)();
+            oldStart@(ViewBag.graphName) = $('#Piedatepickerlower@(ViewBag.graphName)').val();
+        }
+        //$.LoadPieChart();
+    });
+    jQuery('#Piedatepickermax@(ViewBag.graphName)').change(function () {
+        if (oldenddate@(ViewBag.graphName) != $('#Piedatepickermax@(ViewBag.graphName)').val()) {
+            LoadBarChart@(ViewBag.graphName)();
+            oldenddate@(ViewBag.graphName) = $('#Piedatepickermax@(ViewBag.graphName)').val();
+        }
+        //$.LoadPieChart();
+    });*@
+    var campaignId@(ViewBag.graphName) = @(ViewBag.campaignId);
+
+    $(function () {
+        debugger;
+        //$.LoadBarChart();
+        LoadBarChart@(ViewBag.graphName)();
+
+    });
+
+    var districtWiseCountDict = [];
+    //$.LoadBarChart@(ViewBag.graphName) = function () {
+    function LoadBarChart@(ViewBag.graphName)() {
+
+
+        $(".pie-overlay@(ViewBag.graphName)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("DistrictWiseGraph", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $('#dateRange@(ViewBag.graphName)').val().split('To')[0].trim(),
+                datemax: $('#dateRange@(ViewBag.graphName)').val().split('To')[1].trim(),
+                campaignId: campaignId@(ViewBag.graphName),
+                StatusId:@(ViewBag.StatusId)
+                },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var DistrictList@(ViewBag.graphName) = [];
+                var CountList@(ViewBag.graphName)=[];
+                var resultObj;
+
+                var dict@(ViewBag.graphName) = []; // create an empty array
+
+
+
+                if(data.Total !=null)
+                {
+                    $.each(data.Total, function (idx, obj) {
+                        //New Object
+
+
+                        DistrictList@(ViewBag.graphName).push(obj.District_Name);
+                        CountList@(ViewBag.graphName).push(parseInt(obj.cnts));
+
+                        var hasFound = false;
+                        districtWiseCountDict.forEach(function(entry) {
+                            if (entry.key == obj.District_Name) {
+                                entry.value = entry.value + parseInt(obj.cnts);
+                                hasFound = true;
+                            }
+                            
+                        });
+
+                        if (!hasFound) {
+                            districtWiseCountDict.push({
+                                key: obj.District_Name,
+                                value: parseInt(obj.cnts)
+                            });
+
+                        }
+
+                        //totalCount = totalCount + parseInt(obj.cnts);
+                        //Add in list
+
+
+                    });
+
+                    // dict@(ViewBag.graphName).name = "@(ViewBag.StatusId)";
+                    //dict@(ViewBag.graphName).data = (CountList@(ViewBag.graphName));
+
+                    var obj2 =  {name:"@(ViewBag.StatusName)", data:CountList@(ViewBag.graphName)}
+                    //obj2.data.push(objSub.Count);
+                    dict@(ViewBag.graphName).push(obj2);
+
+
+                    $(".pie-overlay@(ViewBag.graphName)").fadeOut();
+                    // Create the chart
+                    Highcharts.setOptions({
+                        colors: ['@(ViewBag.StatusColorCode)'] //['#F86E38', '#85EE66', '#DDDF00', '#24CBE5', '#64E572']
+                    });
+                    Highcharts.chart('Content@(ViewBag.graphName)', {
+                        chart: {
+                            type: 'bar',
+                            height: $.GetBarChartHeight(dict@(ViewBag.graphName))
+                        },
+                        title: {
+                            text: '@(ViewBag.StatusName)'
+                        },
+                        xAxis: {
+                            categories: DistrictList@(ViewBag.graphName),  //['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Status'
+                            }
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                debugger;
+                                var totalCount = 0;
+                                var keyToCompare = this.x;
+                                districtWiseCountDict.forEach(function(entry) {
+                                    if (entry.key == keyToCompare) {
+                                        totalCount = entry.value;
+                                    }
+                                    
+                                });
+
+                                var s = '<b>' + this.x + '  ' + '</b>'+'<br/>';
+                                s += 'Total ' + '@(ViewBag.StatusName)' + ' : '+ (parseFloat(this.y))+'<br/>';
+                                s += 'Percentage : ' + ((parseFloat(this.y) / parseFloat(totalCount)*100)).toFixed(2)+'%<br/>';
+
+                                s += 'Total '  + ' : '+ parseFloat(totalCount)+'<br/>';
+
+                                @*s += '<b>' + 'Total : ' + '@(ViewBag.StatusName)' + '</b>'+'<br/>';*@
+
+                                //$.each(this.points, function () {
+                                //    s += '<br/>' + this.series.name + ': ' +
+                                //        this.y + 'm';
+                                //});
+
+                                return s;
+                            },
+                            shared: true
+                        },
+                        legend: {
+                            reversed: true
+                        },
+                        plotOptions: {
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer'
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series: dict@(ViewBag.graphName)
+                        /*[{
+                        name: 'Pending',
+                        data: [5, 3, 4, 7, 2]
+                    }, {
+                        name: 'Resolve',
+                        data: [2, 2, 3, 2, 1]
+                    }, {
+                        name: 'Solve',
+                        data: [3, 4, 4, 2, 5]
+                    }]*/
+                    });
+
+                }
+
+            }
+
+        });
+    }
+
+</script>
+

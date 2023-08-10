@@ -1,0 +1,63 @@
+﻿@using PITB.CMS_Common.Models.View.Account
+@model VmUserSettings
+
+<div class="form-group" style="text-align:center">
+    <div>
+        @*<p style="color:white">We will now send you a <b>free</b> text message with a verification code to your mobile phone.</p>*@
+        <p style="color:white">A verification code will be sent to your mobile number.</p>
+    </div>
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @readonly = "readonly" })
+        @Html.HiddenFor(m => m.Username)
+    </div>
+    <div style="display:inline-block">
+        <button id="get_code_btn" class="btn btn-primary" onclick="getCodeClick()">Get code</button>
+        <button id="help_btn" class="btn btn-primary" data-toggle="modal" data-target="#myModal">Not your number?</button>
+    </div>
+    <br style="clear:both" />
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width:400px">
+            <div class="modal-content">
+                <div id="myModalContent">
+                    <div>
+                        <div class="modal-header" style="background-color:#226C2E">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                x
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel" style="color:white">Information</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                Please send an email at <b><u>hotline@sed.punjab.gov.pk</u></b> to get your mobile number corrected.
+                            </p>
+                        </div>
+                        <div class="modal-footer" style="background-color:#226C2E">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function getCodeClick() {
+        var username = document.getElementById("Username").value;
+        $.ajax({
+            datatype: 'html',
+            type: 'POST',
+            url: '@Url.Action("SendVerificationCode", "Account")',
+            data: { username: username },
+            success: function (result) {
+                $("#title").innerHTML = "Password > Verification";
+                $("#ContentPartialView").html(result);
+
+            },
+            error: function (xhr, status, error) {
+                alert("error");
+                var err = eval("(" + xhr.responseText + ")");
+                HideLoading();
+            }
+        });
+    }
+</script>

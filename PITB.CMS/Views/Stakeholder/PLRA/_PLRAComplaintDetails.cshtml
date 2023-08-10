@@ -1,0 +1,125 @@
+﻿@using System.Web.UI.WebControls
+@using PITB.CMS_Common
+@using PITB.CMS_Common.Models
+@{
+    //Layout = "~/Views/Shared/_PLRAMainLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">Punjab Land Record Authority - Complaint Listing @*(Assigned To Me)*@</h3>
+            </div>
+            <div class="box-body-white">
+                <div class="row" style="margin-left:0px; margin-right:0px;">
+                    <div class="col-lg-2 col-md-2 col-xs-12">
+                        @*<div class="col-md-12">
+                                    <input type="text" id="from" value="@ViewBag.From" placeholder="example: 2015-05-18"
+                                           class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                                </div>
+                            </div>
+                            <div class="form-group col-md-2 col-sm-12">
+                                <div class="col-md-12 col-sm-12">
+                                    <input type="text" id="to" value="@ViewBag.To" placeholder="example: 2016-01-05"
+                                           class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+                                </div>*@
+                        <span>Select Date</span>
+                        <input type="text" id="dateRange" placeholder="" class="form-control">
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-xs-12 col-sm-12">
+                        <br />
+                        <button id="FilterBtn" class="btn btn-primary" type="button"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+                    </div>
+                </div>
+            </div>
+            <div class="box-body-white">
+
+                <table id="agentListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                    <thead>
+                        <tr role="row" class="tableHeader">
+                            <th>Complaint No</th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Division</th>
+                            <th>District</th>
+                            <th>Center</th>
+                            <th>Additional Center</th>
+                            <th>Created Date</th>
+                            <th>Work Code</th>
+                            <th>Detail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#dateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('.content-wrapper').css("min-height", 2000 + "px");
+        $("#FilterBtn").trigger('click');
+    });
+    $("#FilterBtn").click(function (e) {
+        e.preventDefault();
+        var url = "@Url.Action("GetPLRAComplaintsServerSide", "GeneralApi")";
+        LoadTable(url, $('#dateRange').val().split('To')[0].trim(), $('#dateRange').val().split('To')[1].trim());
+    });
+    var table;
+    var aoDataStringify;
+    function LoadTable(api, from, to) {
+        debugger;
+        table = $('#agentListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+            "ordering" : false,
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                aoDataStringify = JSON.stringify(aoData);
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "async": "true",
+                    "url": api,
+                    "data": { from: from, to: to, aoData: aoDataStringify},
+                    "success": fnCallback,
+                });
+                debugger;
+            },
+            "fnCallback":function(data){
+                //alert(data);
+            },
+            "columns": [
+                { "data": "ComplaintId" },
+                { "data": "Type"},
+                { "data": "Name"},
+                { "data": "Phone" },
+                { "data": "Division"},
+                { "data": "District" },
+                { "data": "Center"},
+                { "data": "Additional_Center" },
+                { "data": "Created_Date" },
+                { "data": "WorkCode" },
+                { "data": "Detail" }
+            ],
+        });
+    }
+</script>

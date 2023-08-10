@@ -1,0 +1,134 @@
+﻿@using PITB.CMS_Common
+<div class="box box-primary" style="box-shadow:none;">
+    <div class="box-header-blue with-border btn-header">
+        <h4 class="modal-title">Status History</h4>
+    </div>
+    @if (@Model.hasStatusHistory)
+    {
+        <div class="box-body-white" style="margin-top: 5px;">
+            <a class="btn btn-default btn-sm margin_b" role="button" data-toggle="collapse" href="#Filters3" aria-expanded="true" aria-controls="Filters3">
+                <span class="fa fa-sliders"></span>Status History
+            </a>
+            <div id="Filters3" class="collapsed collapsed in" area-expanded="true">
+                <div class="">
+                    <div>
+                        <div id="DivStatusLogs" style="margin-top: 20px">
+                            <div class="" style="margin: 0 auto; width: 100%;">
+
+                                <table id="StatusHistoryTable" style="width: 100%;" class="table responsive table-hover table-striped table-bordered table-condensed margin_t">
+                                    <thead>
+                                        <tr role="row" class="tableHeader">
+                                            <th>User Name</th>
+                                            <th>User Hierarchy</th>
+                                            <th>Hierarchy Value</th>
+                                            <th>Status</th>
+                                            <th>Status Change Date</th>
+                                            <th>Comments</th>
+                                            @*<th>Active</th>*@
+                                            <th>Files</th>
+                                            <th>Resolver</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br clear="all" />
+        </div>
+    }
+    else
+    {
+        <div class="box-body-white" style="margin-top:5px;">
+            <div class=" margin_t15px">
+                <div class="form-group col-md-12">
+                    <label> No Status History Found </label>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script type="text/javascript">
+    function ReloadDataForStatusChange(divId) {
+        //alert("On table history");
+        $(divId).dataTable().fnDestroy();
+        var table = $(divId).dataTable({
+            "bSort": true,
+            "ajax": "@Url.Action("GetComlaintsStatusChangeHistoryTable", "GeneralApi")?" + "complaintId=" + $('#ComplaintId').val(),
+            "contentType": "application/json",
+        "type": "GET",
+        "bLengthChange": false,
+        "aaSorting": [],
+        "columns": [
+           { "data": "UserName" },
+            { "data": "UserHierarchy" },
+            { "data": "UserHierarchyValue" },
+            { "data": "Status" },
+            { "data": "StatusChangeDateTime" },
+            { "data": "Comments" },
+            //{ "data": "IsCurrentlyActive" },
+            { "data": "Id" },
+            { "data": "UserId" },
+            
+        ],
+        "aoColumnDefs": [
+            {
+                "aTargets": [6],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    //alert('zeeshi');
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+                    //alert(data.id);
+                    return '<td>' +
+                        '<button type="submit" name="Show" value="' + full.Id + '" id="' + full.Id + '" class="btn btn-primary btn-sm" onclick="OpenStatusAttachments(this.id);">' +
+                        '<span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;View</b>&nbsp;&nbsp;&nbsp;&nbsp;</button>' +
+                        '</td>';
+                }
+            },
+            {
+                "aTargets": [7],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    //alert('zeeshi');
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+                    //alert(sData);
+                    
+                    return '<td>' +
+                        '<button type="submit" name="Show" value="' + full.UserId + '" id="' + full.UserId + '" class="btn btn-primary btn-sm" onclick="OpenStakeholderResolverDetail(this.id);">' +
+                        '<span class="glyphicon glyphicon-eye-open"></span>&nbsp;&nbsp;View</b>&nbsp;&nbsp;&nbsp;&nbsp;</button>' +
+                        '</td>';
+                }
+            }
+        ]
+    });
+    }
+
+
+    function OpenStatusAttachments(id) {
+        //alert(id);
+        $('#PopupDiv3').empty();
+        $('#PopupDiv3').load("../Complaint/FileViewer?complaintId=" + @Model.ComplaintId + "&attachmentRefType=" +@Convert.ToInt32(Config.AttachmentReferenceType.ChangeStatus) +"&attachmentRefTypeId=" + id);
+        $('#PopupDiv3').modal();
+    }
+
+    function OpenStakeholderResolverDetail(id) {
+
+
+        $('#PopupDiv3').empty();
+        $('#PopupDiv3').load("../Stakeholder/GetResolverDetail?userId=" + id);
+        $('#PopupDiv3').modal();
+    }
+</script>
+
+

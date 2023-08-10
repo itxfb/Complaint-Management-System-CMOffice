@@ -1,0 +1,26 @@
+﻿@model PITB.CMS_Common.Models.View.Executive.VmDashboard
+@using Amazon.EC2
+@using PITB.CMS_Common.Models.View.Executive;
+@{
+    int i = 0;
+    int col = 3;
+    int enddiv = 0;
+}
+<link href="~/css/newCards.css" rel="stylesheet" />
+@foreach (VmCampaignWiseData item in Model.Campaignlst)
+{
+    if (i % col == 0)
+    {
+        @Html.Raw("<div class='row'>");
+        enddiv = enddiv + (col - 1);
+    }
+    Html.RenderPartial("~/Views/ExecutiveCampaigns/_CampaignCard.cshtml", item);
+
+    if (i == enddiv || i == Model.Campaignlst.Count)
+    {
+        @Html.Raw("</div>");
+    }
+    i++;
+}
+
+

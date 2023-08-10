@@ -1,0 +1,408 @@
+﻿@using PITB.CMS_Common.Handler.Complaint;
+@using PITB.CMS_Common;
+@model PITB.CMS_Common.Models.View.Executive.VmCampaignWiseData
+@{
+    string Satisfied = null;
+    string NotSatisfied = null;
+    string totalFeedbackCount = null;
+    string SatisfiedCount = null;
+    string NotSatisfiedCount = null;
+    if (Model.ListfeedbackCategoryWiseCounts != null)
+    {
+        FeedbackCategoryWiseCount satisfiedModel = Model.ListfeedbackCategoryWiseCounts.Find(m => m.CategoryName.Equals("Satisfied"));
+        FeedbackCategoryWiseCount notSatisfiedModel = Model.ListfeedbackCategoryWiseCounts.Find(m => m.CategoryName.Equals("NotSatisfied"));
+        if (satisfiedModel != null)
+        {
+            Satisfied = satisfiedModel.CategoryRelativePercentage + "%";
+            SatisfiedCount = satisfiedModel.CategoryCount.ToString("#,##0");
+        }
+        if (notSatisfiedModel != null)
+        {
+            NotSatisfied = notSatisfiedModel.CategoryRelativePercentage + "%";
+            NotSatisfiedCount = notSatisfiedModel.CategoryCount.ToString("#,##0");
+        }
+        totalFeedbackCount = Model.FeedbackTotalCount.ToString("#,##0");
+
+        /** usman **/
+        if (Model.CampaignId == (int)Config.Campaign.DcoOffice)
+        {
+            int iFeedbackTotalCount = satisfiedModel.CategoryCount + notSatisfiedModel.CategoryCount;
+            totalFeedbackCount = iFeedbackTotalCount.ToString("#,##0");
+
+            int iSatisfiedCount = satisfiedModel.CategoryCount;
+            double iSatisfied = ((double)iSatisfiedCount * 100) / iFeedbackTotalCount;
+            Satisfied = iSatisfied.ToString("#.#") + "%";
+
+            int iNotSatisfiedCount = notSatisfiedModel.CategoryCount;
+            double iNotSatisfied = ((double)iNotSatisfiedCount * 100) / iFeedbackTotalCount;
+            NotSatisfied = iNotSatisfied.ToString("#.#") + "%";
+        }
+
+        Satisfied = Satisfied.Replace("NaN", "0");
+        NotSatisfied = NotSatisfied.Replace("NaN", "0");
+    }
+
+    string margins = "margin-top:0px";
+}
+<style>
+    #detailsBtn {
+        background-color: #4CAF50; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .Line {
+        /*float: left;
+        width: 100%;*/
+        border-bottom: 1px solid #ccc;
+        margin: 7px 0px;
+    }
+
+    .CallsLandedCount {
+        float: left;
+        width: 100%;
+        border-bottom: 1px solid #ccc;
+    }
+
+        .CallsLandedCount div {
+            float: left;
+            width: 50%;
+        }
+
+            .CallsLandedCount div:last-child {
+                text-align: right;
+            }
+
+    .data-section {
+        padding-top: 0px;
+        min-height: 420px;
+    }
+
+    .cellHeader {
+        display: block;
+        background: #1E672C;
+        padding: 12px 15px;
+        color: #ffffff;
+        font-size: 21px;
+        line-height: 21px;
+        font-weight: 700;
+        margin: 0px -10px 15px -10px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        cursor: pointer;
+    }
+
+    .glyphiconSpan {
+        display: block;
+        background: #000000;
+        padding: 4px 8px;
+        color: #ffffff;
+        border-width: 2px;
+        border-style: solid;
+        border-color: #27880f;
+        border-radius: 2px;
+        margin-top: -6px;
+        /*margin: 0px -10px 15px -10px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;*/
+    }
+
+        .glyphiconSpan:hover {
+            color: #FFF;
+            background: #4caf50;
+            /*margin: 0px -10px 15px -10px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;*/
+        }
+
+    .cellHeader:hover {
+        color: #FFF;
+        background: #4caf50;
+    }
+
+    p.feedback-count {
+        line-height: 22px;
+        text-align: right;
+    }
+
+    .satisfyText {
+        margin-right: -20px;
+        text-align: right;
+    }
+
+    .linkEffect:hover {
+        background-color: #ccd1d1 !important;
+        padding: 3px 0;
+        border-radius: 7px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .linkEffect {
+        padding: 3px 0;
+    }
+
+    .main-count-p {
+        display: inline;
+    }
+
+    .main-count-div {
+        width: auto;
+        display: inline-block;
+    }
+
+    .linkEffect-main-count:hover {
+        background-color: #ccd1d1 !important;
+        padding: 0 10px;
+        border-radius: 7px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+
+    .data-content-area {
+        text-align: center;
+    }
+
+    .thumb-up:hover {
+        color: #58d68d !important;
+        cursor: pointer;
+    }
+
+    .thumb-down:hover {
+        color: #ec7063 !important;
+        cursor: pointer;
+    }
+</style>
+<div id="CardParent" class="col-lg-4 col-md-4  ">
+    <form id=@("FormCampaignCard" + Model.FormId) method="post">
+
+        <input type="hidden" id="@("CampaignId" + Model.FormId)" name="CampaignId" value=@Model.CampaignId>
+
+
+
+        <div class="data-section">
+            @*<a class="cellHeader" onclick="ComplaintDetailsClick(this);">
+                    @Model.CampaignName
+                </a>*@
+
+
+            @*@if (Model.CampaignId != (int)Config.Campaign.DcoOffice && Model.CampaignId != (int)Config.Campaign.SchoolEducationEnhanced)*@
+            @if (Model.CampaignId == (int)Config.Campaign.PLRA)
+            {
+
+                <a class="cellHeader" onclick="ComplaintDetailsClick(this);">
+                    @Model.CampaignName
+                    <div class="pull-right">
+                        <i class="glyphiconSpan glyphicon glyphicon-dashboard" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'></i>
+                    </div>
+                    @*<input type="hidden" name="someName" value="helloworld1" />
+                        <a class="cellHeader" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'>
+                            <span class="glyphicon glyphicon-transfer"></span>
+                        </a>;*@
+                </a>
+
+                @*<input type="submit" class="btn btn-success" value="SEE DETAILS">*@
+            }
+            else
+            {
+                <input type="hidden" name="someName" value="helloworld" />
+
+
+                <a class="cellHeader" onclick='$("#@("FormCampaignCard" + Model.FormId)").submit()'>
+                    @Model.CampaignName
+                </a>
+
+            }
+
+
+
+
+            @*@if (Satisfied != null && NotSatisfied != null && (Model.CampaignId == (int)Config.Campaign.DcoOffice
+                || Model.CampaignId == (int)Config.Campaign.SchoolEducationEnhanced
+                || Model.CampaignId == (int)Config.Campaign.Police))*@
+            @if (Model.ListfeedbackCategoryWiseCounts != null)
+            {
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div>
+                            <span style="font-weight:bold;color:#565656;">Complainant Feedback</span>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <a id="TagFeedback__Satisfied__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                            <div class="tooltip-my satisfyText">
+                                <div>
+                                    <i class="fa fa-thumbs-up fa-3x thumb-up" style="color: #00a65a" aria-hidden="true"></i>
+                                </div>
+                                <span class="text-muted">@Satisfied</span>
+                                <span class="tooltip-text">@SatisfiedCount</span>
+                            </div>
+                        </a>
+
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                        <a id="TagFeedback__Dissatisfied__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                            <div class="tooltip-my ">
+                                <div>
+                                    <i class="fa fa fa-thumbs-down fa-flip-horizontal fa-3x thumb-down" style="color: #ed1c24" aria-hidden="true"></i>
+                                </div>
+                                <span class="text-muted" style="margin-left:2px">@NotSatisfied</span>
+                                <span class="tooltip-text">@NotSatisfiedCount</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <div class="">
+                            <p class="feedback-count">@totalFeedbackCount <span class="total-ind">Total</span></p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="Line"></div>
+                margins = "margin-top:0px;";
+            }
+            else
+            {
+                margins = "margin-top:65px;";
+            }
+            <div class="row">
+
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <div class="" style="">
+                        <span style="font-weight:bold;color:#565656;padding-top: 11px;display: inline-block;">Calls Landed</span>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <div class="">
+                        <p class="feedback-count">@Model.CallsLandedCount.Count<span class="total-ind">Total</span></p>
+                    </div>
+                </div>
+
+            </div>
+            <div class="Line"></div>
+
+            <div class="data-content-area" style="@margins">
+                <div class="main-count-div linkEffect-main-count">
+                    @*<h4 class="data-head">Status Wise Count</h4>*@
+                    <a id="TagStatus__Total__@Model.CampaignId" class="" onclick='OnBtnClick(this)'>
+                        <p class="main-count">@Model.ListStatusWiseCount[0].Count.ToString("#,##0")<span class="total-ind">@Model.ListStatusWiseCount[0].StatusName</span></p>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                @for (int i = 1; i < Model.ListStatusWiseCount.Count; i++)
+                {
+                    var statusWiseCount = Model.ListStatusWiseCount[i];
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                        <a id='TagStatus__@(statusWiseCount.StatusName)__@Model.CampaignId' class="" onclick='OnBtnClick(this)'>
+                            <div class="sub-count-area linkEffect">
+                                <p class="label-head">@statusWiseCount.StatusName</p>
+                                <p class="@statusWiseCount.CSSClassName">@statusWiseCount.Count.ToString("#,##0")</p>
+                                <p class="percetage">@(statusWiseCount.Percentage + "%")</p>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+
+
+    </form>
+</div>
+
+<script type="text/javascript">
+    var modulesArrToSkip = ["Resolved", "Overdue", "Pending", "Satisfied", "Dissatisfied"];
+    $(document).ready(function () {
+
+    });
+
+    function OnBtnClick(element) {
+        //alert("sdf");
+        debugger;
+        var tagId = element.id;
+        var tagSplitArr = tagId.split('__');
+        //alert(tagId);
+        if (tagSplitArr[2] == 80) { // skip for plra
+            if (modulesArrToSkip.includes(tagSplitArr[1])) {
+                return;
+            }
+        }
+        //alert(element.id);
+        var campaignId = $("#CampaignId" + @Model.FormId).val();
+        //var startDate = $("#StartDate").val();
+        //var endDate = $("#EndDate").val();
+        var startDate = $('#dateRange').val().split('To')[0].trim();
+        var endDate = $('#dateRange').val().split('To')[1].trim();
+
+        $.ajax({
+            type: "POST",
+            url: "/Executive/OnStatsLinkClick",
+            data: {
+                tagId: tagId,
+                startDate: startDate,
+                endDate: endDate
+            }, // serializes the form's elements.
+            success: function(data,status)
+            {
+                $('#PopupDiv2').empty();
+                $('#PopupDiv2').html(data);
+                $('#PopupDiv2').modal();
+            }
+        });
+    }
+
+
+    @*function OnCampaignSelectSuccess() {
+        HideLoading();
+        window.location.href = '@Url.Action("DashboardMain", "Report")' + '?campaignId=' + @cmsCookie.Campaigns.Split(',')[0];
+    }*@
+    function ComplaintDetailsClick(element) {
+        debugger;
+        
+        setTimeout(function () {
+
+            var url = '/Executive/GetPLRAComplaintDetails?startDate=' + $('#dateRange').val().split('To')[0].trim() + '&endDate=' + $('#dateRange').val().split('To')[1].trim();
+        window.open(url,'_blank');
+        },2000)
+    }
+
+    $("#FormCampaignCard" + @Model.FormId).submit(function (e) {
+        //alert( "Handler for .submit() called."+@Model.CampaignId );
+        debugger;
+        var form = $(this);
+        //var url = form.attr('action');
+        debugger;
+        var campaignId = $("#CampaignId" + @Model.FormId).val();
+        if(campaignId == 80){
+            window.open('http://cms.punjab-zameen.gov.pk/External_Dashboard.aspx','_blank');
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: ApplicationPathFolderPrefix+"/Account/SwitchUser",
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+
+                //alert(data); // show response from the php script.
+                window.location.href = '@Url.Action("Login", "Account")';
+            }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
+    $("#CardParent").click(function () {
+        //var campaignId = $("#")
+
+    });
+</script>

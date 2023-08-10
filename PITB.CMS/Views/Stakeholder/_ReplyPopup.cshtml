@@ -1,0 +1,94 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Helper.Extensions;
+
+@model PITB.CMS_Common.Models.View.Message.VmMessageReply
+<style>
+ 
+    .text {
+        border: 1px solid #CCC;
+        resize: none;
+        height: 50px;
+    }
+</style>
+@using (Ajax.BeginForm("OnReplySubmit", "Message", new AjaxOptions()
+{
+    HttpMethod = "POST",
+    OnBegin = "$.loading(this,false)",
+    OnComplete = "$.loading(this,true)",
+    OnSuccess = "$.Show(data,'TagEdit')",
+    AllowCache = false
+}))
+{
+    
+
+    <div id="TagEdit" class=" modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                @Html.HiddenFor(m => m.IncomingMsgId)
+                @Html.HiddenFor(m => m.CampaignId)
+                @Html.HiddenFor(m => m.IncomingMsgStr)
+                @Html.HiddenFor(m => m.CallerNo)
+
+                <div class="box box-primary" style="box-shadow:none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title">Reply [@Model.IncomingMsgId]</h4>
+
+                    </div>
+                    
+                    <div class="box-body-white" style="margin-top:5px;">
+                        
+                            <div class="form-group col-md-12">
+                                <div class="col-md-2">
+                                    <label>Caller No</label>
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.DisplayFor(m => m.CallerNo)
+                                </div>
+                                
+                                <div class="col-md-2">
+                                    <label>Message</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.TextAreaFor(m => m.IncomingMsgStr, new { @cols = "55", @class = "text" })
+                                </div>
+                            </div>
+                            
+                   
+
+                        <div class="form-group col-md-12">
+                            <div class="col-md-2">
+                                <label>Reply</label>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.TextAreaFor(m => m.ReplyMsgStr, new { @class = "form-control characters-only-with-space", @placeholder = "Enter Msg" })
+                                @Html.ValidationMessageFor(m => m.ReplyMsgStr, "", new { @class = "label label-warning" })
+                            </div>
+                        </div>
+
+
+                        <div class="row margin-bottom">
+                            <div class="form-group col-md-12">
+                                <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right"><span class="fa fa-save"></span>&nbsp;Reply</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+            var dropDownDict = [];
+            $(document).ready(function () {
+                $('form').removeData('validator');
+                $('form').removeData('unobtrusiveValidation');
+                $.validator.unobtrusive.parse('form');
+
+            });
+
+</script>
+

@@ -1,0 +1,419 @@
+﻿@using PITB.CRM.Public_Web.Models
+@model PITB.CRM.Public_Web.Models.ViewModels.VmNewsFeed
+@{
+    CookieUserModel userData = null;
+    if (ViewBag.UserData != null)
+    {
+        userData = ViewBag.UserData as CookieUserModel;
+    }
+    Layout = null;
+    ViewBag.Title = "Detail";
+    string chunkId = Guid.NewGuid().ToString("D");
+    string cssColumn = "col-lg-12 col-md-12";
+    string resolvedStyle = "";
+    string textColor = "";
+    string statusColor = "#fdba45";
+    string categoryColor = "#3fb970";
+    string url = (Model.ListComplaints[0].StatusChangeAttachments.Count > 0) ? Model.ListComplaints[0].StatusChangeAttachments[0] : "";
+}
+<!DOCTYPE html>
+<html class="transition-navbar-scroll top-navbar-xlarge bottom-footer" lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb#">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Open Graph data -->
+    <link rel='dns-prefetch' href='//s.w.org' />
+
+    <meta name="author" content="LWMC">
+    <!-- Facebook Open Graph -->
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Fix IT Punjab LWMC" />
+    <meta property="og:title" content="(@Model.ListComplaints[0].Status) @Model.ListComplaints[0].Category" />
+    <meta property="og:url" content="https://fixit.punjab.gov.pk/public/detail/@Model.ListComplaints[0].ComplaintHash" />
+    <meta property="og:type" content="article" />
+    <meta property="og:description" content="@Model.ListComplaints[0].StatusChangedText" />
+    <meta property="og:image" content="@url" />
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCmvBGutmB41Al24g9jcvqTc5tcsas4O90">
+    </script>
+    <link rel="apple-touch-icon" sizes="57x57" href="~/StaticResources/images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/StaticResources/images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/StaticResources/images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/StaticResources/images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/StaticResources/images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/StaticResources/images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/StaticResources/images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/StaticResources/images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/StaticResources/images/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/StaticResources/images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/StaticResources/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/StaticResources/images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/StaticResources/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="~/StaticResources/images/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/StaticResources/images/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+    <title>Punjab Fix IT | Government of Punjab</title>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-1.12.4.min.js"></script>
+    <link href="~/StaticResources/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/theme-core.min.css" rel="stylesheet">
+    <link href="~/StaticResources/css/module-essentials.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-layout.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-navbar.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-background.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-buttons.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-text.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/fixit.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="navbar navbar-default navbar-fixed-top navbar-size-large paper-shadow navbar-size-xlarge" data-animated role="navigation">
+            <!--style="opacity: 0.9;
+                                                                                               -webkit-box-shadow: 0px 0px 8px 2px #ececec;
+                                                                                               -moz-box-shadow: 0px 0px 8px 2px #000000;
+                                                                                               box-shadow: 0px 0px 6px 3px #cecece;
+                                                                                           " data-z="0"-->
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand navbar-brand-logo">
+                        <a href="@Url.Action("index","public")">
+                            <img src="~/StaticResources/images/fixit_dashboard_logo.png" alt="Punjab FixIT" height="50px" />
+                        </a>
+                    </div>
+                </div>
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="main-nav">
+
+                    <div class="navbar-right">
+
+                        @if (userData == null)
+                        {
+                            <a id="loginClick" href="@Url.Action("login", "Account")?returnUrl=/public/index">
+                                <img src="~/StaticResources/images/facebook-flat.svg" width="250" style="padding-top: 8px;" />
+                                @*<img src="https://fb-s-c-a.akamaihd.net/h-ak-xaf1/v/t39.2365-6/16344632_403881753293914_7761668832074137600_n.png?oh=a15e2e9912fa31f678447aaf65f8fdc2&amp;oe=599693ED&amp;__gda__=1502516821_9923b94311d5fd0fe817bd7b0a822d5f"
+                        alt="Click here to login with Facebook" width="250">*@
+                                @*Click here to login with Facebook*@
+                            </a>
+
+                        }
+                        else
+                        {
+                            <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
+
+                                <li class="dropdown user active">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <img src="@Url.Content(userData.Data.ProfilePhoto)" alt="" class="img-circle" /> @userData.Data.FullName<span class="caret"></span>
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu">
+                                        @*<li><a href="website-student-dashboard.html"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
+                                <li class="active"><a href="website-student-courses.html"><i class="fa fa-mortar-board"></i> My Courses</a></li>
+                                <li><a href="website-student-profile.html"><i class="fa fa-user"></i> Profile</a></li>*@
+                                        <li><a href="@Url.Action("signout","account")"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        }
+                        <!-- user -->
+                        <!-- // END user -->
+                    </div>
+                </div>
+                <!-- /.navbar-collapse -->
+            </div>
+        </div>
+    </div>
+
+    @{
+        Config.PublicComplaintStatus status = (Config.PublicComplaintStatus)Model.ListComplaints[0].StatusId;
+
+        if (status == Config.PublicComplaintStatus.Resolved || status == Config.PublicComplaintStatus.Inapplicable)
+        {
+            cssColumn = string.IsNullOrEmpty(Model.ListComplaints[0].StatusChangedText) ? "col-lg-12 col-md-12" : "col-lg-9 col-md-9";
+            resolvedStyle = "style=background-color:#2eac96;>";
+            statusColor = categoryColor = "#FFFFFF";
+            textColor = "text-white";
+        }
+    }
+    <div id="chunk_@chunkId" class="container" style="margin-top:50px;">
+        <div class="row">
+            <div class="col-lg-1 col-md-1"></div>
+            <div class="col-lg-10 col-md-10">
+                <div class="row">
+                    <div class="@cssColumn">
+
+                        <div class="panel panel-default paper-shadow" data-z="0.5">
+                            <div class="panel-heading" @resolvedStyle>
+                                <div class="media v-middle">
+                                    <div class="media-left text-center pull-left">
+                                        <a href="javascript:void(0)">
+                                            <img src="@Url.Content(Model.ListComplaints[0].SocialSharedData.ProfilePhoto)" alt="@Model.ListComplaints[0].SocialSharedData.FullName" class="img-circle width-60">
+                                        </a>
+                                    </div>
+                                    <div class="media-body pull-left" style="width:auto;">
+                                        <h4 class="text-display-1 margin-v-0 @textColor" style="font-size:21px;">@Model.ListComplaints[0].SocialSharedData.FullName</h4>
+                                        <p class="text-subhead @textColor" style="margin-top: -5px;">@Model.ListComplaints[0].TimeElapsed</p>
+                                    </div>
+                                    <div class="media-body pull-right" style="width:auto; text-align:right;">
+                                        <h4 class="text-display-1 margin-v-0 @textColor" style="font-size:21px; color:@statusColor;">@Model.ListComplaints[0].Status</h4>
+                                        <p class="text-subhead @textColor" style="margin-top: -5px;">Category: <span style="color:@categoryColor;">@Model.ListComplaints[0].Category</span></p>
+                                    </div>
+                                </div>
+                                @*<div class="media v-middle">
+                                        <div class="row">
+                                            <div class="col-lg-1 col-md-1">
+                                                <img src="@Url.Content(Model.ListComplaints[0].SocialSharedData.ProfilePhoto)" alt="people" class="img-circle">
+                                            </div>
+                                            <div class="col-lg-4 col-md-2">
+                                                <h4 class="text-muted @textColor">
+                                                    @Model.ListComplaints[0].SocialSharedData.FullName
+                                                </h4>
+                                                <p class="text-subhead @textColor" style="font-style: italic;font-size: 13px;margin-top: -9px;">@Model.ListComplaints[0].TimeElapsed</p>
+                                            </div>
+                                            <div class="col-lg-7 col-md-9">
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <h4>
+                                                            <span class="@textColor">Status :</span>
+                                                            <span class="@textColor">@Model.ListComplaints[0].Status</span>
+                                                        </h4>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <h4>
+                                                            <span class="@textColor">Category :</span>
+                                                            <span class="@textColor">@Model.ListComplaints[0].Category</span>
+                                                        </h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>*@
+                            </div>
+                            <div class="panel-body">
+
+                                <div class="col-md-6" style="padding:0px">
+                                    <p>@Model.ListComplaints[0].Description</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Location: </strong>UC: @Model.ListComplaints[0].UC | Town: @Model.ListComplaints[0].Town | District: @Model.ListComplaints[0].District</p>
+                                </div>
+                                <br style="clear: both;">
+                                <div class="col-md-6" style="padding:0px">
+                                    @if (Model.ListComplaints[0].ImageList != null && Model.ListComplaints[0].ImageList.Count > 0)
+                                    {
+                                        <div class="col-md-12" style="padding:2px; background-image:url('@Url.Content(Model.ListComplaints[0].ImageList[0])'); background-size:cover; height: 255px;">
+                                            @* <img src="" alt="people" style="width: 100%;">*@
+
+                                        </div>
+
+                                    }
+
+                                </div>
+                                <div class="col-md-6" style="padding-right:0px">
+                                    <div class="col-md-12" style="padding:2px; padding-right:0px">
+                                        @if (Model.ListComplaints[0].Location != null)
+                                        {
+                                            string mapDivId = Guid.NewGuid().ToString("N");
+                                            <div style="min-height: 255px" id="map-@mapDivId" lat="@Model.ListComplaints[0].Location.Latitude" lng="@Model.ListComplaints[0].Location.Longitude" class="map @chunkId ">
+                                            </div>
+                                            @*<img src="https://maps.googleapis.com/maps/api/staticmap?zoom=16&center=@Model.ListComplaints[0].Location.Latitude,@Model.ListComplaints[0].Location.Longitude&size=250x130&markers=color:red|@Model.ListComplaints[0].Location.Latitude,@Model.ListComplaints[0].Location.Longitude&key=AIzaSyDfU_hXS1w3DLZX_LjFPmGVFhra-LBC0Yw"
+                                                width="100%"
+                                                alt="@Model.ListComplaints[0].UC" />*@
+
+                                            <div id="@mapDivId" onload="renderMap(@Model.ListComplaints[0].Location.Latitude,@Model.ListComplaints[0].Location.Longitude,'@mapDivId','sami')"></div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-12" style="padding: 2px; padding-top: 10px; margin: 0px; margin-top: 2px;border-top: 1px solid #dbdbdb;">
+                                    @{
+                                        string upVoteId = Guid.NewGuid().ToString("N");
+                                        string downVoteId = Guid.NewGuid().ToString("N");
+                                    }
+                                    <p class="text-subhead">
+                                        <a href="javascript:void(0)" class="like-btn" style="color:green" title="Like" onclick="submitVote('@Model.ListComplaints[0].ComplaintHash',1,'@upVoteId','@downVoteId','@upVoteId');">
+                                            Like <i class="fa fa-thumbs-up"></i><span id="@upVoteId">&nbsp;@Model.ListComplaints[0].SocialSharedData.UpVotes</span>
+                                        </a> &nbsp;&nbsp;&nbsp;
+                                        <a href="javascript:void(0)" class="like-btn" style="color:red" title="Dislike" onclick="submitVote('@Model.ListComplaints[0].ComplaintHash',2,'@upVoteId','@downVoteId','@downVoteId');">
+                                            Dislike <i class="fa fa-thumbs-down"></i><span id="@downVoteId">&nbsp;@Model.ListComplaints[0].SocialSharedData.DownVotes</span>
+                                        </a>
+                                    </p>
+                                </div>
+
+                                @*<div class="row">
+                                        <div class="col-md-6">
+                                            <p>@Model.ListComplaints[0].Description</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Location: </strong>UC: @Model.ListComplaints[0].UC | Town: @Model.ListComplaints[0].Town | District: @Model.ListComplaints[0].District</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row fixed-height-card">
+                                        <div class="col-md-6" style="padding: 2px">
+                                            @if (Model.ListComplaints[0].ImageList != null && Model.ListComplaints[0].ImageList.Count > 0)
+                                            {
+                                                <img src="@Url.Content(Model.ListComplaints[0].ImageList[0])" alt="people" style="width: 100%;">
+
+                                            }
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                @if (Model.ListComplaints[0].Location != null)
+                                                {
+                                                    string mapDivId = Guid.NewGuid().ToString("N");
+                                                    <div style="min-height: 254px" id="map-@mapDivId" lat="@Model.ListComplaints[0].Location.Latitude" lng="@Model.ListComplaints[0].Location.Longitude" class="map @chunkId ">
+                                                    </div>
+
+
+                                                    <div id="@mapDivId" onload="renderMap(@Model.ListComplaints[0].Location.Latitude,@Model.ListComplaints[0].Location.Longitude,'@mapDivId','sami')"></div>
+                                                }
+
+                                            </div>
+
+                                        </div>
+                                    </div>*@
+
+
+
+
+
+                            </div>
+                            @*<div class="panel-footer">
+                                    <p class="text-subhead">
+
+                                        @{
+                                            string upVoteId = Guid.NewGuid().ToString("N");
+                                            string downVoteId = Guid.NewGuid().ToString("N");
+                                        }
+                                        <a href="javascript:void(0)" style="color: green" title="Up vote" onclick="submitVote('@Model.ListComplaints[0].ComplaintHash',1,'@upVoteId','@downVoteId','@upVoteId');">
+
+                                            <i class="glyphicon glyphicon-thumbs-up vote-btn upvote"></i> <span id="@upVoteId">@Model.ListComplaints[0].SocialSharedData.UpVotes</span>
+                                        </a> &nbsp;&nbsp;&nbsp;
+                                        <a href="javascript:void(0)" style="color: red" title="Down vote" onclick="submitVote('@Model.ListComplaints[0].ComplaintHash',2,'@upVoteId','@downVoteId','@downVoteId');">
+                                            <i class="glyphicon glyphicon-thumbs-down vote-btn downvote"></i>
+                                            <span id="@downVoteId">@Model.ListComplaints[0].SocialSharedData.DownVotes</span>
+                                        </a>
+                                    </p>
+
+                                </div>*@
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ListComplaints[0].StatusChangedText) && status != Config.PublicComplaintStatus.UnsatisfactoryClosed)
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                                <div class="panel-heading panel-collapse-trigger" style="padding: 17px 15px;">
+                                    <h4>Action Taken by department</h4>
+                                    <span class="text-muted" style="font-style: italic">@Model.ListComplaints[0].StatusChangeDateTime.ToString("dd MMM yyyy HH:mm")</span>
+                                </div>
+                                <div class="panel-body">
+                                    <p>@Model.ListComplaints[0].StatusChangedText</p>
+                                    <div class="row">
+                                        @foreach (string u in Model.ListComplaints[0].StatusChangeAttachments)
+                                        {
+                                            <div class="col-md-6">
+                                                <img src="@Url.Content(u)" alt="@Model.ListComplaints[0].Status" style="width: 100%;">
+                                            </div>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+            <div class="col-lg-1 col-md-1"></div>
+        </div>
+
+
+    </div>
+
+
+    <!-- Separate Vendor Script Bundles -->
+    <script src="~/StaticResources/js/vendor-core.min.js"></script>
+    <script src="~/StaticResources/js/vendor-forms.min.js"></script>
+    <script src="~/StaticResources/js/module-essentials.min.js"></script>
+    <script src="~/StaticResources/js/module-material.min.js"></script>
+    <script src="~/StaticResources/js/module-layout.min.js"></script>
+    <script src="~/StaticResources/js/theme-core.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/StaticResources/js/notify.js"></script>
+
+
+    <script>
+        function submitVote(complaintId, isUpVote, upElement, downElement, baseElement) {
+            var obj = {
+                "ComplaintHash": complaintId,
+                "UserVote": isUpVote
+            }
+
+            $.ajax({
+                url: "@Url.Action("SubmitMyVote", "Public")",
+                type: "POST",
+            data: obj,
+            async: false,
+            success: function (json) {
+
+                if (json.Status) {
+
+                        
+                    $('#' + upElement).html( json.UpVoteCount  );
+                        
+                    $('#' + downElement).html( json.DownVoteCount);
+
+                        
+
+                    $('#' + baseElement).notify(json.Message, 'success');
+
+                } else {
+                    $('#' + baseElement).notify(json.Message, 'info');
+                }
+            }
+        });
+        }
+
+        var maps = [];
+        var markers = [];
+        function initMap(loadAll, elementClass) {
+            var $maps = '';
+            if (loadAll)
+                $maps = $('.map');
+            else {
+                $maps = $('.' + elementClass);
+
+            }
+            $.each($maps, function (i, value) {
+                var uluru = { lat: parseFloat($(value).attr('lat')), lng: parseFloat($(value).attr('lng')) };
+
+                var mapDivId = $(value).attr('id');
+
+                maps[mapDivId] = new google.maps.Map(document.getElementById(mapDivId), {
+                    zoom: 17,
+                    center: uluru
+                });
+
+                markers[mapDivId] = new google.maps.Marker({
+                    position: uluru,
+                    map: maps[mapDivId]
+                });
+            })
+        }
+        $(function () {
+            initMap(false, '@chunkId');
+            @*var divId='div#chunk'+@chunkId+'[onload]';
+            $(divId).trigger('onload');*@
+        });
+    </script>
+</body>
+</html>
+

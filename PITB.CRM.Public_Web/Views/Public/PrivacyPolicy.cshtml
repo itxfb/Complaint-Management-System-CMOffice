@@ -1,0 +1,264 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Privacy Policy | Punjab Fix IT</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="~/StaticResources/images/icons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="~/StaticResources/images/icons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="~/StaticResources/images/icons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="~/StaticResources/images/icons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="~/StaticResources/images/icons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="~/StaticResources/images/icons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="~/StaticResources/images/icons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="~/StaticResources/images/icons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/StaticResources/images/icons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="~/StaticResources/images/icons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/StaticResources/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="~/StaticResources/images/icons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/StaticResources/images/icons/favicon-16x16.png">
+    <link rel="manifest" href="~/StaticResources/images/icons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="~/StaticResources/images/icons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+
+    <script src="//ajax.aspnetcdn.com/ajax/jquery/jquery-1.12.4.min.js"></script>
+    <link href="~/StaticResources/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/theme-core.min.css" rel="stylesheet">
+    <link href="~/StaticResources/css/module-essentials.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-layout.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-navbar.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-background.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-buttons.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/module-colors-text.min.css" rel="stylesheet" />
+    <link href="~/StaticResources/css/fixit.css" rel="stylesheet" />
+</head>
+    <body>
+        <div class="container">
+            <div class="navbar navbar-default navbar-fixed-top navbar-size-large paper-shadow navbar-size-xlarge" data-animated role="navigation">
+                <!--style="opacity: 0.9;
+                                                                                               -webkit-box-shadow: 0px 0px 8px 2px #ececec;
+                                                                                               -moz-box-shadow: 0px 0px 8px 2px #000000;
+                                                                                               box-shadow: 0px 0px 6px 3px #cecece;
+                                                                                           " data-z="0"-->
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <div class="navbar-brand navbar-brand-logo">
+                            <a href="@Url.Action("index","public")">
+                                <img src="~/StaticResources/images/fixit_dashboard_logo.png" alt="Punjab FixIT" height="50px" />
+                            </a>
+                        </div>
+                    </div>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse" id="main-nav">
+
+                        @*<div class="navbar-right">
+
+                            if (userData == null)
+                            {
+                                <a id="loginClick" href="@Url.Action("login", "account")?returnUrl=/public/index">
+                                    <img src="~/StaticResources/images/facebook-flat.svg" width="250" style="padding-top: 8px;" />
+                                    @*<img src="https://fb-s-c-a.akamaihd.net/h-ak-xaf1/v/t39.2365-6/16344632_403881753293914_7761668832074137600_n.png?oh=a15e2e9912fa31f678447aaf65f8fdc2&amp;oe=599693ED&amp;__gda__=1502516821_9923b94311d5fd0fe817bd7b0a822d5f"
+                                    alt="Click here to login with Facebook" width="250">
+
+                                </a>
+
+                            }
+                            else
+                            {
+                                <ul class="nav navbar-nav navbar-nav-bordered navbar-nav-margin-right">
+
+                                    <li class="dropdown user active">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <img src="@Url.Content(userData.Data.ProfilePhoto)" alt="" class="img-circle" /> @userData.Data.FullName<span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" role="menu">
+                                            @*<li><a href="website-student-dashboard.html"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
+                                            <li class="active"><a href="website-student-courses.html"><i class="fa fa-mortar-board"></i> My Courses</a></li>
+                                            <li><a href="website-student-profile.html"><i class="fa fa-user"></i> Profile</a></li>
+                                            <li><a href="@Url.Action("signout","account")"><i class="fa fa-sign-out"></i> Logout</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                            }
+                            <!-- user -->
+                            <!-- // END user -->
+                        </div>*@
+                    </div>
+                    <!-- /.navbar-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container" style="background-color:#fff; margin-top: 80px;"> 
+            <h3>Privacy Policy of&nbsp;<strong>FixIT LWMC</strong></h3>
+            <p>This Application collects some Personal Data from its Users.</p>
+            <p class="text-center text-uppercase"><strong>Policy summary</strong></p>
+            <p class="text-uppercase"><strong>Personal Data collected for the following purposes and using the following services:</strong></p>
+            <ul>
+                <li>
+                    <strong>Access to third party accounts</strong>
+                    <ul>
+                        <li>
+                            <strong>Facebook account access</strong>
+                            <ul>
+                                <li>Permissions: Access Requests, App Notifications, Birthday, Contact email, Publish App Activity and Text Messaging</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Content commenting</strong>
+                            <ul>
+                                <li>
+                                    <strong>Facebook Comments</strong>
+                                    <ul>
+                                        <li>Personal Data: Cookies and Usage Data</li>
+                                    </ul>
+                                </li>
+                              
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Handling activity data</strong>
+                            <ul>
+                                <li>
+                                    <strong>Activity data tracked by your device</strong>
+                                    <ul>
+                                        <li>Personal Data: movement activity</li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+
+
+
+                        </li>
+
+                        <li>
+                            <strong>Interaction with external social networks and platforms</strong>
+                            <ul>
+                                <li>
+                                    <strong>Facebook Like button and social widgets</strong>
+                                    <ul>
+                                        <li>Personal Data: Cookies and Usage Data</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h4 class="text-center text-uppercase">Full policy</h4>
+            <p><strong>Data Controller and Owner</strong></p>
+            <p><strong>Types of Data collected</strong></p>
+            <ul>
+                <li>Among the types of Personal Data that this Application collects, by itself or through third parties, there are: Cookies, Usage Data and movement activity.</li>
+                <li>Other Personal Data collected may be described in other sections of this privacy policy or by dedicated explanation text contextually with the Data collection.<br />The Personal Data may be freely provided by the User, or collected automatically when using this Application.<br />Any use of Cookies - or of other tracking tools - by this Application or by the owners of third party services used by this Application, unless stated otherwise, serves to identify Users and remember their preferences, for the sole purpose of providing the service required by the User.<br />Failure to provide certain Personal Data may make it impossible for this Application to provide its services.</li>
+                <li>Users are responsible for any Personal Data of third parties obtained, published or shared through this Application and confirm that they have the third party's consent to provide the Data to the Owner.</li>
+            </ul>
+            <p><strong>Mode and place of processing the Data</strong></p>
+            <p><strong>Methods of processing</strong></p>
+            <ul>
+                <li>The Data Controller processes the Data of Users in a proper manner and shall take appropriate security measures to prevent unauthorized access, disclosure, modification, or unauthorized destruction of the Data.<br />The Data processing is carried out using computers and/or IT enabled tools, following organizational procedures and modes strictly related to the purposes indicated. In addition to the Data Controller, in some cases, the Data may be accessible to certain types of persons in charge, involved with the operation of the site (administration, sales, marketing, legal, system administration) or external parties (such as third party technical service providers, mail carriers, hosting providers, IT companies, communications agencies) appointed, if necessary, as Data Processors by the Owner. The updated list of these parties may be requested from the Data Controller at any time.</li>
+            </ul>
+            <p><strong>Place</strong></p>
+            <ul>
+                <li>The Data is processed at the Data Controller's operating offices and in any other places where the parties involved with the processing are located. For further information, please contact the Data Controller.</li>
+            </ul>
+            <p><strong>Retention time</strong></p>
+            <ul>
+                <li>The Data is kept for the time necessary to provide the service requested by the User, or stated by the purposes outlined in this document, and the User can always request that the Data Controller suspend or remove the data.</li>
+            </ul>
+            <p><strong>The use of the collected Data</strong></p>
+            <ul>
+                <li>The Data concerning the User is collected to allow the Owner to provide its services, as well as for the following purposes: Access to third party accounts, Content commenting, Interaction with external social networks and platforms and Handling activity data.</li>
+                <li>The Personal Data used for each purpose is outlined in the specific sections of this document.</li>
+            </ul>
+            <p><strong>Facebook permissions asked by this Application</strong></p>
+            <ul>
+                <li>This Application may ask for some Facebook permissions allowing it to perform actions with the User's Facebook account and to retrieve information, including Personal Data, from it. This service allows this Application to connect with the User's account on the Facebook social network, provided by Facebook Inc.</li>
+                <li>For more information about the following permissions, refer to the&nbsp;<a href="https://developers.facebook.com/docs/authentication/permissions/">Facebook permissions documentation</a>and to the&nbsp;<a href="https://www.facebook.com/about/privacy/">Facebook privacy policy</a>.</li>
+                <li>The permissions asked are the following:</li>
+            </ul>
+            <p><strong>Basic information</strong></p>
+            <ul>
+                <li>By default, this includes certain User&rsquo;s Data such as id, name, picture, gender, and their locale. Certain connections of the User, such as the Friends, are also available. If the User has made more of their Data public, more information will be available.</li>
+            </ul>
+            <p><strong>Access Requests</strong></p>
+            <ul>
+                <li>Provides read access to the User's friend requests.</li>
+            </ul>
+            <p><strong>App Notifications</strong></p>
+            <ul>
+                <li>Send notifications.</li>
+            </ul>
+            <p><strong>Birthday</strong></p>
+            <ul>
+                <li>Provides access to the birthday.</li>
+            </ul>
+            <p><strong>Contact email</strong></p>
+            <ul>
+                <li>Access the User's contact email address.</li>
+            </ul>
+            <p><strong>Publish App Activity</strong></p>
+            <ul>
+                <li>Allows the app to publish to the Open Graph using&nbsp;Built-in Actions, Achievements,&nbsp;Scores, or&nbsp;Custom Actions. The app can also publish other activity which is detailed in the Facebook's Publishing Permissions&nbsp;document.</li>
+            </ul>
+            <p><strong>Text Messaging</strong></p>
+            <ul>
+                <li>Send SMS messages to the User's phone.</li>
+            </ul>
+            <p><strong>Detailed information on the processing of Personal Data</strong></p>
+            <ul>
+                <li>Personal Data is collected for the following purposes and using the following services:</li>
+            </ul>
+            <p><strong>Access to third party accounts</strong></p>
+            <p><strong>Content commenting</strong></p>
+            <p><strong>Handling activity data</strong></p>
+            <p><strong>Interaction with external social networks and platforms</strong></p>
+            <p><strong>Additional information about Data collection and processing</strong></p>
+            <p><strong>Legal action</strong></p>
+            <ul>
+                <li>The User's Personal Data may be used for legal purposes by the Data Controller, in Court or in the stages leading to possible legal action arising from improper use of this Application or the related services.<br />The User declares to be aware that the Data Controller may be required to reveal personal data upon request of public authorities.</li>
+            </ul>
+            <p><strong>Additional information about User's Personal Data</strong></p>
+            <ul>
+                <li>In addition to the information contained in this privacy policy, this Application may provide the User with additional and contextual information concerning particular services or the collection and processing of Personal Data upon request.</li>
+            </ul>
+            <p><strong>System logs and maintenance</strong></p>
+            <ul>
+                <li>For operation and maintenance purposes, this Application and any third party services may collect files that record interaction with this Application (System logs) or use for this purpose other Personal Data (such as IP Address).</li>
+            </ul>
+            <p><strong>Information not contained in this policy</strong></p>
+            <ul>
+                <li>More details concerning the collection or processing of Personal Data may be requested from the Data Controller at any time. Please see the contact information at the beginning of this document.</li>
+            </ul>
+            <p><strong>The rights of Users</strong></p>
+            <ul>
+                <li>Users have the right, at any time, to know whether their Personal Data has been stored and can consult the Data Controller to learn about their contents and origin, to verify their accuracy or to ask for them to be supplemented, cancelled, updated or corrected, or for their transformation into anonymous format or to block any data held in violation of the law, as well as to oppose their treatment for any and all legitimate reasons. Requests should be sent to the Data Controller at the contact information set out above.</li>
+                <li>This Application does not support &ldquo;Do Not Track&rdquo; requests.<br />To determine whether any of the third party services it uses honor the &ldquo;Do Not Track&rdquo; requests, please read their privacy policies.</li>
+            </ul>
+            <p><strong>Changes to this privacy policy</strong></p>
+            <ul>
+                <li>The Data Controller reserves the right to make changes to this privacy policy at any time by giving notice to its Users on this page. It is strongly recommended to check this page often, referring to the date of the last modification listed at the bottom. If a User objects to any of the changes to the Policy, the User must cease using this Application and can request that the Data Controller remove the Personal Data. Unless stated otherwise, the then-current privacy policy applies to all Personal Data the Data Controller has about Users.</li>
+            </ul>
+            <p><strong>Information about this privacy policy</strong></p>
+            <ul>
+                <li>The Data Controller is responsible for this privacy policy.</li>
+            </ul> 
+        </div>
+        <footer class="footer">
+            <strong>@DateTime.Now.Year &copy; Punjab Information Technology Board</strong>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,164 @@
+﻿@using System.Web.Mvc;
+@using PITB.CMS_Common;
+@using PITB.CMS_Common.Handler.Authentication;
+@{
+    dynamic personInfo = ViewBag.personForm;
+}
+
+<input data-force-post="True" id="personId" name="personId" type="hidden" value="@personInfo.personId">
+@if (personInfo.isPresent)
+{
+    <input data-force-post="True" id="personCnic" name="personCnic" type="hidden" value="@personInfo.cnicNo">
+}
+
+@*<input data-val="true" data-val-number="The field Person_id must be a number." id="PersonalInfoVm_Person_id" name="PersonalInfoVm.Person_id" type="hidden" value="187074">
+    <input data-val="true" data-val-length="Provide complete CNIC No" data-val-length-max="13" data-val-length-min="13" id="PersonalInfoVm_Cnic_No" name="PersonalInfoVm.Cnic_No" type="hidden" value="2232333333333">*@
+
+<div>
+
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Complainant Information</h4>
+        </div>
+        <div class="box-body-white" style="margin-top:5px;">
+
+            @*@if (!personInfo.isPresent)
+        {*@
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>CNIC *</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBox("personCnic", (String)personInfo.cnicNo, new { @class = "form-control numbers-only fieldsEnable", @data_val_is_required = "True", @placeholder = "ex 3520174842579", @maxlength = 13, id = "personCnic", @data_val_config = "controlType::text__data-val-is-required::True__data-val-is-required-message::Please enter Cnic__data-val-inputFormat::numbers*__data-val-Length::13-13__data-val-Length-min-message::Minimum 13 characters" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter cnic" data-val-for-name="personCnic">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+
+                    @*<div class="col-md-4" style="margin-top: 5px;">
+                    <label> Cnic not available</label>
+                </div>
+                <div class="col-md-8 pull-left">
+                    @Html.CheckBox("personIsCnicNotPresent", false, new { @id = "personIsCnicNotPresent", @Style = "width:20px;height:20px;" })
+                </div>*@
+                    <div class="col-md-4">
+                        <label>Name *</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBox("personName", (String)personInfo.personName, new { @class = "form-control characters-only-with-space text-uppercase fieldsEnable", @placeholder = "Complainant Name", @data_val_tag = "T1", @data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="person name is required" data-validation-for-type="text" data-val-for-name="personName"></span>
+                    </div>
+                </div>
+            </div>
+            @* }*@
+
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Gender</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("personGender", (List<SelectListItem>)UiUtility.GetSelectList(personInfo.listGender, "id", "name", "-- Select--", personInfo.gender), new { @class = "form-control fieldsEnable", @placeholder = "ex 3520174842579", @data_val_tag = "T1", @data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="gender is required" data-validation-for-type="text" data-val-for-name="personGender">
+
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Cell Number *</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBox("personMobileNo", (string)personInfo.mobileNo, new { @class = "form-control numbers-only fieldsEnable", @placeholder = "03001234567", @maxlength = 11, @data_val_tag = "T1", @data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="mobile no is required" data-validation-for-type="text" data-val-for-name="personMobileNo">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Province *</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("personProvince", (List<SelectListItem>)UiUtility.GetSelectList(personInfo.listProvince, "Province_Id", "Province_Name", "-- Select--", personInfo.provinceId), new { @Id = "personProvinceList", @class = "form-control fieldsEnable", @data_val_tag = "T1", @data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Province is required" data-validation-for-type="text" data-val-for-name="personProvince">
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>District *</label>
+                    </div>
+                    <div class="col-md-8">
+
+                        @Html.DropDownList("personDistrict", (List<SelectListItem>)UiUtility.GetSelectList(personInfo.listDistrict, "District_Id", "District_Name", "-- Select--", personInfo.districtId), new { @Id = "personDistrictList", @class = "form-control fieldsEnable", @data_val_tag = "T1", @data_val_is_required = "True" })
+                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="personDistrict">
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Secondary Contact No</label>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBox("personSecondaryNo", (string)personInfo.secondaryMobileNo, new { @class = "form-control numbers-only fieldsEnable", @placeholder = "04235880062", @maxlength = 15 })
+                    </div>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <div class="col-md-4">
+                        <label>Address</label>
+                    </div>
+                    <div class="col-md-8 col-xs-12">
+                        @Html.TextArea("personAddress", (string)personInfo.address, new { @class = "form-control fieldsEnable", rows = 3 })
+                    </div>
+
+                </div>
+            </div>
+            @*<div class="form-group col-md-6">
+
+                <div class="col-md-4">
+                    <label>Send Anonmously </label>
+                </div>
+                <div class="col-md-8 col-xs-12">
+                    <p> @Html.CheckBox("Is_Anonymous")</p>
+
+                    <small class="text-danger" style="font-weight:bold;">Note: The effectiveness of complaint resolution may be impacted if the caller's information is kept anonymous.</small>
+                </div>
+
+            </div>*@
+            <br style="clear: both;" />
+
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+
+        if ('@((int)AuthenticationHandler.GetCookie().Role)' == 9) {
+            $('.fieldsEnable:input').each(function (i,v) {
+             
+                if ($(this).is("input") || $(this).is("textarea")) {
+                    $(this).attr('readonly','enabled');
+                }
+                else if ($(this).is("select")) {
+                    $(this).attr('disabled', 'enabled');
+                }
+            })
+        }
+    }
+</script>

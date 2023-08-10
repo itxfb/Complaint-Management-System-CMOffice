@@ -1,0 +1,137 @@
+﻿@{
+    ViewBag.Title = "CategoryWiseDrillDownMain";
+    //Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+}
+
+<style>
+    .modal-dialog {
+        margin: 0 auto !important;
+    }
+
+    #
+    2 {
+        z-index: 1053 !important;
+    }
+</style>
+<div class="cust-overlay pie-overlay" style="display:none;">Loading...</div>
+<div class="cust-overlay popup-overlay" style="display:none;"></div>
+<div id="cust-popup">
+    <div class="text-right"><a href="#" class="crose-link" id="List-Close">x</a></div>
+    <div class="List-data" style="margin-top:-3px;background:#ffffff; padding:10px 0px;"></div>
+</div>
+<div class="cust-overlay-detail"></div>
+<div id="cust-popup-detail">
+    <div class="text-right" style="max-width:900px; margin:0 auto;"><a href="#" class="crose-link" id="crose-link-detail">x</a></div>
+    <div class="List-data-detail"></div>
+</div>
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.CampaignName (Category Wise Dashboard)</h3>
+            </div>
+            <div class="box-body-white clearfix">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <div class="BarMainCategory">
+
+                                @{ Html.RenderAction("CategoryWiseDrillDownGraph", "Report", new { campId = ViewBag.CampignIds, graphName = ViewBag.GraphName, userId = ViewBag.UserId, categoryType = (int)ViewBag.CategoryType, categoryId = ViewBag.CategoryId, graphLevel = 0 }); }
+                            </div>
+
+                        </div>
+
+                        @*<div class="col-lg-6 col-md-6 col-sm-6 ">
+                                <div class="z-btn">
+                                    <h3 class="text-center">Status (Subordinates)</h3>
+                                    @{
+                                        Html.RenderAction("PieLegendChartReport", "Report", new { campaignId = ViewBag.CampignIds, graphName = "other" });
+                                    }
+                                </div>
+                            </div>*@
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="Others-Graphs">
+
+</div>
+
+
+
+<div class="scroll"></div>
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>
+
+<script>
+
+
+    var Counter = 0;
+    $(function () {
+        $(".BarMainCategory").on("click", "#other", function () {
+            // alert($(this).text());
+            debugger;
+            clickHandler(@ViewBag.CampignIds, '@PITB.CMS_Common.Handler.Authentication.AuthenticationHandler.GetCookie().UserName',0, @PITB.CMS_Common.Handler.Authentication.AuthenticationHandler.GetCookie().UserId,1);
+        });
+        @*$(".OwnContent").on("click", "#Own", function () {
+            // alert($(this).text());
+            var from = $("#PiedatepickerlowerOwn").val();
+            var to = $("#PiedatepickermaxOwn").val();
+            var userId =  @PITB.CMS.Handler.Authentication.AuthenticationHandler.GetCookie().UserId;
+            LoadGridView( from, to, userId);
+        });*@
+        $("#List-Close").click(function () {
+            // alert($(this).text());
+            $('#cust-popup').fadeOut();
+            $('.popup-overlay').fadeOut();
+            $('html,body').animate({
+                scrollTop: $(".scroll").offset().top
+            }, 1500);
+
+        });
+        $("#crose-link-detail").click(function () {
+            // alert($(this).text());
+            $('.cust-overlay-detail').fadeOut();
+            $('#cust-popup-detail').fadeOut();
+            var abc=  $('#cust-popup').height() + 20;
+            $('.content-wrapper').css("min-height", abc+"px");
+            $('#cust-popup').css("position","absolute");
+
+        });
+
+
+    });
+
+    function clickHandler( cmpid, Name, isMultipul,userId, categoryType, categoryId, graphLevel) {
+        //var cmpid=5;
+
+        //$(".pie-overlay").fadeIn();
+        //debugger;
+        $.DeleteLowerHierarchyDivs('GraphLevel_', graphLevel);
+        var url = "@Url.Action("CategoryWiseDrillDownGraph", "Report")";
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { campId: cmpid, graphName: Name, userId:userId, categoryType:categoryType, categoryId: categoryId, graphLevel: graphLevel },
+            success: function (result) {
+                if (isMultipul == 1){
+                    $(".Others-Graphs").append(result);
+                    var abc=  $('.box-primary').height() + 20;
+                    $('.content-wrapper').css("min-height", abc+"px");
+                }
+                else if (isMultipul == 0) {
+                    $(".Others-Graphs").html(result);
+                }
+                //$(".pie-overlay").fadeOut();
+
+            }
+
+        });
+    }
+
+</script>

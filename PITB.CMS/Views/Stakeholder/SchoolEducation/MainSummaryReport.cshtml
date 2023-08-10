@@ -1,0 +1,217 @@
+﻿@using PITB.CMS_Common
+
+@{
+    ViewBag.Title = "DistrictWiseGraphMain";
+    //Layout = ViewBag.Layout;
+    //string startDate = DateTime.Parse("01/08/2018").ToString("yyyy-MM-dd");
+    //string endDate = @DateTime.Now.ToString("yyyy-MM-dd");
+}
+@{
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+}
+
+
+
+<link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="http://@a/Content/bootstrap.min.css">
+
+
+<style>
+    .modal-dialog {
+        margin: 0 auto !important;
+    }
+
+    #PopupDiv2 {
+        z-index: 1053 !important;
+    }
+</style>
+<div class="cust-overlay pie-overlay" style="display:none;">Loading...</div>
+<div class="cust-overlay popup-overlay" style="display:none;"></div>
+<div id="cust-popup">
+    <div class="text-right"><a href="#" class="crose-link" id="List-Close">x</a></div>
+    <div class="List-data" style="margin-top:-3px;background:#ffffff; padding:10px 0px;"></div>
+</div>
+<div class="cust-overlay-detail"></div>
+<div id="cust-popup-detail">
+    <div class="text-right" style="max-width:900px; margin:0 auto;"><a href="#" class="crose-link" id="crose-link-detail">x</a></div>
+    <div class="List-data-detail"></div>
+</div>
+<div id="PrintableDiv1" class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.CampaignName (Main Summary Dashboard)</h3>
+                @*<div class="form-group col-md-12 col-xs-12 col-sm-12">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <div class="pull-right">
+                                <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+                            </div>
+                        </div>
+
+                    </div>*@
+
+            </div>
+            <div class="box-body-white clearfix">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <span>Select Date</span>
+                            <input type="text" id="dateRange" placeholder="" class="form-control" data-original-title="Daterange" data-toggle="tooltip">
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <span></span>
+                            <br />
+                            <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+                        </div>
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                $('#dateRange').daterangepicker({
+                                    startDate: '@ViewBag.StartDate',
+                                    endDate: '@ViewBag.EndDate',
+                                    maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+                                    showDropdowns: true,
+                                    locale: {
+                                        format: 'YYYY-MM-DD',
+                                        separator: ' To ',
+                                    }
+                                });
+                                $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+                                    for (i = 1; i <= 5; i++) {
+                                        window["LoadData" + i].apply(null, null);
+                                    }
+                                });
+                            });
+                        </script>
+                        @*<div class="col-lg-6 col-md-6 col-sm-6">
+                                <span>From Date</span>
+                                <input type="text" id="Piedatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <span>To Date</span>
+                                <input type="text" id="Piedatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+                            </div>*@
+                    </div>
+                    <div id="PrintableDiv" class="Printable">
+                        <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/dataTables.bootstrap.css">
+                        <!--<link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/scroller.bootstrap.css">-->
+                        <link rel="stylesheet" type="text/css" href="http://@a/Content/DataTables/css/responsive.bootstrap.css">
+                        <link rel="stylesheet" type="text/css" href="http://@a/css/crm.css">
+                        <div class="BarMainCategory">
+
+                            @{
+                                Html.RenderAction("BarChartMainSummary", "Report", new { graphName = "Opened (Complaints)", startDate = @ViewBag.StartDate, endDate = @ViewBag.EndDate, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "1,7", reportType = (int)Config.SummaryReportType.General, graphTag = "1" });
+                            }
+                        </div>
+
+                        <div class="BarMainCategory">
+
+                            @{
+                                Html.RenderAction("BarChartMainSummary", "Report", new { graphName = "Closed (Complaints)", startDate = @ViewBag.StartDate, endDate = @ViewBag.EndDate, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "2,3,11", reportType = (int)Config.SummaryReportType.General, graphTag = "2" });
+                            }
+                        </div>
+
+                        <div class="BarMainCategory">
+
+                            @{
+                                Html.RenderAction("OverDueComplaintsSummary", "Report", new { divName = "Overdue", startDate = @ViewBag.StartDate, endDate = @ViewBag.EndDate, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "6", reportType = (int)Config.SummaryReportType.General, divTag = "3" });
+                            }
+                        </div>
+
+                        <div class="BarMainCategory">
+
+                            @{
+                                Html.RenderAction("RegionAndStatusWiseCount", "Report", new { divName = "RegionStatusWiseCount", startDate = @ViewBag.StartDate, endDate = @ViewBag.EndDate, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "1,2,3,6,7,11", reportType = (int)Config.SummaryReportType.General, divTag = "4" });
+                            }
+                        </div>
+
+                        <div class="BarMainCategory">
+
+                            @{
+                                Html.RenderAction("TopOverdueComplaintsByOfficer", "Report", new { divName = "TopOverdueComplaintsByOfficer", startDate = @ViewBag.StartDate, endDate = @ViewBag.EndDate, campId = ViewBag.CampignIds, hierarchyId = ViewBag.HierarchyId, userHierarchyId = ViewBag.UserHierarchyId, commaSepVal = ViewBag.commaSepVal, statusIds = "6", reportType = (int)Config.SummaryReportType.General, divTag = "5" });
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //$('#Piedatepickerlower').datepicker()
+        //     .on("changeDate", function (e) {
+        //         debugger;
+        //         for (i = 1; i <= 5; i++) {
+        //             window["LoadData" + i].apply(null, null);
+        //         }
+        //     });
+        //$('#Piedatepickermax').datepicker()
+        //    .on("changeDate", function (e) {
+        //        debugger;
+        //        for (i = 1; i <= 5; i++) {
+        //            window["LoadData" + i].apply(null, null);
+        //        }
+        //    });
+
+
+    });
+    function PrintPage(divName) {
+        debugger;
+        ShowLoading();
+        var i;
+        for (i = 0; i < DivData.length; i++) {
+            disableEnableDataTablePaginationAndFilters(DivData[i], true);
+        }
+
+        //disableEnableDataTablePaginationAndFilters(GetDivData($('#OverDueTable_3')), true);
+        //disableEnableDataTablePaginationAndFilters(TopOverdueComplaintsByOfficersTable, true);
+        //disableEnableDataTablePaginationAndFilters(GetDivData($('#RegionStatusWiseTable_4')), true);
+
+        debugger;
+
+        var lObjPageHeader = $('#pageHeader').html();
+
+        var printContents = $('#PrintableDiv').html();
+        var lObjHtmlStr = lObjPageHeader + printContents;
+        //disableEnableDataTablePaginationAndFilters(OverdueComplaintsSummaryTable, false)
+        //disableEnableDataTablePaginationAndFilters(TopOverdueComplaintsByOfficersTable, false)
+        //disableEnableDataTablePaginationAndFilters(ComplaintsByDivisionTable, false)
+
+        var htmlData = {
+            id: 1,
+            htmlStr: GetLinkStrOnPage() + printContents
+        };
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: '@Url.Action("ExportPdfWithHtml", "generalapi")',
+            data: { htmlData: htmlData },
+            success: function (dataId) {
+                
+                window.location = '@Url.Action("ExportPdfWithHtml", "generalapi")?dataId=' + dataId;
+                HideLoading();
+            },
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                HideLoading();
+            }
+        });
+        //var originalContents = document.body.innerHTML;
+
+        //document.body.innerHTML = printContents;
+
+        //window.print();
+
+        //document.body.innerHTML = originalContents;
+    }
+</script>
+
+<div class="scroll"></div>
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>

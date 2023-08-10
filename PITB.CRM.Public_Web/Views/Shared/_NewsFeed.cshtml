@@ -1,0 +1,257 @@
+﻿@using PITB.CRM.Public_Web.Models.ViewModels
+@model VmNewsFeed
+@{
+    string chunkId = Guid.NewGuid().ToString("D");
+
+}
+@if (Model.TotalComplaints > 0)
+{
+    string cssColumn = "col-lg-12 col-md-12";
+    string resolvedStyle = "";
+    string widthInStyle = "";
+    string textColor = "";
+    string statusColor = "#fdba45";
+    string categoryColor = "#3fb970";
+
+    foreach (ComplaintData c in Model.ListComplaints)
+    {
+        Config.PublicComplaintStatus status = (Config.PublicComplaintStatus)c.StatusId;
+
+        if (status == Config.PublicComplaintStatus.Resolved || status == Config.PublicComplaintStatus.Inapplicable)
+        {
+            if (string.IsNullOrEmpty(c.StatusChangedText))
+            {
+                cssColumn = "col-lg-12 col-md-12";
+                widthInStyle = "width:100%";
+                
+            }
+            else
+            {
+                cssColumn = "col-lg-8 col-md-8";
+                widthInStyle = "width: 70%";
+
+            }
+            resolvedStyle = "style=background-color:#2eac96;";
+            statusColor = categoryColor = "#FFFFFF";
+            textColor = "text-white";
+        }
+        else
+        {
+            cssColumn = "col-lg-12 col-md-12";
+            statusColor = "#fdba45";
+            resolvedStyle = textColor="";
+            categoryColor = "#3fb970";
+            widthInStyle = "width:100%";
+            
+        }
+
+
+        <div id="chunk_@chunkId">
+            <div class="row">
+                <div class="@cssColumn" style="@widthInStyle">
+
+                    <div class="panel panel-default paper-shadow" data-z="0.5">
+                        <div class="panel-heading" @resolvedStyle>
+                            <div class="media v-middle">
+                                <div class="media-left text-center pull-left">
+                                    <a href="javascript:void(0)">
+                                        <img src="@Url.Content(c.SocialSharedData.ProfilePhoto)" alt="@c.SocialSharedData.FullName" class="img-circle width-60">
+                                    </a>
+                                </div>
+                                <div class="media-body pull-left" style="width:auto;">
+                                    <h4 class="text-display-1 margin-v-0 @textColor" style="font-size:21px;">@c.SocialSharedData.FullName</h4>
+                                    <p class="text-subhead @textColor" style="margin-top: -5px;">@c.TimeElapsed</p>
+                                </div>
+                                <div class="media-body pull-right" style="width:auto; text-align:right;">
+                                    <h4 class="text-display-1 margin-v-0 @textColor" style="font-size:21px; color:@statusColor;">@c.Status</h4>
+                                    <p class="text-subhead @textColor" style="margin-top: -5px;">Category: <span style="color:@categoryColor;">@c.Category</span></p>
+                                </div>
+                            </div>
+                            @*<div class="media v-middle">
+                                    <div class="row">
+                                        <div class="col-lg-1 col-md-1">
+                                            <img src="@Url.Content(c.SocialSharedData.ProfilePhoto)" alt="people" class="img-circle">
+                                        </div>
+                                        <div class="col-lg-4 col-md-2">
+                                            <h4 class="text-muted @textColor">
+                                                @c.SocialSharedData.FullName
+                                            </h4>
+                                            <p class="text-subhead @textColor" style="font-style: italic;font-size: 13px;margin-top: -9px;">@c.TimeElapsed</p>
+                                        </div>
+                                        <div class="col-lg-7 col-md-9">
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6">
+                                                    <h4>
+                                                        <span class="@textColor">Status :</span>
+                                                        <span class="@textColor">@c.Status</span>
+                                                    </h4>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6">
+                                                    <h4>
+                                                        <span class="@textColor">Category :</span>
+                                                        <span class="@textColor">@c.Category</span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>*@
+                        </div>
+                        <div class="panel-body">
+                            <div class="col-md-6" style="padding:0px">
+                                <p>@c.Description</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Location: </strong>UC: @c.UC | Town: @c.Town | District: @c.District</p>
+                            </div>
+                            <br style="clear: both;">
+                            <div class="col-md-6" style="padding:0px">
+                                @if (c.ImageList != null && c.ImageList.Count > 0)
+                                {
+                                    <div class="col-md-12" onclick=" onViewClick(this);" data-link="@Url.Content(c.ImageList[0])" style="cursor:pointer; padding:2px; background-image:url('@Url.Content(c.ImageList[0])'); background-size:cover; height: 255px;"></div>
+                                }
+                            </div>
+                            <div class="col-md-6" style="padding-right:0px">
+                                <div class="col-md-12" style="padding:2px; padding-right:0px">
+                                    @if (c.Location != null)
+                                    {
+                                        string mapDivId = Guid.NewGuid().ToString("N");
+                                        <div style="min-height: 255px" id="map-@mapDivId" lat="@c.Location.Latitude" lng="@c.Location.Longitude" class="map @chunkId ">
+                                        </div>
+                                        @*<img src="https://maps.googleapis.com/maps/api/staticmap?zoom=16&center=@c.Location.Latitude,@c.Location.Longitude&size=250x130&markers=color:red|@c.Location.Latitude,@c.Location.Longitude&key=AIzaSyDfU_hXS1w3DLZX_LjFPmGVFhra-LBC0Yw"
+                                            width="100%"
+                                            alt="@c.UC" />*@
+                                        <div id="@mapDivId" onload="renderMap(@c.Location.Latitude,@c.Location.Longitude,'@mapDivId','sami')"></div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="padding: 2px; padding-top: 10px; margin: 0px; margin-top: 2px;border-top: 1px solid #dbdbdb;">
+                                @{
+                                    string upVoteId = Guid.NewGuid().ToString("N");
+                                    string downVoteId = Guid.NewGuid().ToString("N");
+                                }
+                                <p class="text-subhead">
+                                    <a href="javascript:void(0)" class="like-btn" style="color:green" title="Like" onclick="submitVote('@c.ComplaintHash',1,'@upVoteId','@downVoteId','@upVoteId');">
+                                        Like <i class="fa fa-thumbs-up"></i><span id="@upVoteId">&nbsp;@c.SocialSharedData.UpVotes</span>
+                                    </a> &nbsp;&nbsp;&nbsp;
+                                    <a href="javascript:void(0)" class="like-btn" style="color:red" title="Dislike" onclick="submitVote('@c.ComplaintHash',2,'@upVoteId','@downVoteId','@downVoteId');">
+                                        Dislike <i class="fa fa-thumbs-down"></i><span id="@downVoteId">&nbsp;@c.SocialSharedData.DownVotes</span>
+                                    </a>
+                                </p>
+                            </div>
+                            @*<div class="row">
+                                    <div class="col-md-6">
+                                        <p>@c.Description</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Location: </strong>UC: @c.UC | Town: @c.Town | District: @c.District</p>
+                                    </div>
+                                </div>
+                                <div class="row fixed-height-card">
+                                    <div class="col-md-6" style="padding: 2px">
+                                        @if (c.ImageList != null && c.ImageList.Count > 0)
+                                        {
+                                            <img src="@Url.Content(c.ImageList[0])" alt="people" style="width: 100%;">
+                                        }
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div>
+                                            @if (c.Location != null)
+                                            {
+                                                string mapDivId = Guid.NewGuid().ToString("N");
+                                                <div style="min-height: 254px" id="map-@mapDivId" lat="@c.Location.Latitude" lng="@c.Location.Longitude" class="map @chunkId ">
+                                                </div>
+                                                <div id="@mapDivId" onload="renderMap(@c.Location.Latitude,@c.Location.Longitude,'@mapDivId','sami')"></div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>*@
+                        </div>
+                        @*<div class="panel-footer">
+                                <p class="text-subhead">
+                                    @{
+                                        string upVoteId = Guid.NewGuid().ToString("N");
+                                        string downVoteId = Guid.NewGuid().ToString("N");
+                                    }
+                                    <a href="javascript:void(0)" style="color: green" title="Up vote" onclick="submitVote('@c.ComplaintHash',1,'@upVoteId','@downVoteId','@upVoteId');">
+                                        <i class="glyphicon glyphicon-thumbs-up vote-btn upvote"></i> <span id="@upVoteId">@c.SocialSharedData.UpVotes</span>
+                                    </a> &nbsp;&nbsp;&nbsp;
+                                    <a href="javascript:void(0)" style="color: red" title="Down vote" onclick="submitVote('@c.ComplaintHash',2,'@upVoteId','@downVoteId','@downVoteId');">
+                                        <i class="glyphicon glyphicon-thumbs-down vote-btn downvote"></i>
+                                        <span id="@downVoteId">@c.SocialSharedData.DownVotes</span>
+                                    </a>
+                                </p>
+                            </div>*@
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(c.StatusChangedText) && status != Config.PublicComplaintStatus.UnsatisfactoryClosed)
+                {
+                    <div class="col-lg-4 col-md-4 col-sm-4" style="width: 30%">
+                        <div class="panel panel-default" data-toggle="panel-collapse" data-open="true">
+                            <div class="panel-heading">
+                                <div class="media v-middle">
+                                    <div class="media-body pull-left" style="width:auto;">
+                                        <h4 class="text-display-1 margin-v-0" style="font-size:18px;">Officer: <span style="color:#3fb970;">@c.StatusChangedByName</span></h4>
+                                        <p class="text-subhead" style="margin-top: -5px;">Action: <span style="color:#fdba45;">Resolved</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            @*<div class="panel-heading panel-collapse-trigger" style="padding: 17px 15px;">
+                                    <h4>Action Taken by department</h4>
+                                    <span class="text-muted" style="font-style: italic">@c.StatusChangeDateTime.ToString("dd MMM yyyy HH:mm")</span>
+                                </div>*@
+                            <div class="panel-body" style=" min-height: 353px;">
+                                <p>@c.StatusChangedText</p>
+                                <p class="text-subhead" style="margin: 5px;margin-top: -5px; font-size:12px">@c.StatusChangeDateTime.ToString("dd MMM yyyy HH:mm tt")</p>
+                                <div class="row">
+                                    @foreach (string u in c.StatusChangeAttachments)
+                                    {
+                                        <div class="col-md-12">
+                                            <div class="col-md-12" onclick=" onViewClick(this);" data-link="@Url.Content(u)" style="cursor:pointer;padding:2px; background-image:url('@Url.Content(u)'); background-size:cover; height: 255px;">
+
+
+                                            </div>
+                                            @*<img src="@Url.Content(u)" alt="@c.Status" style="width: 100%;height: 250px;">*@
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+
+    }
+
+}
+else
+{
+    @*<div style="min-height: 450px;">
+        <blockquote>
+            <p>No complaint found !</p>
+        </blockquote>
+    </div>*@
+}
+
+
+
+
+<script>
+    if (typeof google == 'object' && typeof google === 'object') {
+
+    } else {
+        //document.write('<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyCmvBGutmB41Al24g9jcvqTc5tcsas4O90"><\/script>');
+    }
+    $(function () {
+        initMap(false, '@chunkId');
+        @*var divId='div#chunk'+@chunkId+'[onload]';
+        $(divId).trigger('onload');*@
+    });
+</script>

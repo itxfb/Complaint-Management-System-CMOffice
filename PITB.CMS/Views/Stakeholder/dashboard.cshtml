@@ -1,0 +1,83 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Models.Custom
+@{
+    ViewBag.Title = "dashboard";
+    //Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+
+
+    CMSCookie cmsCookie = AuthenticationHandler.GetCookie();
+    //if (cmsCookie.Role == Config.Roles.Stakeholder)
+    //{
+    //    if (cmsCookie.Campaigns == Convert.ToInt32(Config.Campaign.WasaNew).ToString())
+    //    {
+    //        Layout = "~/Views/Shared/Wasa/_WasaStakeholderLayout.cshtml";
+    //    }
+    //    else
+    //    {
+    //        Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+    //    }
+    //}
+
+}
+<style>
+    .line-separator{
+       width:90%;
+       height:3px;
+       margin-left:auto;
+       margin-right:auto;
+       background-color:#FBCC3E;
+       border:0 none;
+       margin-top:20px;
+       margin-bottom:10px;
+
+    }
+</style>
+@*<div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h4 class="box-title">Complaint Listing</h4>
+            </div>
+        </div>
+    </div>*@
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.CampaignName</h3>
+        </div>
+        <div class="box-body-white clearfix">
+            <div class="col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @{
+                            Html.RenderAction("StackedChartReport", "Report", new { campaignId = ViewBag.CampignIds });
+                        }
+
+                    </div>
+                    <hr class="line-separator" />
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @{
+                            Html.RenderAction("PieChartReport", "Report", new { campaignId = ViewBag.CampignIds });
+                        }
+                    </div>
+                    <hr class="line-separator" />
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        @{
+                            Html.RenderAction("LineChartReport", "Report", new { campaignId = ViewBag.CampignIds });
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>

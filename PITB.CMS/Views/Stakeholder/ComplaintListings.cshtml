@@ -1,0 +1,207 @@
+﻿@{
+    //Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+}
+
+
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Complaint Listing</h4>
+        </div>
+        <div class="box-body-white">
+            <div class="col-md-12 col-sm-12">
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12">
+                        <input type="text" id="from" value="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" placeholder="example: 11/21/2015"
+                               class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12 col-sm-12">
+                        <input type="text" id="to" value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="example: 12/31/2015"
+                               class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12" data-original-title="Campaign(s)" data-toggle="tooltip">
+                        @Html.DropDownList("campaignsList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12" data-original-title="Category(s)" data-toggle="tooltip">
+                        @Html.DropDownList("categoryList", (List<SelectListItem>)ViewBag.ComplaintTypeList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12" data-original-title="Status(s)" data-toggle="tooltip">
+                        @Html.DropDownList("statusList", (List<SelectListItem>)ViewBag.StatusList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12">
+                        <button id="FilterBtn" class="btn btn-primary col-md-12" type="button"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        @*<div class="box-body-white">
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>From</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="from" value="@DateTime.Now.AddMonths(-6).ToShortDateString()" placeholder="example: 11/21/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>To</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="to" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4" style="padding:20px;">
+                <div class="col-md-3">
+                    <label>Campaigns</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownList("campaignList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    @*<input type="text" id="campaignsList" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control">*@
+
+                    @*<div class="input-group">
+                            <div class="input-group-addon">
+                                <i class="fa fa-rocket"></i>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-md-2" style="padding:20px;"><button id="FilterBtnAgent" class="btn btn-primary col-md-12" type="submit">Filter</button></div>
+        </div>*@
+        <div class="box-body-white">
+
+            <table id="agentListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Complaint No</th>
+                        <th>Campaign</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Action</th>
+
+
+                        @*<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Complaint Number: activate to sort column descending" style="width: 180px;">Complaint Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Complainant's Name: activate to sort column ascending" style="width: 191px;">Complainant's Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Father/Husband Name: activate to sort column ascending" style="width: 213px;">Father/Husband Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Gender: activate to sort column ascending" style="width: 77px;">Gender</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CNIC Number: activate to sort column ascending" style="width: 138px;">CNIC Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Cell Number : activate to sort column ascending" style="width: 135px;">Cell Number </th>
+            <th style="text-align: center; width: 78px;" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Actions</th>*@
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $.enableMultiselectOf("campaignList");
+        $("#FilterBtn").trigger('click');
+
+        $("#campaignsList").change(function () {
+            $.loadDropdown("categoryList", "GetCategoriesOfCampaignOfUser", $("#campaignsList").val());
+            $.enableMultiselectOf("categoryList");
+        });
+
+        //$.loadDropdown("categoryList", "GetCategoriesOfCampaignOfUser", $("#campaignsList").val());
+        $.enableMultiselectOf("categoryList");
+    });
+
+    $("#FilterBtn").click(function (e) {
+        e.preventDefault();
+        @*$.loadAgentListings("@Url.Action("GetStakeholderComplaints","GeneralApi")", $("#from").val(), $("#to").val(), $("#campaignList").val());*@
+        LoadTable("@Url.Action("GetStakeholderComplaints", "GeneralApi")", $("#from").val(), $("#to").val(), $("#campaignsList").val(), $("#categoryList").val(), $("#statusList").val());
+    });
+
+
+    function LoadTable(api, from, to, campaign, cateogries, statuses) {
+
+        var table = $('#agentListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "serverSide": false,
+            "ajax": {
+                "url": '../GeneralApi/GetStakeholderComplaints',
+                "type": "POST",
+                data: { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: statuses }
+            },
+            "columns": [
+                       { "data": "ComplaintNo" },
+                       { "data": "Campaign" },
+                       { "data": "Name" },
+                       { "data": "Date" },
+                       { "data": "Category" },
+                       { "data": "Status" },
+                       { "data": "Id" }
+            ],
+            aoColumnDefs: [{
+                "aTargets": [6],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    return '<td style="text-align:center">' +
+                       // '<a href="user-registration.html" ><span class="fa fa-pencil"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.Id + '" onclick="OpenStakeholderDetailPopup(this.id);"><span class="fa fa-eye"></span></a>' +
+                        '</td>';
+                }
+            }],
+
+
+        });
+
+
+    }
+
+    function OpenStakeholderDetailPopup(complaintId) {
+        $('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId);
+        //$('#PopupDiv').load("../Complaint/Detail?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }
+
+
+</script>
+

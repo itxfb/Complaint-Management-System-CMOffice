@@ -1,0 +1,38 @@
+﻿@model PITB.CMS_Common.Models.View.Reports.VmHierarchyWiseReport
+
+
+@{
+    ViewBag.Title = "View";
+    //Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+}
+
+
+<div class="container-fluid">
+    <div class="box-body-white clearfix">
+        <div class="col-md-12 col-sm-12">
+            <div class="Complaints">
+                <div class="box-header-blue with-border btn-header">
+                    <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.HierarchyName Report</h3>
+                    @*<div class="form-group col-md-12 col-xs-12 col-sm-12">
+                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                <div class="pull-right">
+                                    <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Export</button>
+                                </div>
+                            </div>
+                        </div>*@
+                </div>
+                <div>
+                    @{ Html.RenderAction("HierarchyWiseReportPartialView", "Report", new { campaignIds = ViewBag.CampaignIds, hierarchyId = ViewBag.HierarchyId, statusIds = ViewBag.StatusIds });}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>
+<script type="text/javascript">
+
+</script>

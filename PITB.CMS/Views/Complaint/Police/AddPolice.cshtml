@@ -1,0 +1,2318 @@
+﻿@using Microsoft.Ajax.Utilities
+@using PITB.CMS_Common
+@using System.Linq
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Models.View.Dynamic
+@using PITB.CMS_Common.Handler.Authentication
+@model PITB.CMS_Common.Models.View.VmAddComplaint
+
+@{
+    //if (Request.IsAjaxRequest()) { Layout = null; }
+    //if (ViewBag.Layout == null)
+    //{
+    //    Layout = Config.DefaultMasterPageAgent;
+    //}
+    //else
+    //{
+    //    Layout = ViewBag.Layout;
+    //}
+    ViewBag.Title = "Add Complaint";
+    int fieldIndex = 0;
+
+    //List<VmDynamicField> listDynamicFields = Model.ComplaintVm.ListDynamicFields;
+
+}
+<style>
+    .Complaint.active {
+        border-top-color: #fbcc3e !important;
+    }
+
+    .Suggestion.active {
+        border-top-color: #008000 !important;
+    }
+
+    .Inquiry.active {
+        border-top-color: #ff0000 !important;
+    }
+
+    label.normalFont {
+        font-weight: normal;
+    }
+
+    .dynamicDiv {
+        background: #f7f7f7; /*#efefee*/
+        ;
+        padding: 10px 0px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+    /*.select2 {
+        width: 100% !important;
+    }*/
+    /*input {
+        text-transform: uppercase;
+    }*/
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+
+        <section class="content">
+            <div style="    width: 50px;
+                                       left: 0;
+                                       position: fixed;
+                                       z-index: 1000;
+                                       margin: 0;
+                                       height: 100px;">
+                <img width="50px" src="@Url.Content(ViewBag.Campaignname)" alt="Alternate Text" />
+
+
+            </div>
+            @using (Html.BeginForm("OnAddComplaintSubmit", "Police", FormMethod.Post, new { id = "AddComplaintForm", enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.PersonalInfoVm.Person_id)
+                if (Model.PersonalInfoVm != null)
+                {
+                    @Html.HiddenFor(m => m.PersonalInfoVm.Cnic_No)
+                }
+                @Html.HiddenFor(m => m.ComplaintVm.Compaign_Id)
+                @Html.HiddenFor(m => m.currentComplaintTypeTab)
+                @Html.HiddenFor(m => m.ComplaintVm.hasDepartment)
+                @Html.HiddenFor(m => m.SuggestionVm.hasDepartment)
+                @Html.HiddenFor(m => m.InquiryVm.hasDepartment)
+
+                @*<label class="text-danger">@Html.ValidationSummary()</label>*@
+                <section class="content">
+                    <div class="row">
+                        <div>
+
+                            <div class="box box-primary">
+                                <div class="box-header-blue with-border btn-header">
+                                    <h4 class="box-title">Caller's Information کالر کی معلومات</h4>
+                                </div>
+                                <div class="box-body-white" style="margin-top:5px;">
+                                    @if (Model.PersonalInfoVm == null)
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>CNIC شناختی کارڈ*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.PersonalInfoVm.Cnic_No, new { @class = "fieldsEnable form-control numbers-only", @placeholder = "ex 3520174842579", @maxlength = 13, id = "CnicTxtBox", @required = "true" })
+                                                @Html.ValidationMessageFor(m => m.PersonalInfoVm.Cnic_No, "", new { @class = "label label-warning" })
+                                            </div>
+                                            @*<div class="col-md-4">
+                                                    <div class="col-md-6" style="margin-top: 5px;">
+                                                        CNIC not required
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.CheckBoxFor(m => m.PersonalInfoVm.IsCnicPresent, new { @id = "IsCnicPresent", @Style = "width:20px;height:20px;" })
+                                                    </div>
+                                                </div>*@
+                                        </div>
+                                    }
+
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Name نام*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Person_Name, new { @class = "fieldsEnable form-control characters-only-with-space text-uppercase", @placeholder = "Complainant Name" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Person_Name, "", new { @class = "label label-warning" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Father Name:(Optional) والد کا نام</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Person_Father_Name, new { @class = "fieldsEnable form-control characters-only-with-space", @placeholder = "Father/Husband Name" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Complainant Gender جنس*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.Gender, EnumHelper.GetSelectList(typeof(Config.Gender)), "--Select--", new { @class = "fieldsEnable form-control" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Gender, "", new { @class = "label label-warning" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Cell Number موبائل نمبر*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Mobile_No, new { @class = "fieldsEnable form-control numbers-only", @placeholder = "03001234567", @maxlength = 11 })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.Mobile_No, "", new { @class = "label label-warning" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Secondary Contact No ثانوی رابطہ نمبر</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(m => m.PersonalInfoVm.Secondary_Mobile_No, new { @class = "fieldsEnable form-control numbers-only", @placeholder = "04235880062", @maxlength = 15 })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Province صوبہ*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.Province_Id, Model.ComplaintVm.ProvinceSelectList, new { @Id = "userControlPersonProvince", @class = "fieldsEnable form-control" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.PersonalInfoVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "userControlPersonDistrict", @class = "fieldsEnable form-control" })
+                                            @Html.ValidationMessageFor(m => m.PersonalInfoVm.District_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Address پتہ</label>
+                                        </div>
+                                        <div class="col-md-8 col-xs-12">
+                                            @Html.TextAreaFor(m => m.PersonalInfoVm.Person_Address, new { @class = "fieldsEnable form-control", rows = 3 })
+                                        </div>
+
+                                    </div>
+                                    @*<div class="form-group col-md-6">temporary
+                                            <div class="col-md-4">
+                                                <label>Nearest location (if any)</label>
+                                            </div>
+                                            <div class="col-md-8 col-xs-12">
+                                                <textarea class="form-control" rows="3"></textarea>
+                                            </div>
+
+                                        </div>*@
+                                    @*<div class="form-group col-md-6 hide">
+
+                                        <div class="col-md-4">
+                                            <label>Send Anonmously </label>
+                                        </div>
+                                        <div class="col-md-8 col-xs-12">
+                                            <p> @Html.CheckBoxFor(m => m.ComplaintVm.Is_Anonymous)</p>
+
+                                            <small class="text-danger" style="font-weight:bold;">Note: The effectiveness of complaint resolution may be impacted if the caller's information is kept anonymous.</small>
+                                        </div>
+
+                                    </div>*@
+                                    <br style="clear: both;" />
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tabs Area Start-->
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active Complaint"><a href="#complaintArea" data-toggle="tab" aria-expanded="true">Complaint شکایت</a></li>
+                                @*<li class="Suggestion"><a href="#suggestionArea" data-toggle="tab" aria-expanded="false">Suggestion</a></li>
+                                    <li class="Inquiry"><a href="#InquiryArea" data-toggle="tab" aria-expanded="false">Inquiry</a></li>*@
+                                @*<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>*@
+                            </ul>
+                            <div class="tab-content">
+                                <!--Complaint tab content-->
+                                <div class="tab-pane active row" id="complaintArea">
+
+                                    @*if (Model.ComplaintVm.DynamicFieldsCount > 0)
+                                        {
+
+                                            int index = 0;
+
+                                            for (int i = Model.ComplaintVm.MinDynamicFormPriority; i <= Model.ComplaintVm.MaxDynamicFormPriority; i++)
+                                            {
+
+                                                List<VmDynamicDropDownList> listVmDropDownList = Model.ComplaintVm.ListDynamicDropDown.Where(n => n.Priority == i).ToList();
+                                                List<VmDynamicTextbox> listVmTextBox = Model.ComplaintVm.ListDynamicTextBox.Where(n => n.Priority == i).ToList();
+                                                List<VmDynamicDropDownListServerSide> listVmDropDownListServerSide = Model.ComplaintVm.ListDynamicDropDownServerSide.Where(n => n.Priority == i).ToList();
+
+                                                // DropdownListCode
+                                                if (listVmDropDownList != null)
+                                                {
+                                                    foreach (VmDynamicDropDownList vmDropDownList in listVmDropDownList)
+                                                    {
+                                                        index = Model.ComplaintVm.ListDynamicDropDown.FindIndex(n => n == vmDropDownList);
+                                                        // adding custom code
+
+                                                        //VmDynamicDropDownList vmDropDownList = Model.ComplaintVm.ListDynamicDropDown[index];
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[index].ControlId)
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[index].FieldName)
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>@vmDropDownList.FieldName</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[index].SelectedItemId, vmDropDownList.FieldValue, "--Select--", new { @class = "form-control" })
+                                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[index].IsRequired)
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                // end DropdownListCode
+
+                                                // DropdownListCode server side
+                                                if (listVmDropDownListServerSide != null)
+                                                {
+                                                    foreach (VmDynamicDropDownListServerSide vmDropDownListServerSide in listVmDropDownListServerSide)
+                                                    {
+                                                        index = Model.ComplaintVm.ListDynamicDropDownServerSide.FindIndex(n => n == vmDropDownListServerSide);
+                                                        //string appendedDropDownListId = index+"_"+@Model.ComplaintVm.Compaign_Id + "_" + vmDropDownListServerSide.CategoryTypeId;
+                                                        string appendedDropDownListId = Config.Separator + index + Config.Separator + Model.ComplaintVm.Compaign_Id + Config.Separator + vmDropDownListServerSide.CategoryTypeId + Config.Separator;
+                                                        // adding custom code
+
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDownServerSide[index].ControlId)
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDownServerSide[index].FieldName)
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>@vmDropDownListServerSide.FieldName</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDownServerSide[index].SelectedItemId, vmDropDownListServerSide.FieldValue, "--Select--", new { @class = "js-data-example-ajax form-control", @Id = "DynamicDropDownListServerSide" + appendedDropDownListId })
+                                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDownServerSide[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDownServerSide[index].IsRequired)
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+
+                                                // TextBox
+                                                if (listVmTextBox != null)
+                                                {
+                                                    foreach (VmDynamicTextbox vmTextBox in listVmTextBox)
+                                                    {
+                                                        index = Model.ComplaintVm.ListDynamicTextBox.FindIndex(n => n == vmTextBox);
+                                                        // adding custom code
+
+                                                        //VmDynamicDropDownList vmDropDownList = Model.ComplaintVm.ListDynamicDropDown[index];
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicTextBox[index].ControlId)
+                                                        @Html.HiddenFor(m => m.ComplaintVm.ListDynamicTextBox[index].FieldName)
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>@vmTextBox.FieldName</label>
+
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(m => m.ComplaintVm.ListDynamicTextBox[index].FieldValue, new { @class = "form-control" })
+                                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicTextBox[index].FieldValue, null, new { @class = "label label-warning" })
+                                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicTextBox[index].IsRequired)
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                // end TextBox
+                                            }
+
+                                            <br clear="all" />
+                                            <hr>
+                                            <br clear="all" />
+                                        }*@
+
+                                    <div class="form-group col-md-6">
+                                        @{
+                                            fieldIndex = 0;
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].ControlId)
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName)
+                                            <div class="col-md-4">
+                                                <label>
+                                                    @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName ماخذ
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldValue, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, null, new { @class = "label label-warning" })
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].IsRequired)
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (@Model.ComplaintVm.ListOfDepartment != null && @Model.ComplaintVm.ListOfDepartment.Count > 0)
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Category زمرہ*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.departmentId, Model.ComplaintVm.DepartmentSelectList, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.departmentId, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+
+                                        <div id="DepartmentForm" class="col-lg-12">
+                                            <div id="NonRegistrationOfFirForm" class="col-lg-12" style="display: none;" @*class="hidden"*@ data-display-if="ComplaintVm_departmentId::153">
+                                                <div class="form-group col-md-12 dynamicDiv">
+                                                    @*<hr>*@
+                                                    <br clear="all">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <h5><u>Information Required درکار معلومات*</u></h5>
+                                                        </div>
+                                                    </div>
+                                                    @*<hr>*@
+                                                    <br clear="all">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Against خلاف*</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input id="RadioPersonType" name="RadioPersonType" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="PersonType" value="">
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="PersonType" value="6204___Unknown Person"> Unknown Person </label> @*<br>*@
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="PersonType" value="6205___Known Person"> Known Person </label> @*<br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select person" data-val-for-name="PersonType">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Already submitted an application in Police Station پولیس اسٹیشن میں پہلے ہی درخواست جمع کروائی گئی ہے*</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input id="RadioApplicationSubmission" name="RadioApplicationSubmission" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ApplicationSubmission" value="">
+                                                            <label class="normalFont"><input type="radio" name="ApplicationSubmission" value="6206___Yes"> Yes </label>@*<br>*@
+                                                            <label class="normalFont"><input type="radio" name="ApplicationSubmission" value="6207___No"> No </label>@*<br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select submission status" data-val-for-name="ApplicationSubmission">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-6" style="display: none;" data-display-if="RadioApplicationSubmission::6206___Yes">
+                                                        <div class="col-md-4">
+                                                            <label>Date of Application درخواست کی تاریخ *</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" readonly data-date-end-date="0d" data-input-format="Date" data-input-date-format="mm/dd/yyyy" name="DateOfApplicationSubmission" data-val-is-required="True" data-date-end-date="0d" data-val-is-required-message="Please select value" @*value="1"*@> @*Yes <br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Date" data-validation-for-type="text" data-val-for-name="DateOfApplicationSubmission">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-6" style="display: none;" data-display-if="RadioApplicationSubmission::6206___Yes">
+                                                        <div class="col-md-4">
+                                                            <label>Detail تفصیل *</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" name="DetailOfApplicationSubmission" data-val-is-required="True" data-val-is-required-message="Please select value" @*value="1"*@> @*Yes <br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="DetailOfApplicationSubmission">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <hr>
+                                                </div>
+
+                                            </div>
+
+                                            <div id="ComplaintAgainstPoliceForm" style="display: none;" data-display-if="ComplaintVm_departmentId::155">
+                                                <div class="form-group col-md-12 dynamicDiv">
+                                                    @*<hr>*@
+                                                    <br clear="all">
+
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Officer of the (Select One) افسر *</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input id="RadioOfficerType" name="RadioOfficerType" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="OfficerType" value="">
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="OfficerType" value="6208___Region"> Region </label> @*<br>*@
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="OfficerType" value="6209___Districts"> Districts </label> @*<br>*@
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="OfficerType" value="6210___Units"> Units </label> @*<br>*@
+                                                            <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="OfficerType" value="6211___CPO"> CPO </label> @*<br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select officer" data-val-for-name="OfficerType">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <br clear="all">
+                                                    <br clear="all">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <h5><u>Officer Detail افسر کی تفصیل *:</u></h5>
+                                                        </div>
+                                                    </div>
+                                                    @*<hr>*@
+                                                    <br clear="all">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Name نام</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" name="OfficerName" data-val-is-required="True" @*data-val-is-required-message="Please select Name"*@ @*value="1"*@> @*Yes <br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Name is required" data-validation-for-type="text" data-val-for-name="OfficerName">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Rank عہدہ</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" name="OfficerRank" data-val-is-required="True" />
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Rank is required" data-validation-for-type="text" data-val-for-name="OfficerRank">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>No نہیں</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" name="OfficerNo" data-val-is-required="True" />
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="No is required" data-validation-for-type="text" data-val-for-name="OfficerNo">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>Posted تعینات کیا گیا</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control" name="OfficerPosted" data-val-is-required="True" />
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Posted is required" data-validation-for-type="text" data-val-for-name="OfficerPosted">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    }
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Sub Category/ذیلی زمرہ*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.Complaint_Category, Model.ComplaintVm.ComplaintCategoriesSelectList, "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_Category, "", new { @class = "label label-warning" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Issues/Crimes مسائل/جرائم*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.Complaint_SubCategory, new List<SelectListItem>(), "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_SubCategory, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div id="CategoryForm" class="col-lg-12">
+                                        <div id="ChangeOfInvestigationForm" style="display: none;" data-display-if="ComplaintVm_Complaint_Category::522">
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Investigation No. تحقیقاتی نمبر *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input id="RadioInvestigationNo" name="RadioInvestigationNo" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="InvestigationNo" value="">
+                                                        <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="InvestigationNo" value="6214___1st"> 1st </label> @*<br>*@
+                                                        <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="InvestigationNo" value="6215___2nd"> 2nd </label> @*<br>*@
+                                                        <label class="normalFont"><input type="radio" @*data-val-tag="T1"*@ name="InvestigationNo" value="6216___3rd"> 3rd </label> @*<br>*@
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Investigation No" data-val-for-name="InvestigationNo">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group col-md-12">
+                                                <hr>
+                                            </div>
+                                        </div>
+                                        <div id="ArrestOfAccusedForm" style="display: none;" data-display-if="ComplaintVm_Complaint_Category::523">
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Arrest of accused ملزم کی گرفتاری *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input id="RadioArrestOfAccused" name="RadioArrestOfAccused" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ArrestOfAccused" value="">
+                                                        <label class="normalFont"><input type="radio" name="ArrestOfAccused" value="6212___Nominated"> Nominated </label>@*<br>*@
+                                                        <label class="normalFont"><input type="radio" name="ArrestOfAccused" value="6213___Un known"> Un known </label>@*<br>*@
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select accused" data-val-for-name="ArrestOfAccused">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group col-md-12">
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="RecoveryOfAbducteesForm" style="display: none;" data-display-if="ComplaintVm_Complaint_Category::524">
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Gender جنس*</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input id="RadioSex" name="RadioSex" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Sex" value="">
+                                                        <label class="normalFont"><input type="radio" name="Sex" value="6217___Male"> Male </label>@*<br>*@
+                                                        <label class="normalFont"><input type="radio" name="Sex" value="6218___Female"> Female </label>@*<br>*@
+                                                        <label class="normalFont"><input type="radio" name="Sex" value="6219___She male"> She male </label>@*<br>*@
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select sex" data-val-for-name="Sex">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Age عمر*</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input id="RadioAge" name="RadioAge" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Age" value="">
+                                                        <label class="normalFont"><input type="radio" name="Age" value="6220___Child (less than 10 years)"> Child (less than 10 years) </label>@*<br>*@
+                                                        <label class="normalFont"><input type="radio" name="Age" value="6221___less than 18 years"> less than 18 years </label>@*<br>*@
+                                                        <label class="normalFont"><input type="radio" name="Age" value="6222___Adult"> Adult </label>@*<br>*@
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select age" data-val-for-name="Age">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <h5><u>Information Required مطلوبہ معلومات *</u></h5>
+                                                    </div>
+                                                </div>
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>District ضلع *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <select class="form-control" name="DistrictInfo" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="/GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">
+                                                            <option value="-1">--Select--</option>
+                                                        </select>
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="DistrictInfo">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Police Station پولیس اسٹیشن *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <select class="form-control" name="PoliceStationInfo" data-val-tag="T1" data-val-repopulate-onchange-of="DistrictInfo" data-val-config="combineIdWithVal::True" data-val-api-url="/GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">
+                                                            <option value="-1">--Select--</option>
+                                                        </select>
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="PoliceStationInfo">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>FIR No. ایف آئی آر نمبر</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="FIRNoInvestigation" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="FIR No is required" data-validation-for-type="text" data-val-for-name="FIRNoInvestigation">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="form-group col-md-12">
+                                                    <hr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div id="InvestigationInfoRequiredForm" class="hidden" data-display-if-id="ComplaintVm_Complaint_Category" data-display-if-value="513">
+                                                <div class="form-group col-md-12">
+                                                    <hr>
+                                                    <div class="form-group col-md-6" >
+                                                        <div class="col-md-4">
+                                                            <label>District  *</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="DistrictInfo" data-val-tag="T1" data-val-populate-on-start="True" data-val-api-url="../GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">
+                                                                <option value="-1">--Select--</option>
+                                                            </select>
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="DistrictInfo">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-6" >
+                                                        <div class="col-md-4">
+                                                            <label>Police Station  *</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <select class="form-control" name="PoliceStationInfo" data-val-tag="T1" data-val-repopulate-onchange-of="DistrictInfo" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">
+                                                                <option value="-1">--Select--</option>
+                                                            </select>
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="PoliceStationInfo">
+
+                                                            </span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+
+
+                                    </div>
+
+                                    <div id="SubCategoryForm" class="col-lg-12">
+                                        <div id="ChangeOfCrimeAgainstPropertyForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::1796" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="1796"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6" @*data-display-if-id="RadioApplicationSubmission" data-display-if-value="1"*@>
+                                                    <div class="col-md-4">
+                                                        <label>Others (enter detail) دیگر*</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="CrimeAgainstPropertyOther" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="CrimeAgainstPropertyOther">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+
+                                        <div id="ChangeOfCrimeAgainstPersonForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::1818" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="1818"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6" @*data-display-if-id="RadioApplicationSubmission" data-display-if-value="1"*@>
+                                                    <div class="col-md-4">
+                                                        <label>Others (enter detail) دیگر *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="CrimeAgainstPersonOther" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="CrimeAgainstPersonOther">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+                                        <div id="ChangeOfPoliceOtherForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::2087" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="2087"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Enter detail تفصیل درج کریں *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="PoliceOther" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="PoliceOther">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+                                        <div id="ChangeOfPoliceServicesOtherForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::2093" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="2093"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Enter detail تفصیل درج کریں *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="PoliceServicesOther" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="PoliceServicesOther">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+
+                                        <div id="ChangeOfPoliceServicesComplaintAgainst15ServiceForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::2094" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="2094"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Enter detail تفصیل درج کریں *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="PoliceServicesComplaintAgainst15Service" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="PoliceServicesComplaintAgainst15Service">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+                                        <div id="ChangeOfPoliceServicesComplaintAgainstKhidmatMarkazForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::2095" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="2095"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Enter detail تفصیل درج کریں *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="PoliceServicesComplaintAgainstKhidmatMarkaz" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="PoliceServicesComplaintAgainstKhidmatMarkaz">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+                                        <div id="ChangeOfOtherOtherForm" style="display: none;" data-display-if="ComplaintVm_Complaint_SubCategory::2100" @*data-display-if-id="ComplaintVm_Complaint_SubCategory" data-display-if-value="2100"*@>
+                                            <div class="form-group col-md-12 dynamicDiv">
+                                                @*<hr>*@
+                                                <br clear="all">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Other (enter short detail) دیگر *</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <input type="text" data-val-tag="T1" class="form-control" name="OtherOther" data-val-is-required="True">
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Detail is required" data-validation-for-type="text" data-val-for-name="OtherOther">
+
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+                                                @*<div class="form-group col-md-12">
+                                                        <hr>
+                                                    </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group col-md-6" style="display: none;" data-display-if="ComplaintVm_Complaint_Category::537,538,539,540" @*data-display-if="ComplaintVm_Complaint_Category::522,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541"*@>
+                                        <div class="form-group col-md-12 dynamicDiv">
+                                            @{
+                                                fieldIndex = 1;
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].ControlId)
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName)
+                                                <div class="col-md-4">
+                                                    <label>@Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldValue, "--Select--", new { @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True" })
+                                                    @*@Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, null, new { @class = "label label-warning" })*@
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Other Police Units is required" data-validation-for-type="text" data-val-for-name="ComplaintVm.ListDynamicDropDown[1].SelectedItemId">
+
+                                                    </span>
+                                                    @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].IsRequired)
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        @{
+                                            fieldIndex = 2;
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].ControlId)
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName)
+                                            <div class="col-md-4">
+                                                <label>
+                                                    @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName آرائیں
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldValue, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, null, new { @class = "label label-warning" })
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].IsRequired)
+                                            </div>
+                                        }
+                                    </div>
+                                    @*<div class="form-group col-md-6">
+                                            @{
+                                                fieldIndex = 3;
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].ControlId)
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName)
+                                                <div class="col-md-4">
+                                                    <label>@Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldValue, "--Select--", new { @class = "form-control" })
+                                                    @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, null, new { @class = "label label-warning" })
+                                                    @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].IsRequired)
+                                                </div>
+                                            }
+                                        </div>*@
+                                    @*<div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Type</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Complaint_Type, EnumHelper.GetSelectList(typeof(Config.ComplaintType)), "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            </div>
+                                        </div>*@
+
+                                    @*<div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Province</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Province_Id, Model.ComplaintVm.ProvinceSelectList, new { @Id = "complaintUserControlProvince", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.Province_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>
+                                                Region علاقہ*
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.Division_Id, Model.ComplaintVm.DivisionSelectList, "--Select--", new
+                                            {
+                                                @Id = "complaintUserControlDivision"@*, @name = "complaintUserControlDivision"*@,
+                                                @class = "form-control",
+                                                @data_val_tag = "T1",
+                                                @data_val_is_required = "True"
+                                                })
+                                            @*@Html.ValidationMessageFor(m => m.ComplaintVm.Division_Id, "", new { @class = "label label-warning" })*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="ComplaintVm.Division_Id">
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع*</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.ComplaintVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlDistrict", @name = "complaintUserControlDistrict", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True", data_val_repopulate_onchange_of = "ComplaintVm.Division_Id", data_val_api_url = "/GeneralApi/DistrictByDivisionId?id={id}&campaignId=78" })
+                                            @*@Html.ValidationMessageFor(m => m.ComplaintVm.District_Id, "", new { @class = "label label-warning" })*@
+                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="ComplaintVm.District_Id">
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Division*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Tehsil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlTownTehsil", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.Tehsil_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>*@
+                                    @*<div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Circle*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.UnionCouncil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlUc", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.UnionCouncil_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group col-md-6 " style="display: none;" data-display-if="ComplaintVm_Complaint_Category::517,518,519,520,521,523,524,525">
+                                        <div class="form-group col-md-12 dynamicDiv">
+                                            <div class="col-md-4">
+                                                <label>Police Station پولیس اسٹیشن *</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Ward_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlWards", @class = "form-control", @data_val_tag = "T1", @data_val_is_required = "True", data_val_repopulate_onchange_of = "ComplaintVm.District_Id", data_val_api_url = "/GeneralApi/WardsByDistrictId?id={id}&campaignId=78" })
+                                                @*@Html.ValidationMessageFor(m => m.ComplaintVm.Ward_Id, "", new { @class = "label label-warning" })*@
+                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="ComplaintVm.Ward_Id">
+
+                                                </span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        @{
+                                            fieldIndex = 12;
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].ControlId)
+                                            @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName)
+                                            <div class="col-md-4">
+                                                <label>@Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldName کنفرنس کال منظم کی گئی</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, @Model.ComplaintVm.ListDynamicDropDown[fieldIndex].FieldValue, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].SelectedItemId, null, new { @class = "label label-warning" })
+                                                @Html.HiddenFor(m => m.ComplaintVm.ListDynamicDropDown[fieldIndex].IsRequired)
+                                            </div>
+                                        }
+                                    </div>
+
+                                    @if (PermissionHandler.IsPermissionAllowedInCampagin(Config.CampaignPermissions.ShowWards))
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Wards ورڈز*</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.ComplaintVm.Ward_Id, new List<SelectListItem>(), "--Select--", new { @Id = "complaintUserControlWards", @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.ComplaintVm.Ward_Id, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+                                    }
+
+
+                                    @*<div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>House / Shop No</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.ComplaintVm.HomeShopNo, new { @class = "form-control", @placeholder = "Home or shop no" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Street No. / Name</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.ComplaintVm.StreetNameNo, new { @class = "form-control", @placeholder = "Stree no or name" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Locality / Area</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.ComplaintVm.LocalityArea, new { @class = "form-control", @placeholder = "Nearest Location" })
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group col-lg-6 col-md-6">
+                                        <div class="col-md-4 col-lg-4">
+                                            <label>
+                                                Details of Complaint شکایت کی تفصیلات *
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8">
+
+                                            @Html.TextAreaFor(m => m.ComplaintVm.Complaint_Remarks, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Complaint_Remarks, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <div class="col-md-2 col-lg-2">
+                                            <label>Agent's comments ایجنٹ کے تبصرے</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            @Html.TextAreaFor(m => m.ComplaintVm.Agent_Comments, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.ComplaintVm.Agent_Comments, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    @*<div class="form-group col-lg-12 col-md-12">
+                                            <div class="col-md-2 col-lg-2">
+                                                <label>Attach File </label>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input class="form-control" type="file" name="FileUpload1" />
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input class="form-control" type="file" name="FileUpload2" />
+                                            </div>
+                                        </div>*@
+                                    @*<div class="row">
+                                            <div class="col-md-5 form-group">
+                                                <div class="col-md-1">
+                                                    <label>1) </label>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <input class="form-control" type="file" name="FileUpload1" />
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right" onclick="OnSumitClick()"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                                    </div>
+                                    <br clear="all" />
+                                    @*<div class="col-md-12 col-xs-12">
+                                            <div class="box box-primary">
+                                                <div class="box-header-blue with-border btn-header">
+                                                    <h4 class="box-title" style="float:left;"> New Complaint</h4>
+                                                </div>
+
+
+                                                <div class="box-body-white" style="margin-top:5px;">
+
+
+                                                    <br style="clear: both;" />
+
+                                                </div>
+
+                                                <div class="box-footer">
+                                                    <div class="col-md-8 col-md-offset-2 text-center"><button class="btn btn-primary" type="submit">Launch Complaint</button></div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+                                <!--End Complaint-->
+                                <!--Suggestion tab content-->
+                                <div class="tab-pane" id="suggestionArea">
+
+                                    @if (Model.SuggestionVm.DynamicFieldsCount > 0)
+                                    {
+
+                                        int index = 0;
+
+                                        for (int i = Model.SuggestionVm.MinDynamicFormPriority; i <= Model.SuggestionVm.MaxDynamicFormPriority; i++)
+                                        {
+
+                                            List<VmDynamicDropDownList> listVmDropDownList = Model.SuggestionVm.ListDynamicDropDown.Where(n => n.Priority == i).ToList();
+                                            List<VmDynamicTextbox> listVmTextBox = Model.SuggestionVm.ListDynamicTextBox.Where(n => n.Priority == i).ToList();
+                                            List<VmDynamicDropDownListServerSide> listVmDropDownListServerSide = Model.SuggestionVm.ListDynamicDropDownServerSide.Where(n => n.Priority == i).ToList();
+
+                                            // DropdownListCode
+                                            if (listVmDropDownList != null)
+                                            {
+                                                foreach (VmDynamicDropDownList vmDropDownList in listVmDropDownList)
+                                                {
+                                                    index = Model.SuggestionVm.ListDynamicDropDown.FindIndex(n => n == vmDropDownList);
+                                                    // adding custom code
+
+                                                    //VmDynamicDropDownList vmDropDownList = Model.SuggestionVm.ListDynamicDropDown[index];
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDown[index].ControlId)
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDown[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmDropDownList.FieldName</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(m => m.SuggestionVm.ListDynamicDropDown[index].SelectedItemId, vmDropDownList.FieldValue, "--Select--", new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(m => m.SuggestionVm.ListDynamicDropDown[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDown[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            // end DropdownListCode
+
+                                            // DropdownListCode server side
+                                            if (listVmDropDownListServerSide != null)
+                                            {
+                                                foreach (VmDynamicDropDownListServerSide vmDropDownListServerSide in listVmDropDownListServerSide)
+                                                {
+                                                    index = Model.SuggestionVm.ListDynamicDropDownServerSide.FindIndex(n => n == vmDropDownListServerSide);
+                                                    //string appendedDropDownListId = index+"_"+@Model.SuggestionVm.Compaign_Id + "_" + vmDropDownListServerSide.CategoryTypeId;
+                                                    string appendedDropDownListId = Config.Separator + index + Config.Separator + Model.SuggestionVm.Compaign_Id + Config.Separator + vmDropDownListServerSide.CategoryTypeId + Config.Separator;
+                                                    // adding custom code
+
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDownServerSide[index].ControlId)
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDownServerSide[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmDropDownListServerSide.FieldName</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(m => m.SuggestionVm.ListDynamicDropDownServerSide[index].SelectedItemId, vmDropDownListServerSide.FieldValue, "--Select--", new { @class = "js-data-example-ajax form-control", @Id = "DynamicDropDownListServerSide" + appendedDropDownListId })
+                                                            @Html.ValidationMessageFor(m => m.SuggestionVm.ListDynamicDropDownServerSide[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.SuggestionVm.ListDynamicDropDownServerSide[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+
+                                            // TextBox
+                                            if (listVmTextBox != null)
+                                            {
+                                                foreach (VmDynamicTextbox vmTextBox in listVmTextBox)
+                                                {
+                                                    index = Model.SuggestionVm.ListDynamicTextBox.FindIndex(n => n == vmTextBox);
+                                                    // adding custom code
+
+                                                    //VmDynamicDropDownList vmDropDownList = Model.SuggestionVm.ListDynamicDropDown[index];
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicTextBox[index].ControlId)
+                                                    @Html.HiddenFor(m => m.SuggestionVm.ListDynamicTextBox[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmTextBox.FieldName</label>
+                                                            @*<label>@vmTextBox.FieldName</label>*@
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(m => m.SuggestionVm.ListDynamicTextBox[index].FieldValue, new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(m => m.SuggestionVm.ListDynamicTextBox[index].FieldValue, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.SuggestionVm.ListDynamicTextBox[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            // end TextBox
+                                        }
+
+                                        <br clear="all" />
+                                        <hr>
+                                        <br clear="all" />
+                                    }
+
+                                    @if (@Model.SuggestionVm.ListOfDepartment != null && @Model.SuggestionVm.ListOfDepartment.Count > 0)
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Department محکمہ</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.SuggestionVm.departmentId, Model.SuggestionVm.DepartmentSelectList, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.SuggestionVm.departmentId, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Suggestion Category تجاویز کا زمرہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.Complaint_Category, Model.SuggestionVm.ComplaintCategoriesSelectList, "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Complaint_Category, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Suggestion Sub Category تجاویز کا ذیلی زمرہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.Complaint_SubCategory, new List<SelectListItem>(), "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Complaint_SubCategory, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Province صوبہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.Province_Id, Model.SuggestionVm.ProvinceSelectList, new { @Id = "suggestionUserControlProvince", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Province_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "suggestionUserControlDistrict", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.District_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Town/Tehsil ٹاؤن / تحصیل *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.Tehsil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "suggestionUserControlTownTehsil", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Tehsil_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>UC یونین کونسل *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.UnionCouncil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "suggestionUserControlUc", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.UnionCouncil_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Wards ورڈز *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.SuggestionVm.Ward_Id, new List<SelectListItem>(), "--Select--", new { @Id = "suggestionUserControlWards", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Ward_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+
+
+
+                                    <div class="form-group col-lg-6 col-md-6">
+                                        <div class="col-md-4 col-lg-4">
+                                            <label>Details of Complaint شکایت کی تفصیلات</label>
+                                        </div>
+                                        <div class="col-md-8">
+
+                                            @Html.TextAreaFor(m => m.SuggestionVm.Complaint_Remarks, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Complaint_Remarks, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <div class="col-md-2 col-lg-2">
+                                            <label>Agent's comments ایجنٹ کے تبصرے</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            @Html.TextAreaFor(m => m.SuggestionVm.Agent_Comments, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.SuggestionVm.Agent_Comments, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right" onclick="OnSumitClick()"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                                    </div>
+                                    <br clear="all" />
+
+                                </div>
+                                <!--End Suggestion tab content-->
+                                <!--Inquiry tab content-->
+                                <div class="tab-pane" id="InquiryArea">
+
+
+                                    @if (Model.InquiryVm.DynamicFieldsCount > 0)
+                                    {
+
+                                        int index = 0;
+
+                                        for (int i = Model.InquiryVm.MinDynamicFormPriority; i <= Model.InquiryVm.MaxDynamicFormPriority; i++)
+                                        {
+
+                                            List<VmDynamicDropDownList> listVmDropDownList = Model.InquiryVm.ListDynamicDropDown.Where(n => n.Priority == i).ToList();
+                                            List<VmDynamicTextbox> listVmTextBox = Model.InquiryVm.ListDynamicTextBox.Where(n => n.Priority == i).ToList();
+                                            List<VmDynamicDropDownListServerSide> listVmDropDownListServerSide = Model.InquiryVm.ListDynamicDropDownServerSide.Where(n => n.Priority == i).ToList();
+
+                                            // DropdownListCode
+                                            if (listVmDropDownList != null)
+                                            {
+                                                foreach (VmDynamicDropDownList vmDropDownList in listVmDropDownList)
+                                                {
+                                                    index = Model.InquiryVm.ListDynamicDropDown.FindIndex(n => n == vmDropDownList);
+                                                    // adding custom code
+
+                                                    //VmDynamicDropDownList vmDropDownList = Model.InquiryVm.ListDynamicDropDown[index];
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDown[index].ControlId)
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDown[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmDropDownList.FieldName</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(m => m.InquiryVm.ListDynamicDropDown[index].SelectedItemId, vmDropDownList.FieldValue, "--Select--", new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(m => m.InquiryVm.ListDynamicDropDown[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDown[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            // end DropdownListCode
+
+                                            // DropdownListCode server side
+                                            if (listVmDropDownListServerSide != null)
+                                            {
+                                                foreach (VmDynamicDropDownListServerSide vmDropDownListServerSide in listVmDropDownListServerSide)
+                                                {
+                                                    index = Model.InquiryVm.ListDynamicDropDownServerSide.FindIndex(n => n == vmDropDownListServerSide);
+                                                    //string appendedDropDownListId = index+"_"+@Model.InquiryVm.Compaign_Id + "_" + vmDropDownListServerSide.CategoryTypeId;
+                                                    string appendedDropDownListId = Config.Separator + index + Config.Separator + Model.InquiryVm.Compaign_Id + Config.Separator + vmDropDownListServerSide.CategoryTypeId + Config.Separator;
+                                                    // adding custom code
+
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDownServerSide[index].ControlId)
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDownServerSide[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmDropDownListServerSide.FieldName</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownListFor(m => m.InquiryVm.ListDynamicDropDownServerSide[index].SelectedItemId, vmDropDownListServerSide.FieldValue, "--Select--", new { @class = "js-data-example-ajax form-control", @Id = "DynamicDropDownListServerSide" + appendedDropDownListId })
+                                                            @Html.ValidationMessageFor(m => m.InquiryVm.ListDynamicDropDownServerSide[index].SelectedItemId, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.InquiryVm.ListDynamicDropDownServerSide[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+
+                                            // TextBox
+                                            if (listVmTextBox != null)
+                                            {
+                                                foreach (VmDynamicTextbox vmTextBox in listVmTextBox)
+                                                {
+                                                    index = Model.InquiryVm.ListDynamicTextBox.FindIndex(n => n == vmTextBox);
+                                                    // adding custom code
+
+                                                    //VmDynamicDropDownList vmDropDownList = Model.InquiryVm.ListDynamicDropDown[index];
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicTextBox[index].ControlId)
+                                                    @Html.HiddenFor(m => m.InquiryVm.ListDynamicTextBox[index].FieldName)
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>@vmTextBox.FieldName</label>
+                                                            @*<label>@vmTextBox.FieldName</label>*@
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(m => m.InquiryVm.ListDynamicTextBox[index].FieldValue, new { @class = "form-control" })
+                                                            @Html.ValidationMessageFor(m => m.InquiryVm.ListDynamicTextBox[index].FieldValue, null, new { @class = "label label-warning" })
+                                                            @Html.HiddenFor(m => m.InquiryVm.ListDynamicTextBox[index].IsRequired)
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                            // end TextBox
+                                        }
+
+                                        <br clear="all" />
+                                        <hr>
+                                        <br clear="all" />
+                                    }
+
+                                    @if (@Model.InquiryVm.ListOfDepartment != null && @Model.InquiryVm.ListOfDepartment.Count > 0)
+                                    {
+                                        <div class="form-group col-md-6">
+                                            <div class="col-md-4">
+                                                <label>Department محکمہ</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(m => m.InquiryVm.departmentId, Model.InquiryVm.DepartmentSelectList, "--Select--", new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(m => m.InquiryVm.departmentId, "", new { @class = "label label-warning" })
+
+
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Inquiry Category تفتیش کا زمرہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.Complaint_Category, Model.InquiryVm.ComplaintCategoriesSelectList, "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Complaint_Category, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Inquiry Sub Category تفتیش کا ذیلی زمرہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.Complaint_SubCategory, new List<SelectListItem>(), "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Complaint_SubCategory, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Province صوبہ</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.Province_Id, Model.InquiryVm.ProvinceSelectList, new { @Id = "inquiryUserControlProvince", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Province_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>District ضلع</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.District_Id, new List<SelectListItem>(), "--Select--", new { @Id = "inquiryUserControlDistrict", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.District_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Town/Tehsil ٹاؤن / تحصیل *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.Tehsil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "inquiryUserControlTownTehsil", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Tehsil_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>UC یونین کونسل *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.UnionCouncil_Id, new List<SelectListItem>(), "--Select--", new { @Id = "inquiryUserControlUc", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.UnionCouncil_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group col-md-6">
+                                        <div class="col-md-4">
+                                            <label>Wards ورڈز *</label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(m => m.InquiryVm.Ward_Id, new List<SelectListItem>(), "--Select--", new { @Id = "inquiryUserControlWards", @class = "form-control" })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Ward_Id, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="form-group col-lg-6 col-md-6">
+                                        <div class="col-md-4 col-lg-4">
+                                            <label>Details of Complaint شکایت کی تفصیلات </label>
+                                        </div>
+                                        <div class="col-md-8">
+
+                                            @Html.TextAreaFor(m => m.InquiryVm.Complaint_Remarks, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Complaint_Remarks, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-12 col-md-12">
+                                        <div class="col-md-2 col-lg-2">
+                                            <label>Agent's comments ایجنٹ کے تبصرے</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            @Html.TextAreaFor(m => m.InquiryVm.Agent_Comments, new { @class = "form-control col-md-12 col-xs-12", rows = 3 })
+                                            @Html.ValidationMessageFor(m => m.InquiryVm.Agent_Comments, "", new { @class = "label label-warning" })
+
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-12">
+                                        <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right" onclick="OnSumitClick()"><span class="fa fa-save"></span>&nbsp;Submit</button>
+                                    </div>
+                                    <br clear="all" />
+
+                                </div>
+                                <!--Inquiry tab content-->
+
+
+                            </div>
+                            <!-- /.tab-content -->
+                        </div>
+
+
+                        <!--Tabs End-->
+
+                    </div>
+                </section>
+            }
+        </section>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var dropDownDictHierarchyComplaint = [];
+    var dropDownDictHierarchySuggestion = [];
+    var dropDownDictHierarchyInquiry = [];
+
+
+    var dropDownDictComplaint = [];
+    var dropDownDictSuggestion = [];
+    var dropDownDictInquiry = [];
+
+    var serverSideDropDownUrl;
+
+    $('#IsCnicPresent').change(function () {
+        if ($(this).is(":checked")) {
+            $("#CnicTxtBox").prop("disabled", true);
+        } else {
+            $("#CnicTxtBox").prop("disabled", false);
+        }
+    });
+    // custom javascript
+    // $("#myForm input[type=text]").each(function() {
+
+    //$.each([ 52, 97 ], function( index, value ) {
+    //alert( index + ": " + value );
+    //});
+
+    //----- start commenting ----------
+    //function RegisterLocalValidation(formId, valTag) {
+    //    RegisterValidation(formId, valTag);
+    //    PerformActionOnDropdownChange(formId, valTag);
+    //    //PerformActionOnRadioChange(formId, valTag);
+    //}
+
+    //function ValidateFormOnSubmit(formId, valTag) {
+    //    var isValid = true;
+    //    var isValidToRet = true;
+
+    //    $(formId + " input[data-val-tag=" + valTag + "]").each(
+    //        function (index, v) {
+    //            var inputEl = this;//$(this);
+
+
+    //            if ($(inputEl).attr("type") == "radio") {
+    //                //var name = $(inputEl).attr("data-group-name");
+    //                //var val = $(formId + " input[name='" + name + "']")[0].is("visible");
+    //                var name = $(inputEl).attr("data-group-name");
+    //                var isRadioVisible = $($(formId + " input[name='" + name + "']")[0]).is(":visible");
+    //                if(isRadioVisible) {
+    //                    isValid = ApplyRadioValidation(formId, inputEl);// apply radio validation on change
+    //                }
+    //            }
+    //            if ($(inputEl).attr("type") == "text" && $(inputEl).is(":visible")) {
+    //                isValid = ApplyTextBoxValidation(formId, inputEl);
+    //            }
+    //            if (!isValid) {
+    //                isValidToRet = false;
+    //            }
+    //        }
+    //    );
+
+    //    $(formId + " select[data-val-tag=" + valTag + "]").each(
+    //        function (index, v) {
+    //            var inputEl = this;//$(this);
+    //            if($(inputEl).is(":visible")) {
+    //                isValid = ApplySelectValidation(formId, inputEl);
+    //            }
+    //            if (!isValid) {
+    //                isValidToRet = false;
+    //            }
+    //        }
+    //    );
+
+    //    return isValidToRet;
+    //}
+
+    //function PerformActionOnDropdownChange(formId, valTag) {
+    //    $(formId + " select").on("change", { formId: formId }, function () {
+    //        var id = $(this).attr("id");
+    //        //debugger;
+    //        ShowHideDivOnDropDownChange(id, $(this).val(), formId, valTag);
+    //    });
+
+    //    /*
+    //    $(formId + " input[data-val-tag=" + valTag + "]").on("change", { formId: formId }, function () {
+    //        var id = $(this).attr("id");
+    //        //debugger;
+    //        ShowHideDivOnDropDownChange(id, $(this).val(), formId, valTag);
+    //    });
+    //    */
+
+    //    //$(formId + " input").on("change", { formId: formId }, function () {
+    //    //    var id = $(this).attr("id");
+    //    //    //debugger;
+    //    //    ShowHideDivOnDropDownChange(id, $(this).val(), formId, valTag);
+    //    //});
+    //}
+
+    ////function PerformActionOnRadioChange(formId, valTag) {
+    ////    $(formId + " select").on("change", { formId: formId }, function () {
+    ////        var id = $(this).attr("id");
+    ////        //debugger;
+    ////        ShowHideDivOnDropDownChange(id, $(this).val(), formId, valTag);
+    ////    });
+    ////}
+
+    //function ShowHideDivOnDropDownChange(dropdownId, selectedValue, formId, valTag, canRegisterValidation) {
+    //    //$(formId+' div[data-display-if-id]').each(
+    //    //    function (index, v) {
+    //    //        var divToShow = $(this);
+    //    //        if (divToShow.attr('data-display-if-id') == dropdownId) {
+    //    //            if (divToShow.attr('data-display-if-value')==selectedValue && divToShow.hasClass("hidden")) { // show
+    //    //                divToShow.removeClass("hidden");
+    //    //                //RegisterValidation(formId, valTag);
+    //    //            } else {
+    //    //                divToShow.addClass("hidden");
+    //    //            }
+    //    //        }
+    //    //    });
+
+
+    //    $(formId + ' div[data-display-if]').each(
+    //        function (index, v) {
+    //            var divToShow = $(this)[0];
+    //            var displayIfConfig = $(divToShow).attr('data-display-if');
+    //            //var configArr = displayIfConfig.split('||');
+    //            var permissionArr = GetPermissionArr(displayIfConfig);
+    //            //for (var i = 0; i < configArr.length; i++) {
+    //            for (var i = 0; i < permissionArr.length; i++) {
+    //                //var singleConfigArr = configArr[i].split('::');
+    //                //var elementId = singleConfigArr[0];
+    //                var elementId = permissionArr[i].key;
+    //                if(elementId==dropdownId) {
+    //                    //var elementValArr = singleConfigArr[1].split(',');
+    //                    var elementValArr = permissionArr[i].value.split(',');
+    //                    var hasFound = false;
+    //                    for (var j = 0; j < elementValArr.length && !hasFound; j++) {
+    //                        if (elementValArr[j] == selectedValue /*&& divToShow.hasClass("hidden")*/) { // show
+    //                            //divToShow.removeClass("hidden");
+    //                            $(divToShow).slideDown(700);
+    //                            hasFound = true;
+    //                            //if (divToShow.id == 'ChangeOfPoliceOtherForm') {
+    //                            //    $("#ChangeOfPoliceOtherForm").slideDown('slow');
+    //                            //    hasFound = true;
+    //                            //}
+    //                        }
+    //                        //else {
+    //                        //    //divToShow.addClass("hidden");
+    //                        //    $(divToShow).hide(800);
+    //                        //}
+    //                    }
+    //                    if (!hasFound) {
+    //                        $(divToShow).slideUp(500);
+    //                    }
+    //                }
+    //            }
+    //        });
+    //}
+
+    //function GetPermissionArr(val) {
+    //    var permissionArr = [];
+    //    var configArr = val.split('||');
+    //    for (var i = 0; i < configArr.length; i++) {
+    //        var singleConfigArr = configArr[i].split('::');
+    //        permissionArr[i]= { key:singleConfigArr[0], value:singleConfigArr[1]};
+    //    }
+    //    return permissionArr;
+    //}
+
+    //function GetPermissionWithKey(val, key) {
+    //    var permissionArr = GetPermissionArr(val);
+    //    for (var i = 0; i < permissionArr.length; i++) {
+    //        if (permissionArr[i].key == key) {
+    //            return permissionArr[i].value;
+    //        }
+    //    }
+    //    return '-1';
+    //}
+
+    //function RegisterValidation(formId, valTag) {
+    //    var isValid = true;
+    //    var isValidToRet = true;
+
+    //    $(formId + " input[data-val-tag=" + valTag + "]").each(
+    //        function(index, v) {
+    //            var inputEl = this;//$(this);
+    //            if ($(inputEl).attr("type") == "radio") {
+    //                //ApplyRadioValidation(formId, inputEl);// apply radio validation on change
+    //                $(formId + " input[name='" + $(inputEl).attr('data-group-name') + "']").on("change", { formId: formId, valTag: valTag }, function () {
+    //                    isValid = ApplyRadioValidation(formId, inputEl);
+    //                    ShowHideDivOnDropDownChange(inputEl.id, $(inputEl).val(), formId, valTag);
+    //                });
+    //            }
+    //            if ($(inputEl).attr("type") == "text") {
+    //                //ApplyTextBoxValidation(formId, inputEl);
+    //                if ($(inputEl).attr("data-input-format") == "Date") {
+    //                    $(inputEl).datepicker({
+    //                        format: $(inputEl).attr("data-input-date-format"),//'mm/dd/yyyy',
+    //                        autoclose: true,
+    //                        todayHighlight: true,
+    //                    });
+    //                }
+    //                $(formId + " input[name='" + inputEl.name + "']").on("change", { formId: formId, valTag: valTag }, function () {
+    //                    isValid = ApplyTextBoxValidation(formId, inputEl);
+    //                });
+    //            }
+    //            if (!isValid) {
+    //                isValidToRet = false;
+    //            }
+    //        }
+    //    );
+
+    //    $(formId + " select[data-val-tag=" + valTag + "]").each(
+    //        function (index, v) {
+    //            var selectEl = this;//$(this);
+    //            //ApplySelectValidation(formId, inputEl);
+
+    //            var canPopulateOnStart = $(selectEl).attr("data-val-populate-on-start");
+    //            if (canPopulateOnStart == "True") {
+    //                var apiUrl = $(selectEl).attr("data-val-api-url");
+    //                BindDropDownWithUrl(formId, selectEl,apiUrl);
+    //            }
+
+
+    //            $(formId + " select[name='" + selectEl.name + "']").on("change", { formId: formId, valTag: valTag }, function () {
+
+    //                // Bind drop down change on select change
+    //                var selectElToPopulateOnChangeOf = $(formId + " select[data-val-repopulate-onchange-of='" + selectEl.name + "']").each(
+    //                    function (index, element) {
+    //                        var selectElementToPopulate = this;
+    //                        var apiUrl = $(selectElementToPopulate).attr("data-val-api-url");
+    //                        var idVal = $(selectEl).val().split('___')[0];
+    //                        if (idVal == null || idVal=='') {
+    //                            idVal = -1;
+    //                        }
+    //                        BindDropDownWithUrl(formId, selectElementToPopulate, apiUrl.replace("{id}", idVal), idVal);
+    //                    }
+    //                );
+
+    //                isValid = ApplySelectValidation(formId, selectEl);
+    //            });
+
+    //            if (!isValid) {
+    //                isValidToRet = false;
+    //            }
+    //        }
+    //    );
+
+    //    return isValidToRet;
+    //}
+
+    ////------------------ Select Validation ------------------
+
+    //function BindDropDownWithUrl(formId, selectEl, apiUrl, idVal) {
+    //    //var canPopulateOnStart = $(selectEl).attr("data-val-populate-on-start");
+    //    //if (canPopulateOnStart != "True") {
+    //    //    return;
+    //    //}
+    //    //var apiUrl = $(selectEl).attr("data-val-api-url");
+    //    //var divisionApi = "../GeneralApi/" + apiName;
+    //    var configurationVal = $(selectEl).attr('data-val-config');
+    //    var canCombineIdsWithVal = false;
+
+    //    if (typeof configurationVal != 'undefined' && GetPermissionWithKey(configurationVal, 'combineIdWithVal') == 'True') {
+    //        canCombineIdsWithVal = true;
+    //    }
+
+    //    if (idVal == -1) {
+    //        $(selectEl).html("");
+    //        $(selectEl).append($("<option></option>")
+    //              .attr("value", "-1")
+    //              .text("--Select--"));
+    //    }
+    //    else {
+    //        $.ajax({
+    //            url: apiUrl,
+    //            type: 'POST',
+    //            //data: { id: id },
+    //            async: false,
+    //            success: function (divdata) {
+    //                $(selectEl).html("");
+    //                $(selectEl).append($("<option></option>")
+    //                    .attr("value", "-1")
+    //                    .text("--Select--"));
+    //                $.each(divdata, function (index, data) {
+    //                    if (canCombineIdsWithVal) {
+    //                        $(selectEl).append($('<option/>', { value: data.Value + '___' + data.Text, text: data.Text }));
+    //                    }
+    //                    else {
+    //                        $(selectEl).append($('<option/>', { value: data.Value, text: data.Text }));
+    //                    }
+    //                });
+    //                //if (divToChangeToMultiselect != null) {
+    //                //    if (hasDefaultValues) {
+    //                //        $.enableMultiselectWithAlreadySelectedValues(divToChangeToMultiselect, currSelectedValues);
+    //                //    } else {
+    //                //        $.enableMultiselectOf(divToChangeToMultiselect);
+    //                //    }
+    //                //}
+    //                //emptyAllNextDDList(dict, divId);
+
+    //            }
+    //        });
+    //    }
+    //    $(selectEl).trigger('change');
+    //}
+
+    //function ApplySelectValidation(formId, selectEl) {
+    //    // New Code
+    //    //var selectElToPopulateOnChangeOf = $(formId + " select[data-val-repopulate-onchange-of='" + selectEl.name + "']").each(
+    //    //    function(index, element) {
+    //    //        var selectElementToPopulate = this;
+    //    //        var apiUrl = $(selectElementToPopulate).attr("data-val-api-url");
+    //    //        BindDropDownWithUrl(formId, selectElementToPopulate, apiUrl.replace("{id}", $(selectEl).val()));
+    //    //    }
+    //    //);
+
+
+    //    var isValid = true;
+    //    if ($(selectEl).attr("data-val-is-required") == "True") {
+    //        var val = $(selectEl).val();
+    //        if (val == '' || val=='-1') {
+    //            SetSpanMessage(formId, selectEl.name, true); //  set requied message
+    //            isValid = false;
+    //        } else {
+    //            SetSpanMessage(formId, selectEl.name, false); // remove required message
+    //            isValid = true;
+    //        }
+    //    }
+    //    return isValid;
+    //}
+
+
+
+    ////---------- Textbox Validation ------------------
+    //function ApplyTextBoxValidation(formId, inputEl) {
+    //    var isValid = true;
+
+    //    if ($(inputEl).attr("data-val-is-required") == "True") {
+    //        var val = $(inputEl).val();
+    //        if (val == '') {
+    //            SetSpanMessage(formId, inputEl.name, true); //  set requied message
+    //            isValid = false;
+    //        } else {
+    //            SetSpanMessage(formId, inputEl.name, false); // remove required message
+    //            isValid = true;
+    //        }
+    //    }
+    //    return isValid;
+    //}
+
+
+
+    ////---------- Radio Validation -------------
+    //function ApplyRadioValidation(formId, inputEl) {
+    //    var isValid = true;
+    //    var name = $(inputEl).attr("data-group-name");
+    //    var val = $(formId + " input[name='" + name + "']:checked").val();
+
+    //    if (!val) {
+    //        //alert('Nothing is checked!');
+    //        if ($(inputEl).attr("data-val-is-required") == "True") {
+    //            SetSpanMessage(formId, name, true);
+    //            isValid = false;
+    //        }
+    //    } else {
+    //        $(inputEl).val(val);
+    //        SetSpanMessage(formId, name, false);
+    //        isValid = true;
+    //    }
+    //    return isValid;
+    //}
+
+    //function SetSpanMessage(formId, name, isAdding) {
+    //    var spanElement = $(formId + " span[data-val-for-name='" + name + "']");
+    //    var message = spanElement.attr("data-val-is-required-message");
+    //    if (isAdding) {
+    //        spanElement.removeClass('hidden');
+    //        spanElement.html('');
+    //        spanElement.append('<span>' + message + '</span>');
+    //    } else {
+    //        spanElement.addClass('hidden');
+    //        spanElement.html('');
+    //    }
+    //}
+
+    //// end custom javascript
+
+    //$("#AddComplaintForm").submit(function (event) {
+    //    //event.preventDefault();
+    //    setTimeout(function () {
+    //        $("#CnicTxtBox-error").html("Cnic is required");
+    //    });
+    //    var isValid = ValidateFormOnSubmit("#AddComplaintForm", "T1");
+    //    if ($('#AddComplaintForm').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+    //        ShowLoading();
+    //    }
+    //    return isValid;
+    //});
+
+
+    //------ end commenting -----------
+
+    $("#AddComplaintForm").submit(function (event) {
+        //event.preventDefault();
+        setTimeout(function () {
+            $("#CnicTxtBox-error").html("Cnic is required");
+        });
+        var isValid = ValidateFormOnSubmit("#AddComplaintForm", "T1");
+        if ($('#AddComplaintForm').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+        }
+        return isValid;
+    });
+
+    $(document).ready(function () {
+        RegisterLocalValidation("#AddComplaintForm", "T1");
+        //$("#ChangeOfPoliceOtherForm").slideDown('slow');
+
+        $('#IsCnicPresent').trigger("change");
+
+        serverSideDropDownUrl = '@Url.Action("GetDynamicOptionListAgainstSearch", "GeneralApi")?campaignId=1&categoryId=2&searchStr=3';
+        //debugger;
+        PopulateDropDownDictionaryHierarchy();
+
+        RegisterDropDownListChangeEventsForProvinceDistrict("userControlPersonProvince", "userControlPersonDistrict", -1/*$('#ComplaintVm_Compaign_Id').val()*/);
+        //RegisterDropDownListChangeEventsForProvinceDistrict("complaintUserControlDivision");
+        //RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchyComplaint);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchySuggestion);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictHierarchyInquiry);
+        //RegisterDropDownListChangeEventsForProvinceDistrict("complaintUserControlProvince", "complaintUserControlDistrict", "complaintUserControlTownTehsil", "complaintUserControlUc");
+        //RegisterDropDownListChangeEventsForProvinceDistrict("suggestionUserControlProvince", "suggestionUserControlDistrict", "suggestionUserControlTownTehsil", "suggestionUserControlUc");
+        //RegisterDropDownListChangeEventsForProvinceDistrict("inquiryUserControlProvince", "inquiryUserControlDistrict", "inquiryUserControlTownTehsil", "inquiryUserControlUc");
+
+        PopulateDropDownDictionary();
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictComplaint);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictSuggestion);
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDictInquiry);
+
+        //RegisterDropDownListChangeEventsComplaintTypes("ComplaintVm_Complaint_Category", "ComplaintVm_Complaint_SubCategory");
+        //RegisterDropDownListChangeEventsComplaintTypes("SuggestionVm_Complaint_Category", "SuggestionVm_Complaint_SubCategory");
+        //RegisterDropDownListChangeEventsComplaintTypes("InquiryVm_Complaint_Category", "InquiryVm_Complaint_SubCategory");
+
+        setSelectedListOfDropDown("userControlPersonDistrict", "@Model.PersonalInfoVm.IfNotNull(m => m.District_Id)");
+        $('form').removeData('validator');
+        $('form').removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse('form');
+
+
+        function formatRepo(repo) {
+            if (repo.loading) return repo.text;
+
+            var markup = "<div class='select2-result-repository clearfix'>" +
+                "<div class='select2-result-repository__avatar'><img src='" + repo.owner.avatar_url + "' /></div>" +
+                "<div class='select2-result-repository__meta'>" +
+                "<div class='select2-result-repository__title'>" + repo.full_name + "</div>";
+
+            if (repo.description) {
+                markup += "<div class='select2-result-repository__description'>" + repo.description + "</div>";
+            }
+
+            markup += "<div class='select2-result-repository__statistics'>" +
+                "<div class='select2-result-repository__forks'><i class='fa fa-flash'></i> " + repo.forks_count + " Forks</div>" +
+                "<div class='select2-result-repository__stargazers'><i class='fa fa-star'></i> " + repo.stargazers_count + " Stars</div>" +
+                "<div class='select2-result-repository__watchers'><i class='fa fa-eye'></i> " + repo.watchers_count + " Watchers</div>" +
+                "</div>" +
+                "</div></div>";
+
+            return markup;
+        }
+
+        function formatRepoSelection(repo) {
+            return repo.full_name || repo.text;
+        }
+
+        //window.location = serverSideDropDownUrl;
+        $('.js-data-example-ajax').each(function (i, obj) {
+            //alert(obj.id);
+            var splitStr = obj.id.split("___");
+            var campaignId = parseInt(splitStr[2]);
+            var categoryId = parseInt(splitStr[3]);
+            //alert(splitStr[2]);
+            $(obj).select2({
+                ajax: {
+                    //url: "https://api.github.com/search/repositories",
+                    url: '@Url.Action("GetDynamicOptionListAgainstSearch", "GeneralApi")',
+                    //?campaignId='+campaignId+'&categoryId='+categoryId+'&searchStr=3'
+                    //url: serverSideDropDownUrl,
+                    type: 'GET',
+                    dataType: 'json',
+                    delay: 250,
+                    //data: { campaignId: campaignId, categoryId: categoryId, searchStr: params.term },
+                    data: function (params) {
+                        return {
+                            searchStr: params.term, // search term
+                            page: params.page || 1,
+                            campaignId: campaignId,
+                            categoryId: categoryId
+                        };
+                    },
+                    processResults: function (data, params) {
+                        debugger;
+                        // parse the results into the format expected by Select2
+                        // since we are using custom formatting functions we do not need to
+                        // alter the remote JSON data, except to indicate that infinite
+                        // scrolling can be used
+                        params.page = params.page || 1;
+
+                        //data = [{ id: 0, text: 'enhancement' }, { id: 1, text: 'bug' }, { id: 2, text: 'duplicate' }, { id: 3, text: 'invalid' }, { id: 4, text: 'wontfix' }];
+
+                        return {
+                            results: data.ListItems,
+                            pagination: {
+                                more: (params.page * 10) < data.TotalCount
+                            }
+                        };
+                    },
+                    cache: true
+                },
+                //escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
+                //templateResult: formatRepo, // omitted for brevity, see the source of this page
+                //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+            });
+        });
+    });
+
+
+    /*
+    $('.form-control').on('input keydown', function (e) {
+        debugger;
+        e.preventDefault();
+        alert('olololo');
+        //var i = $(this).attr('data-column');key
+        //var v = $(this).val();
+        //$('#agentListing').DataTable().columns(i).search(v).draw();
+    });
+    */
+
+    function OnSumitClick() {
+        $('#currentComplaintTypeTab').val($('.nav-tabs .active').text());
+        debugger;
+        if ($('#AddComplaintForm').valid()) {
+            //ShowLoading();
+        }
+    }
+
+    // Populate Hierarchy Dictioary done
+
+    function PopulateDropDownDictionaryHierarchy() {
+        //alert(dropDownDict);
+        // complaint
+        //dropDownDictHierarchyComplaint.push({
+        //    key: "complaintUserControlProvince",
+        //    value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        //});
+
+        dropDownDictHierarchyComplaint.push({
+              key: "complaintUserControlDivision",
+              value: "DistrictByDivisionId?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+            });
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlDistrict",
+            value: "WardsByDistrictId?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+            });
+
+        //dropDownDictHierarchyComplaint.push({
+        //    key: "complaintUserControlDistrict",
+        //    value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        //});
+
+        //dropDownDictHierarchyComplaint.push({
+        //    key: "complaintUserControlTownTehsil",
+        //    value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        //});
+
+        //dropDownDictHierarchyComplaint.push({
+        //    key: "complaintUserControlUc",
+        //    value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        //});
+
+        dropDownDictHierarchyComplaint.push({
+            key: "complaintUserControlWards",
+            value: null
+        });
+
+        //Suggestion list
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlProvince",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlDistrict",
+            value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlTownTehsil",
+            value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlUc",
+            value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchySuggestion.push({
+            key: "suggestionUserControlWards",
+            value: null
+        });
+
+
+        //Inquiry list
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlProvince",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlDistrict",
+            value: "TownTehsils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlTownTehsil",
+            value: "UnionCouncils?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlUc",
+            value: "Wards?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dropDownDictHierarchyInquiry.push({
+            key: "inquiryUserControlWards",
+            value: null
+        });
+
+    }
+
+
+    function PopulateDropDownDictionary() {
+        //alert(dropDownDict);hasDepartment
+
+        if ($('#ComplaintVm_hasDepartment').val() == 'True') {
+            dropDownDictComplaint.push({
+                key: "ComplaintVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Complaint)'
+            });
+        }
+
+        if ($('#SuggestionVm_hasDepartment').val() == 'True') {
+            dropDownDictSuggestion.push({
+                key: "SuggestionVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Suggestion)'
+            });
+        }
+
+        if ($('#InquiryVm_hasDepartment').val() == 'True') {
+            dropDownDictInquiry.push({
+                key: "InquiryVm_departmentId",
+                value: "ComplaintTypesByDepartmentId?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Inquiry)'
+            });
+        }
+
+        dropDownDictComplaint.push({
+            key: "ComplaintVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Complaint)'
+        });
+
+        dropDownDictComplaint.push({
+            key: "ComplaintVm_Complaint_SubCategory",
+            value: null
+        });
+
+        dropDownDictSuggestion.push({
+            key: "SuggestionVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Suggestion)'
+        });
+
+        dropDownDictSuggestion.push({
+            key: "SuggestionVm_Complaint_SubCategory",
+            value: null
+        });
+
+        dropDownDictInquiry.push({
+            key: "InquiryVm_Complaint_Category",
+            value: "ComplaintSubType?campaignId=" + $('#ComplaintVm_Compaign_Id').val() + "&ComplaintType=" + '@((int)Config.ComplaintType.Inquiry)'
+        });
+
+        dropDownDictInquiry.push({
+            key: "InquiryVm_Complaint_SubCategory",
+            value: null
+        });
+
+    }
+
+
+    window.onload = function () {
+
+        if ('@((int)AuthenticationHandler.GetCookie().Role)' == 9) {
+            $('.fieldsEnable:input').each(function (i,v) {
+
+                if ($(this).is("input") || $(this).is("textarea")) {
+                    $(this).attr('readonly','enabled');
+                }
+                else if ($(this).is("select")) {
+                    $(this).attr('disabled', 'enabled');
+                }
+            })
+        }
+    }
+</script>

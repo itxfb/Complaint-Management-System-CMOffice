@@ -1,0 +1,192 @@
+﻿
+
+<div class="box-header-blue with-border btn-header">
+    <h4 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;">Complaints by @ViewBag.Hierarchy1</h4>
+</div>
+
+<div class="box-body-white">
+
+    <table id="RegionStatusWiseTable_@(ViewBag.divTag)" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+        <thead>
+            <tr role="row" class="tableHeader">
+                <th class="nosort">Sr No</th>
+                <th>@ViewBag.Hierarchy1</th>
+                <th>Overdue</th>
+                <th>Pending (Fresh)</th>
+                <th>Pending (Reopened)</th>
+                <th>Irrelevant</th>
+                <th>In-Progress</th>
+                <th>Resolved</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>
+                </th>
+                <th>
+                    Total
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+                <th>
+                </th>
+            </tr>
+        </tfoot>
+        <tbody></tbody>
+
+    </table>
+</div>
+
+
+
+<style>
+    th {
+        font-size: 17px;
+    }
+
+    tr {
+        font-size: 17px;
+    }
+</style>
+<script type="text/javascript">
+    $(function() {
+        debugger;
+        LoadData@(ViewBag.divTag)();
+
+    });
+    function LoadData@(ViewBag.divTag)()
+        {
+        LoadTable@(ViewBag.divTag)("@Url.Action("RegionAndStatusWiseCountSummaryDistrict", "ApiZimmedarShehri")");
+        }
+    function LoadTable@(ViewBag.divTag)(apiUrl, from, to, campaign, cateogries, statuses) {
+        debugger;
+        var table = $('#RegionStatusWiseTable_@(ViewBag.divTag)').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+            },
+            drawCallback: function(row, data, start, end, display) {
+                var api = this.api();
+                debugger;
+                data = api.column(2).data();
+                var totalcount = data.length ? data.reduce(function(a,b){
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;}):0;
+                api.columns('.sum', { page: 'current' }).every(function () {
+                    var sum = api
+                        .cells( null, this.index(), { page: 'current'} )
+                        .render('display')
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+                    var val = sum*100/totalcount;
+
+                    //$(this.footer()).html(sum +'  ('+ Math.floor(val) + '%)');
+                    $(this.footer()).html(sum);
+                });
+
+            },
+            "footerCallback": function () {
+                debugger;
+                //var api = this.api();
+
+                //var table = api.table();
+                //var closed =  0;
+                //var reopened = 0;
+                //var tab = table.column(6).data();
+                //if (tab.length > 0 ){
+                //    var x = table.column(6).data();
+                //    for (i = 0; i < x.length; i++) {
+                //        closed = closed + x[i];
+                //    }
+                //}
+                //var tab2 = table.column(5).data();
+                //if (tab2.length > 0 ){
+                //    var x = table.column(5).data();
+                //    for (i = 0; i < x.length; i++) {
+                //        reopened = reopened + x[i];
+                //    }
+
+                //}
+
+
+
+                ///// (api.column( 5, {page:'current'} ).data().sum() + api.column( 6, {page:'current'} ).data().sum());
+                //////Sub Total
+                //if (table !== undefined){
+                //    if ((closed + reopened) > 0)
+                //    {
+                //        $(api.column(8).footer()).html(
+                //            Math.round((closed / (closed + reopened))*100) + ' %'
+                //        );
+                //    }
+                //}
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "serverSide": false,
+            "order" : [[2,"desc"]],
+            'columnDefs': [{
+                "targets": [ ], //first column / numbering column
+                "orderable": true, //set not orderable
+            }],
+            "ajax": {
+                "url": apiUrl,//'../GeneralApi/GetStakeholderComplaints',
+                "type": "POST",
+                data: {
+                    startDate: $('#pieDateRange').val().split('To')[0].trim(),
+                    endDate: $('#pieDateRange').val().split('To')[1].trim(),
+                    provinceid: @((int)ViewBag.provinceid),
+                    campId: @((string)ViewBag.campId),
+                    hierarchyId: @((int)ViewBag.hierarchyId),
+                    userHierarchyId: @((int)ViewBag.userHierarchyId),
+                    commaSepVal: '@((string)ViewBag.commaSepVal)',
+                    statusIds: '@(ViewBag.statusIds)',
+                    reportType: @((int)ViewBag.reportType),
+                    divTag: @((string)ViewBag.divTag),
+                    }
+                //data: { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: statuses }
+            },
+            "columns": [
+                       { "data": "SrNo",
+                           render: function (data, type, row, meta) {
+                           return meta.row + meta.settings._iDisplayStart + 1;
+                           },"bSortable": true
+                       },
+                       { "data": "Hierarchy1Data" },
+                       { "data": "Overdue", className: "sum" },
+                       { "data": "PendingFresh", className: "sum" },
+                        { "data": "PendingReopened", className: "sum" },
+                        { "data": "Irrelevant", className: "sum" },
+                        {"data": "Forwarded",className:"sum"},
+                       { "data": "Resolved" , className: "sum"},
+                       { "data": "Total" , className: "sum"},
+                       //{ "data": "PercentageClosed", className: "percentage" }
+            ],
+        });
+        debugger;
+        //table.on( 'order.dt search.dt', function () {
+        //    table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+        //        cell.innerHTML = i+1;
+        //    } );
+        //} ).draw();
+        DivData.push(table);
+    }
+</script>
+

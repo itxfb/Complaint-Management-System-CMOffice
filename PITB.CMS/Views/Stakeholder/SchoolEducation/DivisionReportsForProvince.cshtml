@@ -1,0 +1,189 @@
+﻿@using PITB.CMS_Common
+
+@{
+    ViewBag.Title = "Division Reports";
+    //Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+    //string startDate = DateTime.Parse("1/8/2018").ToString("yyyy-MM-dd");
+    //string endDate = @DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+}
+@{
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+}
+<div class="container-fluid">
+    <div class="box-body-white clearfix" style="margin-bottom:20px">
+        <div class="box-header-blue with-border btn-header">
+            <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.ProvinceName Province</h3>
+            @*<div class="form-group col-md-12 col-xs-12 col-sm-12">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="pull-right">
+                            <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button"><i class="fa fa-filter"></i>&nbsp;Download</button>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+        <div class="row" style="margin:20px">
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <span>Division</span>
+                @Html.DropDownList("DivisionList", ViewBag.DivisionList as System.Web.Mvc.SelectList, new { @class = "form-control" })
+            </div>
+            @*<div class="col-lg-3 col-md-3 col-sm-3">
+                    <span>From Date</span>
+                    <input type="text" id="Piedatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                           class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-3">
+                    <span>To Date</span>
+                    <input type="text" id="Piedatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                           class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+                </div>*@
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <span>Select Date</span>
+                <input type="text" id="dateRange" placeholder="" class="form-control">
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3">
+                <div style="margin-top:20px">
+                    <button type="button" class="btn btn-success" id="ShowView">Filter</button>
+                    <button id="FilterBtn" class="btn btn-primary" onclick="PrintPage()" type="button" style="margin-left:5px"><i class="fa fa-filter"></i>&nbsp;Download</button>
+                </div>
+            </div>
+        </div>
+        <div id="DivisionReport">
+
+        </div>
+    </div>
+</div>
+
+<p id="ProvinceName" hidden>@ViewBag.ProvinceName</p>
+<p id="ProvinceId" hidden>@ViewBag.ProvinceId</p>
+
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Piedatepickerlower').datepicker()
+            .on("changeDate", function (e) {
+                debugger;
+                //for (i = 1; i <= 4; i++) {
+                //    window["LoadData" + i].apply(null, null);
+                //}
+            });
+        $('#Piedatepickermax').datepicker()
+            .on("changeDate", function (e) {
+                debugger;
+                //document.getElementById("docDate").innerHTML = GetDateFormat(e.date);
+                //for (i = 1; i <= 4; i++) {
+                //    window["LoadData" + i].apply(null, null);
+                //}
+            });
+        jQuery.fn.dataTable.Api.register('sum()', function () {
+            return this.flatten().reduce(function (a, b) {
+                if (typeof a === 'string') {
+                    a = a.replace(/[^\d.-]/g, '') * 1;
+                }
+                if (typeof b === 'string') {
+                    b = b.replace(/[^\d.-]/g, '') * 1;
+                }
+
+                return a + b;
+            }, 0);
+        });
+
+        $('#dateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+    });
+    $('#ShowView').click(function () {
+        debugger;
+        ShowLoading();
+        DivData = [];
+        //var startDate = $('#Piedatepickerlower').val();
+        //var endDate = $('#Piedatepickermax').val();
+        var startDate = $('#dateRange').val().split('To')[0].trim();
+        var endDate = $('#dateRange').val().split('To')[1].trim();
+        var divisionId = $('#DivisionList').val();
+        var provinceId = '@(ViewBag.ProvinceId)';
+        var campaignId = '@(ViewBag.CampaignIds)';
+        var url = '/Report/ProvinceDivisionPartialView';
+        $.ajax({
+            url: url,
+            type: 'GET',
+            cache: false,
+            data: {startDate:startDate,endDate:endDate,divisionId:divisionId,provinceId:provinceId,campaignId:campaignId},
+            datatype: 'html',
+            success: function (result) {
+                debugger;
+                $('#DivisionReport').html(null);
+                $('#DivisionReport').html(result);
+                HideLoading();
+            },
+            error: function (err) {
+                debugger;
+                console.log(err);
+                HideLoading();
+            }
+        });
+        return false;
+    });
+    function GetSearchParameters() {
+
+        return {
+            startDate : startDate,
+            endDate : endDate,
+            districtId: districtId,
+            provinceId: provinceId,
+            campaignId: campaignId
+        };
+
+    };
+    function PrintPage() {
+        debugger;
+        try {
+            ShowLoading();
+            var i;
+            for (i = 0; i < DivData.length; i++) {
+                disableEnableDataTablePaginationAndFilters(DivData[i], true);
+            }
+
+            debugger;
+
+            var lObjPageHeader = $('#pageHeader').html();
+
+            var printContents = $('#PrintableDiv').html();
+            var lObjHtmlStr = lObjPageHeader + printContents;
+            var filename = $("#DivisionList option:selected").text() + " Division.pdf"
+            var htmlData = {
+                id: 1,
+                htmlStr: GetLinkStrOnPage() + printContents
+            };
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: '@Url.Action("ExportPdfWithHtml", "generalapi")',
+                data: { htmlData: htmlData },
+                success: function (dataId) {
+                    debugger;
+                    window.location = '@Url.Action("ExportPdfWithHtml", "generalapi")?dataId=' + dataId + '&filename=' + filename;
+                    HideLoading();
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    HideLoading();
+                }
+
+            });
+            DivData = [];
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+</script>

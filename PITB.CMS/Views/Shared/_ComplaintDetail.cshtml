@@ -1,0 +1,341 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Handler.Authentication
+@model VmComplaintDetail
+@{
+    var user = AuthenticationHandler.GetCookie();
+    //Layout = null;
+    bool isProfileHidden = (PermissionHandler.IsPermissionAllowedInCampagin(Config.CampaignPermissions.HideProfileInfoFromStakeholderDetail) &&
+                            !PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowProfileInfoInStakeholderDetail, user.UserId, user.Role)
+                            );
+}
+
+<div id="ComplaintDetail" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+
+            @if (!isProfileHidden && Model.Is_Anonymous == false)
+            {
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title">Personal Information</h4>
+
+                    </div>
+                    <div class="box-body-white" style="margin-top: 5px;">
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Father/Husband Name</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Father_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>CNIC No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Cnic_No)
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Gender</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Gender)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Contact No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Secondary contact</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Secondary_Mobile_No)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Province</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Province.Province_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>District</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.District.District_Name)
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Landline No</label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.vmPersonlInfo.LandLine_No)
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label>Person address</label>
+                            </div>
+                            <div class="col-md-6">
+
+                                @Html.DisplayFor(m => m.vmPersonlInfo.Person_Address)
+                            </div>
+                        </div>
+
+                        <br style="clear: both;" />
+
+                    </div>
+                </div>
+            }
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    @if (isProfileHidden || Model.Is_Anonymous)
+                    {
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    }
+                    <h4 class="modal-title">Complaint Information [@Model.complaintIdStr]</h4>
+                </div>
+
+
+
+                <div class="box-body-white" style="margin-top:5px;">
+
+                    @if (Model.ListDynamicComplaintFields != null && Model.ListDynamicComplaintFields.Count > 0)
+                    {
+                        for (int i = 0; i < Model.ListDynamicComplaintFields.Count; i++)
+                        {
+                            <div class="form-group col-md-6">
+                                <div class="col-md-6">
+                                    <label>@Model.ListDynamicComplaintFields[i].FieldName</label>
+                                </div>
+                                <div class="col-md-6">
+                                    @if (!String.IsNullOrEmpty(Model.ListDynamicComplaintFields[i].FieldValue))
+                                    {
+                                        @Html.DisplayFor(m => m.ListDynamicComplaintFields[i].FieldValue)
+                                    }
+                                    else
+                                    {
+                                        <div> N/A </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Type</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_Type)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complaint Category</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.ComplaintCategoryName)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complaint Sub Category</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Complaint_SubCategoryName)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Province</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Province_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>District</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.District_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Town/Tehsil</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Tehsil_Name)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>UC</label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.UnionCouncil_Name)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Complete address</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.Complaint_Address)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Details of Complaint</label>
+                        </div>
+                        @if (System.Text.RegularExpressions.Regex.Matches(Model.Complaint_Remarks, @"\p{IsArabic}").Count > 0)
+                        {
+                            <div class="col-md-6" style="direction:rtl;">
+
+                                @Html.DisplayFor(m => m.Complaint_Remarks)
+                            </div>
+                        }
+                        else
+                        {
+
+                            <div class="col-md-6">
+
+                                @Html.DisplayFor(m => m.Complaint_Remarks)
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Comments </label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.Agent_Comments)
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Current Status </label>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.DisplayFor(m => m.currentStatusStr)
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.currStatusCommentsStr))
+                    {
+                        <div class="form-group col-md-6">
+                            <div class="col-md-6">
+                                <label> Status Comments </label>
+                            </div>
+                            <div class="col-md-6">
+                                @Html.DisplayFor(m => m.currStatusCommentsStr)
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up count</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupCount)
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-6">
+                            <label>Follow up comments</label>
+                        </div>
+                        <div class="col-md-6">
+
+                            @Html.DisplayFor(m => m.followupComment)
+                        </div>
+                    </div>
+                    <br style="clear: both;" />
+
+                </div>
+
+
+            </div>
+            @*@using (Html.BeginForm("OnFollowUp", "Complaint", FormMethod.Post, new {enctype = "multipart/form-data", id = "StatusChangeForm"}))
+                {
+                    <div class="box box-primary" style="box-shadow: none;">
+                        <div class="box-header-blue with-border btn-header">
+                            <h4 class="modal-title">Follow Up</h4>
+
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <div class="col-md-3">
+                                <label>Comments </label>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(m => m.FollowupComments, new { @class = "form-control", @placeholder = "Follow up comments" })
+
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12 text-right">
+                            <button type="submit" class="btn btn-primary" id="FilterBtn" ><span class="glyphicon glyphicon-edit"></span>&nbsp;Change</button>
+                        </div>
+                    </div>
+                }*@
+            <div class="box-footer">
+                <div style="font-size: 12px;">Created by : <b>@Model.Created_By</b> &nbsp; <i>@Model.Created_DateTime.Value.ToString("dd-MMM-yyyy hh:mm:tt")</i></div>
+            </div>
+
+        </div>
+
+
+        @*<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <div class="modal-header"><h4>Detail</h4></div>*@
+
+    </div>
+
+</div>
+
+
+<script>
+    $(".col-md-6").each(function () {
+
+
+        let feild = $(this);
+        let text = feild.html().trim();
+
+        if (text == "") {
+            feild.closest(".form-group").remove();
+        }
+
+    });
+</script>
+

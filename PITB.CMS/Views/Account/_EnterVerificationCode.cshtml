@@ -1,0 +1,54 @@
+﻿@using PITB.CMS_Common.Models.View.Account
+@model VmUserSettings
+
+<div class="form-group" style="text-align:center">
+    <div>
+        <p style="color:white">Please enter <b>verification code</b> that is sent to your mobile number.</p>
+    </div>
+    <div class="form-group">
+        @Html.TextBoxFor(m => m.Verification_Code, new { @class = "form-control", placeholder = "Verification Code" })
+        @Html.HiddenFor(m => m.Username)
+        <label id="error" style="display:none;color:#FBF87F;"></label>
+    </div>
+
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button id="enter_btn" class="btn btn-primary" onclick="EnterClick()">Enter</button>
+        </div>
+    </div>
+    <br style="clear:both" />
+</div>
+<script>
+    function EnterClick() {
+        var username = document.getElementById("Username").value;
+        var verificationCode = document.getElementById("Verification_Code").value;
+        $.ajax({
+            dataType: 'Json',
+            type: 'POST',
+            url: '@Url.Action("EnterVerificationCodeCheck", "Account")',
+            data: { username: username, verificationCode: verificationCode },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    jQuery.ajax({
+                        datatype: 'html',
+                        type: 'POST',
+                        url: '@Url.Action("EnterVerificationCode", "Account")',
+                        data: { username: username, verificationCode: verificationCode },
+                        success: function (result) {
+                            $("#title").innerHTML = "Password > Confirmation";
+                            $("#ContentPartialView").html(result);
+                        }
+                    });
+                } else {
+                    document.getElementById("error").innerHTML = result.Message;
+                    document.getElementById("error").style.display = "block";
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("error");
+                var err = eval("(" + xhr.responseText + ")");
+                HideLoading();
+            }
+        });
+    }
+</script>

@@ -1,0 +1,233 @@
+﻿<div class="position-r" style="margin-top:20px;">
+    <div class="cust-overlay LineChart-overlay" style="padding-top:15%;">Loading...</div>
+    <h4>Date Wise Complaint Registered <a href="#" class="view-full pull-right" id="LineChartFull"><img src="~/img/max.png" /></a> <a href="#" id="LineChartExit" class="exit pull-right"><img src="~/img/min.png" /></a></h4>
+    <div class="row">
+
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            @*<span>From Date</span>
+                    <input type="text" id="LineChartdatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                           class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <span>To Date</span>
+                    <input type="text" id="LineChartdatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                           class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+                </div>*@
+            <span>Select Date</span>
+            <input type="text" id="lineChartDateRange" placeholder="" class="form-control">
+        </div>
+        <div id="LineChart" style="width:100%; height:450px; margin-top:20px;"></div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#lineChartDateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#lineChartDateRange').on('apply.daterangepicker', function (ev, picker) {
+            $.LoadLineChart();
+        });
+    });
+
+    //var LineChartdoldStart = $('#LineChartdatepickerlower').val();
+    //var LineChartoldenddate = $('#SLineChartdatepickermax').val();
+    var campaignId = '@(ViewBag.campaignId)';
+    $(function () {
+
+        $.LoadLineChart();
+
+    });
+    //jQuery('#LineChartdatepickerlower').change(function () {
+    //    if (StackedoldStart != $('#LineChartdatepickerlower').val()) {
+    //        $.LoadLineChart();
+    //        StackedoldStart = $('#LineChartdatepickerlower').val();
+    //    }
+    //    //$.LoadPieChart();
+    //});
+    //jQuery('#LineChartdatepickermax').change(function () {
+    //    if (LineChartoldenddate != $('#LineChartdatepickermax').val()) {
+    //        $.LoadLineChart();
+    //        LineChartoldenddate = $('#LineChartdatepickermax').val();
+    //    }
+    //    //$.LoadPieChart();
+    //});
+
+    $("#LineChartFull").click(function (e) {
+        e.preventDefault();
+
+        $(this).parent("h4").parent("div").addClass("full-screen");
+        $("#LineChart").css("height", "650px");
+        $.LoadLineChart();
+        $(this).hide();
+        $(this).parent("h4").children(".exit").fadeIn();
+    });
+    $("#LineChartExit").click(function (e) {
+        e.preventDefault();
+        $(this).parent("h4").parent("div").removeClass("full-screen");
+        $("#LineChart").css("height", "450px");;
+        $.LoadLineChart();
+        $(this).hide();
+        $(this).parent("h4").children(".view-full").fadeIn();
+    });
+
+
+</script>
+
+<script>
+
+
+    @*if(Model !=null)
+      {
+          foreach (var item in Model)
+          {
+              DailyDistrictCount.push(@item.entries);
+                              @:DailyDistrictName.push('@item.dst_desc');
+                              @:DailyPictureCount.push(@item.photographs);
+                              @:FingerPrintsCount.push(@item.finger_prints);
+
+          }
+      }*@
+
+
+    $.LoadLineChart = function () {
+        var DateArr = [];
+        var StatusAndCountDict = [];
+        var StatusCountArr = [];
+        //var StatusNameArr = [];
+        var prevStatus = '';
+
+        $(".LineChart-overlay").fadeIn();
+
+        $.ajax({
+            url: "@Url.Action("LineChart", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $('#lineChartDateRange').val().split('To')[0].trim(),
+                datemax: $('#lineChartDateRange').val().split('To')[1].trim(),
+                campaignId : campaignId
+            },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var detailObj;
+                //ComplaintCategory,[status],TotalComplaints
+                var count = 1;
+                $.each(data.CategoryTable, function (idx, obj) {
+                    //New Object
+                    var temp = obj.changed_date.toString().split('T');
+                    var complaintCat = temp[0];
+                    var currStatus = obj.Status.toString();
+                    var totalComplaints = obj.Status.toString();
+
+                    if (DateArr.indexOf(complaintCat) == -1) {
+                        if (complaintCat == "68") {
+                            //alert(obj.changed_date.toString());
+                        }
+                        DateArr.push(complaintCat);
+                    }
+
+                    if ((prevStatus != '' && prevStatus != currStatus) || data.CategoryTable.length == count) { // if status is not present then add in dictionary
+                        if (StatusCountArr.length > 0) {
+                            StatusAndCountDict.push({
+                                name: prevStatus,
+                                data: StatusCountArr
+                            });
+                        }
+                        StatusCountArr = [];
+                        StatusCountArr.push(parseInt(obj.TotalComplaints));
+                    }
+                    else {
+                        StatusCountArr.push(parseInt(obj.TotalComplaints));
+                    }
+
+                    prevStatus = currStatus;
+                    count++;
+
+
+                    $(".LineChart-overlay").fadeOut(1000);
+
+                });
+
+                $(".LineChart-overlay").fadeOut(1000);
+            }
+
+        });
+        $('#LineChart').highcharts({
+            credits: {
+                enabled: false
+            },
+            chart: {
+                type: 'line'
+            },
+            title: {
+                text: 'Date wise complaints'
+            },
+
+            xAxis: {
+
+                categories: DateArr,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'No Of Complaints'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:1f}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.0f}'
+                    }
+                }
+            },
+            exporting: {
+                chartOptions: {
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    }
+                }
+            },
+            series: StatusAndCountDict
+                /*[
+                {
+                    name: 'District Count',
+                    data: DailyDistrictCount
+                },
+                {
+                    name: 'Picture Count',
+                    data: DailyPictureCount
+                },
+                {
+                    name: 'Finger Prints Count',
+                    data: FingerPrintsCount
+                }
+
+            ]*/
+        });
+    }
+
+
+</script>

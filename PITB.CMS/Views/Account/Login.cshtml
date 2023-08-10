@@ -1,0 +1,120 @@
+﻿@model VmLogin
+@using CaptchaMvc.HtmlHelpers
+@using CaptchaMvc;
+@{
+    //Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Login - PITB CRM</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/jquery")
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+        <style>
+            a:link{
+                color:#FBF87F;
+                text-decoration:none;
+            }
+            a:visited{
+                color:#FBF87F;
+                text-decoration:none;
+            }
+            a:hover{
+                color:#FBF8C8;
+                text-decoration:underline;
+            }
+            a:active{
+                color:#FBF87F;
+                text-decoration:underline;
+            }
+            img {
+                width: auto;
+            }
+
+            .cpatcha {
+                color: #fff;
+            }
+
+                .cpatcha input {
+                    color: #000;
+                }
+
+            input[name='CaptchaInputText'] {
+                width: auto;
+            }
+        </style>
+    </head>
+    <body class="login-page">
+        <div class="login-box">
+
+            <div class="login-box-body">
+                <div class="login-logo">
+                    <a href="@Url.Action("Login","Account")"><img src="~/img/crm-logo-2.png" class="img-responsive" /></a>
+                </div><!-- /.login-logo -->
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                    <fieldset>
+                        <div class="form-group has-feedback">
+                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Enter username" })
+                            @Html.ValidationMessageFor(m => m.Username, null, new { @class = "text-yellow" })
+                        </div>
+                        <div class="form-group has-feedback">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter password" })
+                            @Html.ValidationMessageFor(m => m.Password, null, new { @class = "text-yellow" })
+                        </div>
+
+                        @*<div class="form-group g-recaptcha" data-sitekey="6LcMtFgUAAAAAP692QB-DdheXWyXMp2ZB9Ds8hU4"></div>*@
+                        <div class="form-group has-feedback cpatcha">
+                            @Html.Captcha(5)
+                        </div>
+                        <div class="text-center"> <label class="text-yellow">@ViewBag.ErrorMessage</label></div>
+                        <div class="row">
+                            <div class="col-xs-4 col-xs-offset-1">
+                                <button type="submit" class="btn btn-primary btn-block btn-flat sign_in_btn">Sign In</button>
+                            </div><!-- /.col -->
+                            <div class="col-xs-7">
+                                <a href="@Url.Action("PasswordRestore", "Account")" id="forgotLink">Forgot Password?</a>
+                            </div><!-- /.col -->
+                        </div>
+
+                    </fieldset>
+                }
+</div><!-- /.login-box-body -->
+        </div><!-- /.login-box -->
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/bootstrap")
+    </body>
+</html>
+<script type="text/javascript">
+    var onloadCallback = function () {
+        //alert("reCaptcha is ready !!!");
+    };
+    $(function () {
+        $(".login-box").css("margin-bottom", "0px");
+        $(window).load(function () {
+            loginadd();
+        });
+        $(window).resize(function () {
+            loginadd();
+        });
+        function loginadd() {
+            var winh = $(window).height();
+            var logh = $(".login-box").height();
+            if (winh > logh) {
+                $(".login-box").css("margin-top", ((winh - logh) / 2).toString() + "px");
+            }
+        }
+    });
+</script>   
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
+
+</script>  

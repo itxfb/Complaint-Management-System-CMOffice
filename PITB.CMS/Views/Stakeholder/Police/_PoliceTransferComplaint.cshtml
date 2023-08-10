@@ -1,0 +1,436 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Helper.Extensions;
+@model VmTransferComplaint
+<section class="content">
+    <div id="ComplaintDetail" class=" modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+
+
+
+                <div class="box box-primary clearfix" style="box-shadow:none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+
+                        <h4 class="modal-title">Transfer Complaint [@Model.ComplaintId]</h4>
+
+                    </div>
+                    @using (Html.BeginForm("OnTransferComplaint", "Complaint", FormMethod.Post, new { id = "TransferComplaintForm" }))
+                    {
+                        @Html.HiddenFor(m => m.ComplaintId)
+                        @Html.HiddenFor(m => m.CampaignId, new {@Id="Campaign_Id"})
+                        <div class="box-body-white" style="margin-top:5px;">
+                            @if (Model.VmTransferProvince!=null /*Model.VmTransferProvince.IsViewable*/)
+                            {
+                                @Html.HiddenFor(m => m.VmTransferProvince.IsRequired, new { id = "IsRequiredProvince" })
+                                <div class="form-group col-md-6">
+
+                                    <div class="col-md-4">
+                                        <label>Province</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.VmTransferProvince.SelectedId, Model.VmTransferProvince.ProvinceSelectList, new { @Id = "complaintUserControlProvince", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmTransferProvince.SelectedId, "", new { @class = "label label-warning" })
+                                    </div>
+
+                                </div>
+                            }
+                            @if (Model.VmTransferDivision!=null /* Model.VmTransferDivision.IsViewable*/)
+                            {
+                                @Html.HiddenFor(m => m.VmTransferDivision.IsRequired, new { id = "IsRequiredDivision" })
+                                <div class="form-group col-md-6">
+
+                                    <div class="col-md-4">
+                                        <label>Division</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.VmTransferDivision.SelectedId, Model.VmTransferDivision.DivisionSelectList, new { @Id = "complaintUserControlDivision", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmTransferDivision.SelectedId, "", new { @class = "label label-warning" })
+                                    </div>
+
+                                </div>
+                            }
+                            @if (Model.VmTransferDistrict!=null /* Model.VmTransferDistrict.IsViewable*/)
+                            {
+                                @Html.HiddenFor(m => m.VmTransferDistrict.IsRequired, new { id = "IsRequiredDistrict" })
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>District</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.VmTransferDistrict.SelectedId, Model.VmTransferDistrict.DistrictSelectList, new { @Id = "complaintUserControlDistrict", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmTransferDistrict.SelectedId, "", new { @class = "label label-warning" })
+
+
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.VmTransferTehsil!=null/*Model.VmTransferTehsil.IsViewable*/)
+                            {
+                                @Html.HiddenFor(m => m.VmTransferTehsil.IsRequired, new { id = "IsRequiredTehsil" })
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Town/Tehsil*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.VmTransferTehsil.SelectedId, Model.VmTransferTehsil.TehsilSelectList, new { @Id = "complaintUserControlTownTehsil", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmTransferTehsil.SelectedId, "", new { @class = "label label-warning" })
+
+
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.VmTransferUc!=null/*Model.VmTransferUc.IsViewable*/)
+                            {
+                                @Html.HiddenFor(m => m.VmTransferUc.IsRequired, new { id = "IsRequiredUc" })
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>UC*</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(m => m.VmTransferUc.SelectedId, Model.VmTransferUc.UcSelectList, new { @Id = "complaintUserControlUc", @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.VmTransferUc.SelectedId, "", new { @class = "label label-warning" })
+
+
+                                    </div>
+                                </div>
+                            }
+                            <br clear="all" />
+                            <hr>
+
+                            <div class="form-group col-md-6">
+
+                                <div class="col-md-4">
+                                    <label>Transfer To</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*@Html.RadioButtonListFor(m => m.TransferToId, Model.ListTranferTo, new { @Id = "RadioListActiveInActive" })
+                                        @Html.ValidationMessageFor(m => m.TransferToId, "", new { @class = "label label-warning" })*@
+
+                                    @Html.DropDownListFor(m => m.TransferToId, Model.ListTranferTo, "--Select--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.TransferToId, "", new { @class = "label label-warning" })
+                                </div>
+
+                            </div>
+
+                            <div class="form-group col-md-6">
+
+                                <div class="col-md-4">
+                                    <label>Transfer Comments</label>
+                                </div>
+                                <div class="col-md-8">
+                                    @*@Html.RadioButtonListFor(m => m.TransferToId, Model.ListTranferTo, new { @Id = "RadioListActiveInActive" })
+                                        @Html.ValidationMessageFor(m => m.TransferToId, "", new { @class = "label label-warning" })*@
+
+                                    @Html.TextAreaFor(m => m.AgentComments, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.AgentComments, "", new { @class = "label label-warning" })
+                                </div>
+
+                            </div>
+
+                            <div class="form-group col-md-6">
+
+                                <button type="submit" class="btn btn-primary widthFull" id="FilterBtn" onclick="OnTransferSubmit()"><span class="fa fa-filter"></span>&nbsp;Transfer</button>
+
+                            </div>
+
+                        </div>
+                    }
+                    <br clear="all" />
+                    <hr>
+                    <div class="box-header-blue with-border btn-header">
+                        <h4 class="modal-title">Transfer History</h4>
+                    </div>
+                    <div class="box-body-white" style="margin-top:5px;">
+                        @if (Model.HasTransferedHistory)
+                        {
+                            <a class="btn btn-default btn-sm margin_b" role="button" data-toggle="collapse" href="#Filters2" aria-expanded="true" aria-controls="Filters2">
+                                <span class="fa fa-sliders"></span>Transfer History
+                            </a>
+                            <div id="Filters2" class="collapsed collapsed in" area-expanded="true">
+                                <div class="">
+                                    <div>
+                                        <div id="DivAttendanceLogs" style="margin-top: 20px">
+                                            <div class="" style="margin: 0 auto; width: 100%;">
+
+                                                <table id="forwardToLogs2" style="width: 100%;" class="table responsive table-hover table-striped table-bordered table-condensed margin_t">
+                                                    <thead>
+                                                        <tr style="background-color: #8b0000; color: #ffffff">
+                                                            <th>Name</th>
+                                                            <th>From</th>
+                                                            <th>From Detail</th>
+                                                            <th>To</th>
+                                                            <th>To Detail</th>
+                                                            <th>Date Time</th>
+                                                            <th>Comments</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br clear="all" />
+                            <hr>
+                            <div class=" margin_t15px">
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Name</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.UserName
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Transfer Date:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.AssignedDate
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>From:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.AssignedFromMedium
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>From Description:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.AssignedFromMediumValue
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>To:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.AssignedToMedium
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>To Description:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.AssignedToMediumValue
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <div class="col-md-4">
+                                        <label>Comment:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Model.VmLastTransferredFrom.Comment
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class=" margin_t15px">
+                                <div class="form-group col-md-12">
+                                    <label> No History Found </label>
+                                </div>
+                            </div>
+                         }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script type="text/javascript">
+    var dropDownDict = [];
+
+    $("#TransferComplaintForm").on("submit", function () {
+        //alert($(this).text());
+        //alert("Munna kaka");
+    });
+   
+
+   /* $("TransferComplaintForm").submit(function (event) {
+        if ($("input:first").val() === "correct") {
+            $("span").text("Validated...").show();
+            return;
+        }
+
+        $("span").text("Not valid!").show().fadeOut(1000);
+        event.preventDefault();
+    });
+    */
+    //var transferToArr = [];
+    @foreach (SelectListItem listItem in @Model.ListTranferTo)
+    {
+        <text>
+        @if (listItem.Value == ((int)Config.Hierarchy.Province).ToString())
+        {
+                <text>
+                    //transferToArr.push("#IsRequiredProvince");
+                    @*transferToArr.push({
+                        key: @((int)Config.Hierarchy.Province),
+                        value: "#IsRequiredProvince"
+                    });*@
+                    dropDownDict.push({
+                        key: "complaintUserControlProvince",
+                        value: "Divisions?campaignId=" + $('#Campaign_Id').val()
+                    });
+                </text>
+            }
+            else if (listItem.Value == ((int)Config.Hierarchy.Division).ToString())
+            {
+                <text>
+                    //transferToArr.push("#IsRequiredDivision");
+                    @*transferToArr.push({
+                        key: @((int)Config.Hierarchy.Division),
+                        value: "#IsRequiredDivision"
+                    });*@
+                    dropDownDict.push({
+                        key: "complaintUserControlDivision",
+                        value: "DistrictByDivisionId?campaignId=" + $('#Campaign_Id').val()
+                    });
+                </text>
+            }
+            else if (listItem.Value == ((int)Config.Hierarchy.District).ToString())
+            {
+                <text>
+                    //transferToArr.push("#IsRequiredDistrict");
+                    @*transferToArr.push({
+                        key: @((int)Config.Hierarchy.District),
+                        value: "#IsRequiredDistrict"
+                    });*@
+                    dropDownDict.push({
+                        key: "complaintUserControlDistrict",
+                        value: "TownTehsils?campaignId=" + $('#Campaign_Id').val()
+                    });
+                </text>
+            }
+            else if (listItem.Value == ((int)Config.Hierarchy.Tehsil).ToString())
+            {
+                <text>
+                    //transferToArr.push("#IsRequiredTehsil");
+                    @*transferToArr.push({
+                        key: @((int)Config.Hierarchy.Tehsil),
+                        value: "#IsRequiredTehsil"
+                    });*@
+                    dropDownDict.push({
+                        key: "complaintUserControlTownTehsil",
+                        value: "UnionCouncils?campaignId=" + $('#Campaign_Id').val()
+                    });
+                </text>
+            }
+            else if (listItem.Value == ((int)Config.Hierarchy.UnionCouncil).ToString())
+            {
+                <text>
+                    //transferToArr.push("#IsRequiredUc");
+                    @*transferToArr.push({
+                        key: @((int)Config.Hierarchy.UnionCouncil),
+                        value: "#IsRequiredUc"
+                    });*@
+                    dropDownDict.push({
+                        key: "complaintUserControlUc",
+                        value: null
+                    });
+                </text>
+        }
+
+        </text>
+    }
+    $(document).ready(function() {
+        $('form').removeData('validator');
+        $('form').removeData('unobtrusiveValidation');
+        $.validator.unobtrusive.parse('form');
+
+        RegisterDropDownListChangeEventsCustomDictionary(dropDownDict);
+    
+            @if (Model.HasTransferedHistory)
+            {
+                <text>
+                    ReloadDataTableAbsent('#forwardToLogs2');
+                    $(".collapse").collapse();
+                    $('#Filters2').collapse({hide: true})
+                </text>
+            }
+        }
+
+            // Commenting validation
+            //$("#TransferToId").change(function () {
+            //    var selectedIndex = parseInt(this.value);
+            //    for (i = 0; i < transferToArr.length; i++) {
+
+            //        if (transferToArr[i].key <= selectedIndex) {
+            //            $(transferToArr[i].value).val("True");
+            //        } else {
+            //            $(transferToArr[i].value).val("False");
+            //        }
+            //    }
+            //});
+);
+
+    function ReloadDataTableAbsent(divId) {
+        $(divId).dataTable().fnDestroy();
+        var table = $(divId).dataTable({
+            "bSort": false,
+            "ajax": "@Url.Action("GetComlaintsTransferedHistoryTable", "GeneralApi")?" + "complaintId=" + $('#ComplaintId').val(),
+            "contentType": "application/json",
+            "type": "GET",
+            "bLengthChange": false,
+            "columns": [
+                { "data": "UserName" },
+                { "data": "AssignedFromMedium" },
+                { "data": "AssignedFromMediumValue" },
+                { "data": "AssignedToMedium" },
+                { "data": "AssignedToMediumValue" },
+                { "data": "AssignedDate" },
+                { "data": "Comment" }
+
+            ],
+        });
+    }
+
+    function OnTransferSubmit() {
+        if ($('#TransferComplaintForm').valid()) {
+            ShowLoading();
+        }
+    }
+
+    /*
+    function GetHierarchyAjaxDict() {
+        // create an empty array
+        dropDownDict.push({
+            key: provinceDivId,
+            value: "Districts"
+        });
+
+        dropDownDict.push({
+            key: districtDivId,
+            value: "TownTehsils"
+        });
+
+        dropDownDict.push({
+            key: tehsilDivId,
+            value: "UnionCouncils"
+        });
+
+        dropDownDict.push({
+            key: ucDivId,
+            value: null
+        });
+    }*/
+</script>

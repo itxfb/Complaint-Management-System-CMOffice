@@ -1,0 +1,173 @@
+﻿@{
+    Layout = null;
+    dynamic data = ViewBag.data;
+}
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+</style>
+<div class="container-fluid">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title">
+                    <img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@data.logoUrl">@data.pageHeading
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="font-size: 30px;"><span aria-hidden="true">&times;</span></button>
+                </h3>
+            </div>
+
+
+            <div class="box-body-white">
+
+                <table id="tableListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="tableListing">
+                    <thead>
+                        <tr role="row" class="tableHeader">
+                            <th>Complaint No</th>
+                            <th>Campaign</th>
+                            <th>District</th>
+                            @*<th>Tehsil</th>
+                            <th>Union Council</th>
+                            <th>Name</th>*@
+                            <th>Date</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Escalation</th>
+                            <th>Follow up</th>
+                            <th>Action</th>
+
+
+                        </tr>
+                    </thead>
+                    <thead>
+                        <tr>
+                            <th><input type="text" data-column="0" class="search-input-text"></th>
+                            <th><input type="text" data-column="1" class="search-input-text"></th>
+                            <th><input type="text" data-column="2" class="search-input-text"></th>
+                            <th><input type="text" data-column="3" class="search-input-text"></th>
+                            <th><input type="text" data-column="4" class="search-input-text"></th>
+                            <th><input type="text" data-column="5" class="search-input-text"></th>
+                            <th><input type="text" data-column="6" class="search-input-text"></th>
+                            <th><input type="text" data-column="7" class="search-input-text"></th>
+                            @*<th><input type="text" data-column="8" class="search-input-text"></th>
+                            <th><input type="text" data-column="9" class="search-input-text"></th>
+                            <th><input type="text" data-column="10" class="search-input-text"></th>*@
+                            <th></th>
+                        </tr>
+
+
+                    <tbody></tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+ var loadCount = 0;
+
+
+    $(document).ready(function () {
+        //alert("zeeshi");
+        loadCount++;
+        LoadTable("/Executive/GetListingData");
+
+
+    });
+
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#tableListing').DataTable().columns(i).search(v).draw();
+    });
+
+        var table;
+    var aoDataStringify;
+    function LoadTable(url) {
+        //alert(api);
+        table = $('#tableListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            "bDestroy": true,
+            "iDisplayLength": 10,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                aoDataStringify = JSON.stringify(aoData);
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": url,//'../GeneralApi/GetStakeholderComplaintsServerSide',
+
+                    "data": { startDate: '@(data.startDate)', endDate: '@(data.endDate)', tagId: '@(data.tagId)' , aoData: aoDataStringify },
+                    "success": fnCallback,
+                });
+                //SetDashboardLabels(dashboardStatusLabel);
+                //SetDashboardLabels(dashboardComplaintSrcLabel);
+            },
+
+            // Denormalized
+            "columns": [
+                { "data": "Id" },
+                { "data": "Campaign_Name" },
+                { "data": "District_Name" },
+                //{ "data": "Tehsil_Name" },
+                //{ "data": "UnionCouncil_Name" },
+                //{ "data": "Person_Name" },
+                { "data": "Created_Date" },
+                { "data": "Complaint_Category_Name" },
+                { "data": "Complaint_Computed_Status" },
+                { "data": "Complaint_Computed_Hierarchy" },
+                { "data": "FollowupCount" },
+                { "data": "ComplaintId" }
+            ],
+
+
+            aoColumnDefs: [{
+                "aTargets": [8],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+
+                "mRender": function (data, type, full) {
+
+                    var ExtraColumn = '<td style="text-align:center">' +
+                        '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenStakeholderDetailPopup(this.id);"><span class="fa fa-eye"></span></a>';
+
+                    ExtraColumn = ExtraColumn + '</td>';
+                    return ExtraColumn;
+                }
+
+            }],
+        });
+    }
+
+    function OpenStakeholderDetailPopup(complaintId) {
+        $('#PopupDiv').empty();
+        //$('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId);
+        $('#PopupDiv').load("../Police/StakeholderDetail?complaintId=" + complaintId+"&detailType=1");
+        $('#PopupDiv').modal();
+    }
+
+    function OpenComplaintAction(complaintId) {
+        $('#PopupDiv').empty();
+        $('#PopupDiv').load("../Police/ComplaintAction?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }
+
+    function OpenTransferPopup(complaintId) {
+        $('#PopupDiv').empty();
+        $('#PopupDiv').load("../Police/TransferComplaint?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }
+</script>
+
+

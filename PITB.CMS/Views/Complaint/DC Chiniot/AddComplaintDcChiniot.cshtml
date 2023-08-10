@@ -1,0 +1,183 @@
+﻿@*@using Microsoft.Ajax.Utilities
+    @using PITB.CMS_Common
+    @using System.Linq
+    @using PITB.CMS_Common.Handler.Permission
+    @using PITB.CMS_Common.Models.View.Dynamic
+    @model PITB.CMS_Common.Models.View.VmAddComplaint*@
+@using PITB.CMS_Common.Handler.Authentication
+@{
+    //if (Request.IsAjaxRequest()) { Layout = null; }
+    //if (ViewBag.Layout == null)
+    //{
+    //    Layout = Config.DefaultMasterPageAgent;
+    //}
+    //else
+    //{
+    //    Layout = ViewBag.Layout;
+    //}
+    ViewBag.Title = "Add Complaint";
+    int fieldIndex = 0;
+}
+
+<style>
+    .Complaint.active {
+        border-top-color: #fbcc3e !important;
+    }
+
+    .Suggestion.active {
+        border-top-color: #008000 !important;
+    }
+
+    .Inquiry.active {
+        border-top-color: #ff0000 !important;
+    }
+
+    label.normalFont {
+        font-weight: normal;
+    }
+
+    .dynamicDiv {
+        background: #f7f7f7; /*#efefee*/
+        padding: 10px 0px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+    /*.select2 {
+        width: 100% !important;
+    }*/
+    /*input {
+        text-transform: uppercase;
+    }*/
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+
+        <section class="content">
+            <div style="    width: 50px;
+                                       left: 0;
+                                       position: fixed;
+                                       z-index: 1000;
+                                       margin: 0;
+                                       height: 100px;">
+                <img width="50px" src="@Url.Content(ViewBag.Campaignname)" alt="Alternate Text" />
+
+
+            </div>
+            @using (Html.BeginForm("OnAddComplaintSubmit", "DcChiniot", FormMethod.Post, new { id = "AddComplaintForm", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::OnAddComplaintSubmit||url::/DcChiniot/PostData" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" data-force-post="True" name="tagId" value="TagAddComplaint">
+
+                <section class="content">
+                    <div class="row">
+                        @{
+                            Html.RenderAction("GetViewPersonInfo", "DcChiniot", new { personId = ViewBag.personId });
+                        }
+                        <!-- Tabs Area Start-->
+                    </div>
+                    <div class="row">
+                        @{
+                            Html.RenderAction("GetViewComplaintSection", "DcChiniot", new { campaignId = ViewBag.campaignId });
+                        }
+
+                        <!--Tabs End-->
+
+                    </div>
+                </section>
+            }
+        </section>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    //var serverSideDropDownUrl;
+
+    $(window).load(function () {
+        RegisterLocalValidation("#AddComplaintForm", null);
+    });
+
+    $(document).ready(function () {
+        return;
+        debugger;
+
+        $("#complaintUserControlTownTehsil").select2();
+        $("#suggestionUserControlTownTehsil").select2();
+        $("#inquiryUserControlTownTehsil").select2();
+        $('#IsCnicPresent').trigger("change");
+
+        function formatRepoSelection(repo) {
+            return repo.full_name || repo.text;
+        }
+
+
+    });
+
+
+    $("#AddComplaintForm").submit(function (event) {
+        debugger;
+        $('#complaintType').val($('.nav-tabs .active').text());
+        setTimeout(function () {
+            $("#CnicTxtBox-error").html("Cnic is required");
+        });
+        var elementsToPost = [];
+        var isValid = ValidateFormOnSubmit("#AddComplaintForm", null, elementsToPost);
+        //alert($('#AddComplaintForm').valid());
+        //if ($('#AddComplaintForm').valid()) {
+        //    ShowLoading();
+        //}
+        if ($('#AddComplaintForm').valid() && isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+            var response = SubmitForm("#AddComplaintForm", elementsToPost);
+        }
+        return false;
+        //return isValid;
+    });
+
+    function OnAddComplaintSubmit(data) {
+        HideLoading();
+    }
+
+    $('input[name="isPersonCnicPresent"]').click(function (event) {
+        //alert("zeeshi");
+        var element = $($('input[name="personCnic"]')[0]);
+
+        if ($(this).prop("checked") == true) {
+
+            SetElementConfiguration(element, "data-val-is-required::True", "data-val-is-required::False");
+            SetElementConfiguration(element, "data-val-Length::13-13", "data-val-Length::*-*");
+            ApplyTextBoxValidation("#AddComplaintForm", element);
+            RemoveValidationMessage("#AddComplaintForm", "personCnic");
+            //$($('input[name="PersonalInfoVm.Cnic_No"]')[0]).removeAttr("data-val-is-required");
+            //$($('[data-val-for-name="PersonalInfoVm.Cnic_No"]')[0]).children()[0].remove();
+            $("#personCnic").prop("disabled", true);
+            //alert("Checkbox is checked.");
+        }
+        else if ($(this).prop("checked") == false) {
+            //$($('input[name="PersonalInfoVm.Cnic_No"]')[0]).attr("data-val-is-required", "True");
+            SetElementConfiguration(element, "data-val-is-required::False", "data-val-is-required::True");
+            SetElementConfiguration(element, "data-val-Length::*-*", "data-val-Length::13-13");
+            ApplyTextBoxValidation("#AddComplaintForm", element);
+            $("#personCnic").prop("disabled", false);
+        }
+        //alert("munna kaka");
+    });
+
+
+    window.onload = function () {
+
+        if ('@((int)AuthenticationHandler.GetCookie().Role)' == 9) {
+            $('.fieldsEnable:input').each(function (i,v) {
+
+                if ($(this).is("input") || $(this).is("textarea")) {
+                    $(this).attr('readonly','enabled');
+                }
+                else if ($(this).is("select")) {
+                    $(this).attr('disabled', 'enabled');
+                }
+            })
+        }
+    }
+
+</script>

@@ -1,0 +1,132 @@
+﻿<div class="cust-overlay pie-overlay@(ViewBag.graphName)">Loading...</div>
+<div id="@(ViewBag.graphName)" class="MultiGraphContent margin-bottom">
+
+
+</div>
+
+<script type="text/javascript">
+    debugger;
+    var campaignId = @(ViewBag.campaignId);
+    //var categoryValues = '-1';
+
+    $(function () {
+        debugger;
+
+        LoadBarChart@(ViewBag.graphName)();
+    });
+
+    //$.LoadBarChart@(ViewBag.graphName) = function () {
+
+    function LoadBarChart@(ViewBag.graphName)() {
+        var CategoriesList@(ViewBag.graphName) = [];
+        //var StatusList@(ViewBag.graphName) = [];
+
+        var colorList = [];
+
+
+        $(".pie-overlay@(ViewBag.graphName)").fadeIn();
+        $.ajax({
+            url: "@Url.Action("BarChartPhcipDashboard", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $("#dateRange").val().split('To')[0].trim(),
+                datemax: $("#dateRange").val().split('To')[1].trim(),
+                campaignId: campaignId
+            },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var series = []; // create an empty array
+
+
+                if (data.Total != null) {
+                    debugger;
+
+                    $.each(data.Total.yAxisText, function (idx, data) {
+                        CategoriesList@(ViewBag.graphName).push(data);
+                    })
+
+                    $.each(data.Total.ListData, function (idx, data) {
+                        var obj = { name: data.LegendText, data: [] };
+
+                        $.each(data.xAxisText, function (idx, val) {
+                            obj.data.push(val)
+                        });
+                        series.push(obj);
+                    })
+
+                    $(".pie-overlay@(ViewBag.graphName)").fadeOut(1000);
+                    // Create the chart
+
+                    Highcharts.setOptions({
+                        colors: ['#eb984e']
+                    });
+                    Highcharts.chart('@(ViewBag.graphName)', {
+                        chart: {
+                            type: 'bar',
+                            height: $.GetBarChartHeight(series) // 16:9 ratio
+                        },
+                        title: {
+                            text: ''//@(ViewBag.graphName)
+                        },
+                        xAxis: {
+                            categories: CategoriesList@(ViewBag.graphName),
+                            labels: {
+                                formatter: function () {
+                                    var text = this.value, formatted = text.split('-');
+
+                                    return '<div class="js-ellipse" style="width:150px; overflow:hidden" title="' + text + '">' + text.replace("-" + formatted[formatted.length - 1], "") + '</div>';
+                                },
+                                style: {
+                                    width: '150px'
+                                },
+                                useHTML: true
+                            }
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Complaints Count'
+                            }
+                        },
+                        legend: {
+                            reversed: true
+                        },
+                        plotOptions: {
+                            series: {
+                                stacking: 'normal',
+                                cursor: 'pointer',
+                                point: {
+                                    events: {
+                                        click: function () {
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        exporting: {
+                            chartOptions: {
+                                plotOptions: {
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        series: series
+                        /*[{
+                        name: 'Pending',
+                        data: [5, 3, 4, 7, 2]
+                    }]*/
+                    });
+
+                    $('html,body').animate({
+                        scrollTop: $(".scroll").offset().top
+                    }, 1500);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,232 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Enums
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Helper.Extensions
+@using PITB.CMS_Common.Models
+
+@{
+    Layout = null;
+    var user = AuthenticationHandler.GetCookie();
+    bool canShowMessages = false;
+    bool showOnlyCompalintsAll = PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowOnlyComplaintsAllInResolver, user.UserId, user.Role);
+
+    DbPermissionsAssignment dbPermission = AuthenticationHandler.GetCookie().ListPermissions.
+        Where(n => n.Type == Convert.ToInt32(Config.PermissionsType.Campaign) && n.Permission_Id == Convert.ToInt32(Config.CampaignPermissions.ShowStakeholderMessagesView)).FirstOrDefault();
+    if (dbPermission != null)
+    {
+        canShowMessages = true;
+    }
+    DbCampaign dbCampaign = DbCampaign.GetStakeholderLogoUrlByCampaignId(Utility.GetIntByCommaSepStr(user.Campaigns));
+    string logoUrl = "/img/crm-logo.png";
+
+    if (dbCampaign != null && dbCampaign.StakeholderLogoUrl != null)
+    {
+        logoUrl = dbCampaign.StakeholderLogoUrl;
+    }
+
+
+    List<DbCampaign> listUserCampaigns = DbCampaign.GetByUserId(user.UserId);
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Stakeholder</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+</head>
+<body class="skin-green layout-top-nav">
+    <div id="PopupDiv" class="modal fade" style="overflow: auto;" role="dialog" data-backdrop="static" data-keyboard="false">
+    </div>
+
+    <div id="PopupDiv2" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    </div>
+    <div id="001ModalParent" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Select campaign to continue</h4>
+                </div>
+                <div class="modal-body" id="001Modal" style="overflow: auto;">
+                </div>
+                @*<div class="modal-footer">
+                        <div>
+                            <a class="btn btn-success text-right" id="download-link" download href="#">Download&nbsp;<span class="glyphicon glyphicon-download-alt"></span></a>
+                            <a class="btn btn-default text-left" href="javascript:void(0);" title="View in full screen" onclick="requestFullScreen();">&nbsp;<span class="glyphicon glyphicon-fullscreen"></span>&nbsp;Fullscreen</a>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="wrapper">
+        <header class="main-header">
+            <nav class="navbar navbar-static-top">
+                <div class="container-fluid">
+                    <a href="@Url.Action("Login","Account")" class="logo">
+                        <img src="@logoUrl" alt="crm" class="img-responsive">
+                    </a>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="navbar-collapse">
+
+                        <ul class="nav navbar-nav">
+                            @if (listUserCampaigns.Count == 1)
+                            {
+                                <li><a href="@Url.Action("dashboard", "Report", new { campaignId = listUserCampaigns[0].Id })">Dashboard<span class="sr-only">(current)</span></a></li>
+                                @*<li><a href="@Url.Action("DashboardMain", "Report", new { campaignId = listUserCampaigns[0].Id })">Dashboard Main<span class="sr-only">(current)</span></a></li>*@
+                            }
+                            else
+                            {
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                        <span class="fa fa-1x glyphicon glyphicon-th-list"></span>
+                                        <span class="hidden-xs">Dashboard</span>
+                                    </a>
+                                    <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                        @foreach (DbCampaign dbCampaignModel in listUserCampaigns)
+                                        {
+                                            <li><a href="@Url.Action("dashboard", "Report", new { campaignId = dbCampaignModel.Id })"><span class="fa fa-1x glyphicon"></span>@dbCampaignModel.Campaign_Name</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
+                            @if (canShowMessages)
+                            {
+                                <li><a href="@Url.Action("GetMessageView", "Message")">Message List</a></li>
+                            }
+                            @*<li><a href="@Url.Action("StakeholderComplaintsServerSide", "Complaint")">List view<span class="sr-only">(current)</span></a></li>*@
+
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                    <span class="fa fa-1x glyphicon glyphicon-th-list"></span>
+                                    <span class="hidden-xs">List</span>
+                                </a>
+                                <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                    @if (showOnlyCompalintsAll)
+                                    {
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingLowerHierarchyServerSide", "Complaint")"><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (All)</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingServerSide", "WasaComplaint")"><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (Assigned To Me)</a></li>
+                                        <li><a href="@Url.Action("StakeholderSuggestionListingServerSide", "WasaComplaint")"><span class="fa fa-1x glyphicon glyphicon-pencil"></span>Suggestion</a></li>
+                                        <li><a href="@Url.Action("StakeholderInquiryListingServerSide", "WasaComplaint")"><span class="fa fa-1x glyphicon glyphicon-eye-open"></span>Inquiry</a></li>
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingLowerHierarchyServerSide", "WasaComplaint")"><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (All)</a></li>
+                                    }
+                                    @*<li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                        <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>*@
+
+                                </ul>
+                            </li>
+
+                            @*<li><a href="@Url.Action("Index", "Complaint")">List view<span class="sr-only">(current)</span></a></li>
+                                <li><a href="@Url.Action("Search", "Complaint")">Search<span class="sr-only">(current)</span></a></li>
+                                <li><a href="@Url.Action("GetCompaigns", "Complaint")">Add New</a></li>
+                                @if (user.Role == Config.Roles.AgentSuperVisor)
+                                {
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="@Url.Action("agentwise","report")">Agentwise</a></li>
+                                        </ul>
+                                    </li>
+                                }*@
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                    <span class="fa fa-2x fa-user user-image"></span>
+                                    <span class="hidden-xs">@(user.Name==null?"N/A": (string.IsNullOrEmpty(user.Name.Trim()) ?"N/A": user.Name.Trim()))</span>
+                                </a>
+                                <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                    <li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                    <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </nav>
+        </header>
+
+
+        <div class="content-wrapper" style="min-height: 166px;">
+            <div class="container-fluid">
+
+
+                <section class="content">
+                    @RenderBody()
+                    <div id="Loading" style="display:none;" class="LoadingBlock">
+
+                    </div>
+                </section>
+            </div>
+        </div>
+        <footer class="main-footer">
+            <div class="container-fluid">
+                <strong>@DateTime.Now.Year Copyright © PITB</strong> All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/plugins")
+    @Scripts.Render("~/bundles/custom")
+    @Scripts.Render("~/bundles/MvcFoolproof")
+    @(Html.GetEnums<MessageCatalog.DialogType>())
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            HideLoading();
+            //alert('on doc ready');
+            
+        });
+
+        var url = window.location;
+        $('ul.nav a[href="' + this.location.pathname + this.location.search + '"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().parent().parent().addClass('active');
+
+        $.enableMultiselect();
+
+        function ShowLoading() {
+            debugger;
+            $('#Loading').fadeIn('slow');
+        }
+        function HideLoading() {
+            $('#Loading').fadeOut('slow');
+        }
+
+        /*
+        $('.modal').on('hidden.bs.modal', function (e) {
+            if ($('.modal').hasClass('in')) {
+                $('body').addClass('modal-open');
+            }
+        });
+        */
+
+    </script>
+
+    @RenderSection("scripts", false)
+    @if (ViewBag.Message != null)
+    {
+        Html.RenderPartial("~/Views/Shared/ViewUserControls/_MessageBox.cshtml", (VmMessage)ViewBag.Message);
+    }
+
+</body>
+</html>

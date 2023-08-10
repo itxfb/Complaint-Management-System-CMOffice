@@ -1,0 +1,36 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Authentication
+
+@{
+    Layout = null;
+    var user = AuthenticationHandler.GetCookie();
+}
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+   <div>
+       <nav class="navbar navbar-default" style="color:#1E672C">
+           <div class="container-fluid">
+               <div class="navbar-header">
+                   <img src="~/img/PITB-LOGO.gif" alt="PITB"/>
+                   <a class="navbar-brand" href="#">Customer Relationship Management System</a>
+               </div>
+           </div>
+       </nav>
+       <section class="content">
+            @RenderBody()       
+       </section>
+       <footer>
+           <div class="container-fluid">
+               <strong>@DateTime.Now.Year Copyright &copy; PITB</strong> All rights reserved.
+           </div>
+       </footer>
+    </div>
+</body>
+</html>

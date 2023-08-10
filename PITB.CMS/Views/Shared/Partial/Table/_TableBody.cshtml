@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;
+    dynamic data = ViewBag.data;
+    List<dynamic> listRows = data.listRows;
+}
+
+
+
+    @{ 
+
+        for (int i=0; i< listRows.Count; i++)
+        {
+            <tr role="row" class="odd">
+
+            @for (int j = 0; j < listRows[i].Count; j++)
+            {
+                <td>listRows[i][j]</td>
+            }
+
+            </tr>
+        }
+    }
+    @*<td class="sorting_1" tabindex="0">47-609676</td>
+    <td>34110054</td><td>2020-09-01</td>
+    <td>9 days: 13 hr: 48 mins: 28 sec</td>
+    <td style="text-align: center;">
+    <a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" "=" " id="609676" onclick="OpenStakeholderDetailPopup(this.id);">
+    <span class="fa fa-eye"></span></a>
+    </td>*@
+

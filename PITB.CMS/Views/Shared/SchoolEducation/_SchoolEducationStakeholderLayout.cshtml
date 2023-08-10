@@ -1,0 +1,419 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Enums
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Handler.Permission
+@using PITB.CMS_Common.Helper.Extensions
+@using PITB.CMS_Common.Models
+
+@{
+    Layout = null;
+    var user = AuthenticationHandler.GetCookie();
+    bool canShowMessages = false;
+    bool showOnlyCompalintsAll = PermissionHandler.IsPermissionAllowedInUser(Config.Permissions.ShowOnlyComplaintsAllInResolver, user.UserId, user.Role);
+
+    DbPermissionsAssignment dbPermission = AuthenticationHandler.GetCookie().ListPermissions.
+        Where(n => n.Type == Convert.ToInt32(Config.PermissionsType.Campaign) && n.Permission_Id == Convert.ToInt32(Config.CampaignPermissions.ShowStakeholderMessagesView)).FirstOrDefault();
+    if (dbPermission != null)
+    {
+        canShowMessages = true;
+    }
+    DbCampaign dbCampaign = DbCampaign.GetStakeholderLogoUrlByCampaignId(Utility.GetIntByCommaSepStr(user.Campaigns));
+    string logoUrl = "/img/crm-logo-3.png";
+
+    if (dbCampaign != null && dbCampaign.StakeholderLogoUrl != null)
+    {
+        logoUrl = dbCampaign.StakeholderLogoUrl;
+    }
+
+    int campaignId = dbCampaign.Id;
+
+    //DbPermissionsAssignment dbPermissionAssignment = user.ListPermissions.Where(n => n.Permission_Id == (int) Config.Permissions.ExecutiveNavigationToUser).FirstOrDefault();
+    //int? navigationBackToId = dbPermissionAssignment == null ? (int?)null : Convert.ToInt32(dbPermissionAssignment.Permission_Value);
+
+    List<DbCampaign> listUserCampaigns = DbCampaign.GetByUserId(user.UserId);
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title> Stakeholder</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,300italic,400italic,600italic' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    @Styles.Render("~/Content/css")
+    @*<link href="http://localhost:1443/css/crm.css" rel='stylesheet' type='text/css' />
+        <link href="//cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css">*@
+
+
+    @Scripts.Render("~/bundles/jquery")
+    <style>
+        span.logo-img {
+            display: inline-block;
+            position: relative;
+            top: -4px;
+        }
+
+        span.text-logo {
+            display: inline-block;
+            font-size: 20px;
+            font-weight: 600;
+            color: #fff;
+            position: relative;
+            top: -15px;
+            left: 10px;
+        }
+    </style>
+</head>
+<body class="skin-green layout-top-nav">
+    <div id="PopupDiv" class="modal fade" style="overflow: auto;" role="dialog" data-backdrop="static" data-keyboard="false">
+    </div>
+
+    <div id="PopupDiv2" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+    </div>
+    <div id="001ModalParent" class="modal fade" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width:90%">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Select campaign to continue</h4>
+                </div>
+                <div class="modal-body" id="001Modal" style="overflow: auto;">
+                </div>
+                @*<div class="modal-footer">
+                        <div>
+                            <a class="btn btn-success text-right" id="download-link" download href="#">Download&nbsp;<span class="glyphicon glyphicon-download-alt"></span></a>
+                            <a class="btn btn-default text-left" href="javascript:void(0);" title="View in full screen" onclick="requestFullScreen();">&nbsp;<span class="glyphicon glyphicon-fullscreen"></span>&nbsp;Fullscreen</a>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>*@
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    <div class="wrapper">
+        <header class="main-header">
+            <nav class="navbar navbar-static-top">
+                <div class="container-fluid">
+                    <a href="@Url.Action("Login","Account")" class="logo">
+                        <span class="logo-img"><img src="@logoUrl" class="img-responsive" alt="Logo" width="100px" /></span>
+                        @if (campaignId == (int)Config.Campaign.AwazeKhalq)
+                        {
+                            <span class="text-logo">@Config.Campaign.AwazeKhalq.GetDescription()</span>
+                        }
+                        else if (user.navigationalData != null && user.navigationalData.topBarHeading != null)
+                        {
+                            <span class="text-logo">@user.navigationalData.topBarHeading</span>
+                        }
+                        else
+                        {
+                            <span class="text-logo">Chief Minister’s Complaint Center</span>
+                        }
+                    </a>
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="navbar-collapse">
+
+                        <ul class="nav navbar-nav">
+                            @if (listUserCampaigns.Count == 1)
+                            {
+                                if (user.PreviousLoginId != null)
+                                {
+                                    <li class="dropdown user user-menu">
+                                        <a id="PreviousLoginId"><span class="glyphicon glyphicon-home"></span>Main Executive</a>
+                                    </li>
+                                }
+
+                                if (user.Hierarchy_Id == Config.Hierarchy.Province)
+                                {
+                                    <li class="dropdown user user-menu">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="fa fa-file"></span>
+                                            <span class="hidden-xs">Reports</span>
+                                        </a>
+                                        <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                            <li><a href="@Url.Action("Index", "Export", new { campaignId = listUserCampaigns.First().Id})">Excel Reports</a></li>
+                                            <li><a href="@Url.Action("MainSummaryReport", "Report", new { campaignId = listUserCampaigns[0].Id })">Performance Summary<span class="sr-only"></span></a></li>
+                                            <li><a href="@Url.Action("ProvinceReport", "Report", new { campaignId = listUserCampaigns.First().Id})">Complaints Summary (Province)</a></li>
+                                            <li><a href="@Url.Action("DivisionReportsForProvince", "Report", new { campaignId = listUserCampaigns.First().Id})">Division Reports</a></li>
+                                            <li><a href="@Url.Action("DistrictReportsForProvince", "Report", new { campaignId = listUserCampaigns.First().Id})">District Reports</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else if (user.Hierarchy_Id == Config.Hierarchy.Division)
+                                {
+                                    <li class="dropdown user user-menu">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="fa fa-file"></span>
+                                            <span class="hidden-xs">Reports</span>
+                                        </a>
+                                        <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                            <li><a href="@Url.Action("DivisionReport", "Report", new { campaignId = listUserCampaigns.First().Id})">Complaints Summary (Divison)</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                else if (user.Hierarchy_Id == Config.Hierarchy.District)
+                                {
+                                    <li class="dropdown user user-menu">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                            <span class="fa fa-file"></span>
+                                            <span class="hidden-xs">Reports</span>
+                                        </a>
+                                        <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                            <li><a href="@Url.Action("DistrictReport", "Report", new { campaignId = listUserCampaigns.First().Id})">Complaints Summary (District)</a></li>
+                                        </ul>
+                                    </li>
+                                }
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                        <span class="fa fa-1x glyphicon glyphicon-dashboard"></span>
+                                        <span class="hidden-xs">Dashboard</span>
+                                    </a>
+                                    <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                        <li><a href="@Url.Action("DashboardMain", "Report", new { campaignId = listUserCampaigns[0].Id })">Main<span class="sr-only">(current)</span></a></li>
+                                        <li><a href="@Url.Action("DashboardTeachingQuality", "Report", new { campaignId = listUserCampaigns[0].Id })">Teaching Quality<span class="sr-only">(current)</span></a></li>
+
+                                        @if ((int)user.Hierarchy_Id == 1 && user.UserName == "phcip-pmiu")
+                                        {
+                                            <li><a href="@Url.Action("DashboardPHCIPEducation", "Report", new {campaignId = listUserCampaigns[0].Id})">PHCIP Education<span class="sr-only">(current)</span></a></li>
+                                        }
+                                        @if ((int)user.Hierarchy_Id <= 3)
+                                        {
+                                            <li><a href="@Url.Action("DistrictWiseGraphMain", "Report", new {campaignId = listUserCampaigns[0].Id})">District Wise<span class="sr-only">(current)</span></a></li>
+                                            @*<li><a href="@Url.Action("MainSummaryReport", "Report", new { campaignId = listUserCampaigns[0].Id })">Performance Summary<span class="sr-only"></span></a></li>*@
+                                        }
+                                        @if ((int)user.Hierarchy_Id <= 2 || ((int)user.Hierarchy_Id == 3 && user.User_Hierarchy_Id >= 20))
+                                        {
+                                            <li><a href="@Url.Action("CategoryWiseDrillDownGraphMain", "Report", new {campaignId = listUserCampaigns[0].Id})">Category Wise<span class="sr-only"></span></a></li>
+
+                                        }
+                                        @*@if (((int)user.Hierarchy_Id == (int)Config.Hierarchy.Province) || ((int)user.Hierarchy_Id == (int)Config.Hierarchy.Division) || ((int)user.Hierarchy_Id == (int)Config.Hierarchy.District))
+                                            {
+                                                <li><a href="@Url.Action("Index", "Export", new { campaignId = listUserCampaigns[0].Id })">Export Reports<span class="sr-only">(current)</span></a></li>
+                                            }*@
+                                        @*<li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                            <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>*@
+
+                                    </ul>
+                                </li>
+
+
+
+                                @*<li><a href="@Url.Action("dashboard", "Report", new { campaignId = listUserCampaigns[0].Id })">Dashboard<span class="sr-only">(current)</span></a></li>*@
+
+                            }
+                            else
+                            {
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                        <span class="fa fa-1x glyphicon glyphicon-th-list"></span>
+                                        <span class="hidden-xs">Dashboard</span>
+                                    </a>
+                                    <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                        @foreach (DbCampaign dbCampaignModel in listUserCampaigns)
+                                        {
+                                            <li><a href="@Url.Action("dashboard", "Report", new { campaignId = dbCampaignModel.Id })"><span class="fa fa-1x glyphicon"></span>@dbCampaignModel.Campaign_Name</a></li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
+                            @if (canShowMessages)
+                            {
+                                <li><a href="@Url.Action("GetMessageView", "Message")">Message List</a></li>
+                            }
+                            @*<li><a href="@Url.Action("StakeholderComplaintsServerSide", "Complaint")">List view<span class="sr-only">(current)</span></a></li>*@
+
+                            @*<li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+
+                                        <span></span>
+                                        <span class="hidden-xs">AgingReport</span>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="@Url.Action("AgingReport", "Report", new { campaignId = listUserCampaigns[0].Id, agingReportType = Config.AgingReportType.Monthly })"><span></span>Monthly</a></li>
+                                        <li><a href="@Url.Action("AgingReport", "Report", new { campaignId = listUserCampaigns[0].Id, agingReportType = Config.AgingReportType.Quarterly })"><span></span>Quarterly</a></li>
+                                        <li><a href="@Url.Action("AgingReport", "Report", new { campaignId = listUserCampaigns[0].Id, agingReportType = Config.AgingReportType.Yearly })"><span></span>Yearly</a></li>
+
+                                    </ul>
+                                </li>*@
+
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                    <span class="fa fa-1x glyphicon glyphicon-th-list"></span>
+                                    <span class="hidden-xs">List<span id="Notification" class="badge Notification hidden">0</span></span>
+                                </a>
+                                <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                    @if (showOnlyCompalintsAll)
+                                    {
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingLowerHierarchyServerSide", "Complaint")"><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (Subordinates)</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingServerSide", "Complaint", new {ComplaintType=(int)Config.ComplaintType.Complaint})"><span id="Notification" class=" Notification hidden" style="margin-right: 5px;">0</span><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (Assigned To Me)</a></li>
+                                        <li><a href="@Url.Action("StakeholderSuggestionListingServerSide", "Complaint", new { ComplaintType = (int)Config.ComplaintType.Suggestion })"><span class="fa fa-1x glyphicon glyphicon-pencil"></span>Suggestion</a></li>
+                                        <li><a href="@Url.Action("StakeholderInquiryListingServerSide", "Complaint", new { ComplaintType = (int)Config.ComplaintType.Inquiry })"><span class="fa fa-1x glyphicon glyphicon-eye-open"></span>Inquiry</a></li>
+                                        <li><a href="@Url.Action("StakeholderComplaintsListingLowerHierarchyServerSide", "Complaint")"><span class="fa fa-1x glyphicon glyphicon-align-justify"></span>Complaints (Subordinates)</a></li>
+                                    }
+                                    @*<li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                        <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>*@
+
+                                </ul>
+                            </li>
+
+                            @*<li><a href="@Url.Action("Index", "Complaint")">List view<span class="sr-only">(current)</span></a></li>
+                                <li><a href="@Url.Action("Search", "Complaint")">Search<span class="sr-only">(current)</span></a></li>
+                                <li><a href="@Url.Action("GetCompaigns", "Complaint")">Add New</a></li>
+                                @if (user.Role == Config.Roles.AgentSuperVisor)
+                                {
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reports <span class="caret"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="@Url.Action("agentwise","report")">Agentwise</a></li>
+                                        </ul>
+                                    </li>
+                                }*@
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    @*<img src="/img/default-50x50.gif" class="user-image" alt="User Image">*@
+                                    <span class="fa fa-2x fa-user user-image"></span>
+                                    <span class="hidden-xs">@(user.Name==null?"N/A": (string.IsNullOrEmpty(user.Name.Trim()) ?"N/A": user.Name.Trim()))</span>
+                                </a>
+                                <ul class="dropdown-menu ul-menu-dropdown-alignment">
+                                    <li><a href="@Url.Action("settings","account")"><span class="fa fa-gear"></span>Settings</a></li>
+                                    <li><a href="@Url.Action("Roles", "account")"><span class="glyphicon glyphicon-user"></span>Select Role</a></li>
+                                    <li><a href="@Url.Action("signout","account")"><span class="fa fa-sign-out"></span>Logout</a></li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </nav>
+        </header>
+
+
+        <div class="content-wrapper" style="min-height: 166px;">
+            <div class="container-fluid">
+
+
+                <section class="content">
+                    @RenderBody()
+                    <div id="Loading" style="display:none;" class="LoadingBlock">
+
+                    </div>
+                </section>
+            </div>
+        </div>
+        <footer class="main-footer">
+            <div class="container-fluid">
+                <strong>@DateTime.Now.Year Copyright © PITB</strong> All rights reserved.
+            </div>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/plugins")
+    @Scripts.Render("~/bundles/custom")
+    @Scripts.Render("~/bundles/MvcFoolproof")
+    @(Html.GetEnums<MessageCatalog.DialogType>())
+
+    <script type="text/javascript">
+        var PreviousLoginId = @(user.PreviousLoginId==null ? -1 : user.PreviousLoginId);
+        $(document).ready(function () {
+        HideLoading();
+
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: '@Url.Action("GetNotifcationCount", "generalapi")', //'../GeneralApi/GetStakeholderComplaintsServerSide',
+            data: { notificationType: @((int)Config.NotificationType.Complaint), campaignId: @Utility.GetIntByCommaSepStr(user.Campaigns), notificationStatus: @((int)Config.NotificationStatus.Send) },
+                success: function(data) {
+                    //if(dashboardType==dashboardStatus)
+                    if (data.Data.Count != 0) {
+                        $('.Notification').removeClass("hidden");
+                        $('.Notification').text(data.Data.Count);
+                    } else {
+                        $('.Notification').addClass("hidden");
+                    }
+                    //alert("zeeshi = "+data.Data.Count);
+                    /*{
+                        ResetAllDashboardLabels(dashboardLabel);
+                        for(var i = 0; i < data.length; i++) {
+                            var idToSet = "#"+data[i].Id + dashboardLabel;
+                            $(idToSet).text(""+data[i].Count);
+                        }
+                    }*/
+                    /*else if (dashboardType==dashboardComplaintSrc) {
+                        ResetAllDashboardLabels(dashboardComplaintSrcLabel);
+                    }*/
+                }
+            });
+
+
+
+            //alert('on doc ready');
+            
+        });
+
+        $("#PreviousLoginId").click(function () {
+            //var campaignId = $("#")
+            //alert('switchUser' + PreviousLoginId);
+            $.ajax({
+                dataType: 'json',
+                type: "POST",
+                url: ApplicationPathFolderPrefix+"/Account/SwitchUserWithUserId",
+                data: {userId:PreviousLoginId}, // serializes the form's elements.
+                success: function(data)
+                {
+                    //alert(data); // show response from the php script.
+                    window.location.href = '@Url.Action("Login", "Account")';
+                }
+            });
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        });
+
+
+        var url = window.location;
+        debugger;
+        $('ul.nav a[href="' + this.location.pathname + this.location.search+'"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().parent().parent().addClass('active');
+
+        $.enableMultiselect();
+
+        function ShowLoading() {
+            debugger;
+            $('#Loading').fadeIn('slow');
+        }
+        function HideLoading() {
+            $('#Loading').fadeOut('slow');
+        }
+
+        /*
+        $('.modal').on('hidden.bs.modal', function (e) {
+            if ($('.modal').hasClass('in')) {
+                $('body').addClass('modal-open');
+            }
+        });
+        */
+
+    </script>
+
+    @RenderSection("scripts", false)
+    @if (ViewBag.Message != null)
+    {
+        Html.RenderPartial("~/Views/Shared/ViewUserControls/_MessageBox.cshtml", (VmMessage)ViewBag.Message);
+    }
+
+</body>
+</html>

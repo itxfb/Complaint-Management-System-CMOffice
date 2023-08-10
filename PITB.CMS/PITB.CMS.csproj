@@ -1,0 +1,1294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6A0F4FBE-D1BC-4AA4-B7A2-F0CE8BFFD6EE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PITB.CMS</RootNamespace>
+    <AssemblyName>PITB.CMS</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>5</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.4.1.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK">
+      <HintPath>..\packages\AWSSDK.2.3.55.0\lib\net45\AWSSDK.dll</HintPath>
+    </Reference>
+    <Reference Include="CaptchaMvc, Version=2.5.0.0, Culture=neutral, PublicKeyToken=fe46ad421dd3b0e6, processorArchitecture=MSIL">
+      <HintPath>..\packages\CaptchaMvc.Mvc5.1.5.0\lib\net45-full\CaptchaMvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="FoolproofValidation, Version=0.9.5851.39121, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Foolproof.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="GeoJSON, Version=2.0.0.0, Culture=neutral, PublicKeyToken=67a0afa7ce9a900b, processorArchitecture=MSIL">
+      <HintPath>..\packages\GeoJSON.2.0.0\lib\net45\GeoJSON.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NReco.PdfGenerator, Version=1.1.15.0, Culture=neutral, PublicKeyToken=231663d50a41b451, processorArchitecture=MSIL">
+      <HintPath>..\packages\NReco.PdfGenerator.1.1.15\lib\net20\NReco.PdfGenerator.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="pk.gov.punjab.pws.sdk">
+      <HintPath>..\packages\Sami.PWS.SDK.1.2.0\lib\net40\pk.gov.punjab.pws.sdk.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PreMailer.Net, Version=1.5.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PreMailer.Net.1.5.5\lib\net45\PreMailer.Net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.6.4\lib\net40\Rotativa.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.29.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives">
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.29\lib\net45\System.Net.Http.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Z.BulkOperations, Version=2.13.13.0, Culture=neutral, PublicKeyToken=59b66d028979105b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Z.BulkOperations.2.13.13\lib\net45\Z.BulkOperations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\API\APIController.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Controllers\API\ApiSchoolEducationController.cs" />
+    <Compile Include="Controllers\API\Police\ApiPoliceController.cs" />
+    <Compile Include="Controllers\API\ReportController.cs" />
+    <Compile Include="Controllers\API\Wasa\APIWasaController.cs" />
+    <Compile Include="Controllers\API\ZimmedarShehri\ApiZimmedarShehriController.cs" />
+    <Compile Include="Controllers\View\AccountController.cs" />
+    <Compile Include="Controllers\View\AdminCampaignController.cs" />
+    <Compile Include="Controllers\View\AdminController.cs" />
+    <Compile Include="Controllers\View\AdminStakeholderController.cs" />
+    <Compile Include="Controllers\View\CommonViewController.cs" />
+    <Compile Include="Controllers\View\ComplaintController.cs" />
+    <Compile Include="Controllers\View\DataRepresentationController.cs" />
+    <Compile Include="Controllers\View\DcChiniot\DcChiniotController.cs" />
+    <Compile Include="Controllers\View\DynamicFormController.cs" />
+    <Compile Include="Controllers\View\ExecutiveCampaigns\ExecutiveCampaignsController.cs" />
+    <Compile Include="Controllers\View\ExecutiveController.cs" />
+    <Compile Include="Controllers\View\ExportController.cs" />
+    <Compile Include="Controllers\View\LGCD\LGCDController.cs" />
+    <Compile Include="Controllers\View\LWMC\LwmcController.cs" />
+    <Compile Include="Controllers\View\MessageController.cs" />
+    <Compile Include="Controllers\View\Police\PoliceController.cs" />
+    <Compile Include="Controllers\View\PublicUser\CmccPublicController.cs" />
+    <Compile Include="Controllers\View\PublicUser\PublicUserComplaintsController.cs" />
+    <Compile Include="Controllers\View\PublicUser\PublicUserController.cs" />
+    <Compile Include="Controllers\View\ReportController.cs" />
+    <Compile Include="Controllers\View\SchoolEducationComplaintController.cs" />
+    <Compile Include="Controllers\View\StakeholderController.cs" />
+    <Compile Include="Controllers\View\TaggingController.cs" />
+    <Compile Include="Controllers\View\WasaComplaintController.cs" />
+    <Compile Include="Controllers\View\ZimmedarShehri\ZimmedarShehriController.cs" />
+    <Compile Include="Enums\MessageCatalog.cs" />
+    <Compile Include="Generics\FastCollection.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Content Include="bootstrap\css\bootstrapV2.min.css" />
+    <Content Include="bootstrap\css\style.css" />
+    <Content Include="bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="css\newCards.css" />
+    <Content Include="css\tagsinput.css" />
+    <Content Include="img\auth-bg.png" />
+    <Content Include="img\blank-file.svg" />
+    <Content Include="img\file.svg" />
+    <Content Include="img\pitb-logo.png" />
+    <Content Include="img\thumb-down.png" />
+    <Content Include="img\thumb-up.png" />
+    <Content Include="js\tagsinput.js" />
+    <Content Include="plugins\BootstrapValidator\validator.css" />
+    <Content Include="plugins\BootstrapValidator\validator.js" />
+    <Content Include="plugins\countdown\jquery.countdown.css" />
+    <Content Include="plugins\countdown\jquery.countdown.js" />
+    <Content Include="plugins\daterangepicker\daterangepicker.css" />
+    <Content Include="plugins\daterangepicker\daterangepicker.js" />
+    <Content Include="plugins\daterangepicker\moment.min.js" />
+    <Content Include="plugins\toastr\toastr.css" />
+    <Content Include="plugins\toastr\toastr.js" />
+    <Content Include="plugins\toastr\toastr.min.css" />
+    <Content Include="plugins\toastr\toastr.min.js" />
+    <Content Include="Views\ExecutiveCampaigns\_CampaignCard.cshtml" />
+    <Content Include="Views\ExecutiveCampaigns\_ExecutiveCampaignView.cshtml" />
+    <Content Include="Views\ExecutiveCampaigns\Dashboard.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_PlraComplaintListing.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_HealthComplaintListing.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_SchoolEducationComplaintListing.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_CommonComplaintListing.cshtml" />
+    <Content Include="Views\PublicUser\Login.cshtml" />
+    <Content Include="plugins\toastr\toastr.less" />
+    <Content Include="plugins\toastr\toastr.scss" />
+    <Content Include="Views\PublicUser\_PartialPublicUserSignUp.cshtml" />
+    <Content Include="Views\Complaint\DC Chiniot\AddComplaintDcChiniot.cshtml" />
+    <Content Include="Views\Complaint\DC Chiniot\_AddPersonlInfoDcChiniot.cshtml" />
+    <Content Include="Views\Complaint\DC Chiniot\_AddComplaintDcChiniot.cshtml" />
+    <Content Include="Views\PublicUserComplaints\Index.cshtml" />
+    <Content Include="Views\PublicUserComplaints\_ComplaintListings.cshtml" />
+    <Content Include="Views\PublicUser\Settings.cshtml" />
+    <Content Include="Views\PublicUser\_ChangePassword.cshtml" />
+    <Content Include="Views\PublicUser\PasswordRestore.cshtml" />
+    <Content Include="Views\PublicUserComplaints\SuggestionListing.cshtml" />
+    <Content Include="Views\PublicUserComplaints\InquiryListing.cshtml" />
+    <Content Include="Views\PublicUserComplaints\_ComplaintDetail.cshtml" />
+    <Content Include="Views\Shared\DcChiniot\_DcChiniotStakeholderLayout.cshtml" />
+    <Content Include="Views\PublicUserComplaints\_CampaignDepartmentsList.cshtml" />
+    <Content Include="Views\PublicUserComplaints\_PartialCampaignList.cshtml" />
+    <Content Include="Views\AdminStakeholder\AddCampaignTag.cshtml" />
+    <Content Include="Views\NotFoundPage.cshtml" />
+    <Content Include="Views\SeverError.cshtml" />
+    <Content Include="Views\ErrorPage.cshtml" />
+    <Content Include="Views\Complaint\CMCC\AddCMCC.cshtml" />
+    <Content Include="Views\PublicUser\LandingPage.cshtml" />
+    <Content Include="Views\PublicUserComplaints\_AddComplaintPartial.cshtml" />
+    <Content Include="Views\Report\Crm\DepartmentWise.cshtml" />
+    <None Include="Views\Shared\ExecutiveCampaigns\_ExecutiveCampaignsLayout.cshtml" />
+    <Content Include="css\AdminLTE\AdminLTE.css" />
+    <Content Include="css\AdminLTE\AdminLTE.min.css" />
+    <Content Include="Exception.txt" />
+    <Content Include="GeoData\PLRA.xml" />
+    <Content Include="img\crm-logo-2.png" />
+    <Content Include="img\crm-logo-3.png" />
+    <Content Include="img\crm-logo.png" />
+    <Content Include="img\executive-spinner.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_1.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_2.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_3.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_4.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_5.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_6.gif" />
+    <Content Include="img\Loading gif\loader-128x\loader_7.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_1.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_10.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_2.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_3.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_4.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_5.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_6.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_7.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_8.gif" />
+    <Content Include="img\Loading gif\loader-128x\Preloader_9.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader1.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader2.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader3.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader4.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader5.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader6.gif" />
+    <Content Include="img\Loading gif\loader-32x\loader7.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_1.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_10.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_2.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_3.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_4.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_5.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_6.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_7.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_8.gif" />
+    <Content Include="img\Loading gif\loader-32x\Preloader_9.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_1.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_2.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_3.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_4.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_5.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_6.gif" />
+    <Content Include="img\Loading gif\loader-64x\loader_7.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_1.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_10.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_2.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_3.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_4.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_5.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_6.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_7.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_8.gif" />
+    <Content Include="img\Loading gif\loader-64x\Preloader_9.gif" />
+    <Content Include="img\logo.png" />
+    <Content Include="img\pcch-bg-b.jpg" />
+    <Content Include="img\pcch-bg.jpg" />
+    <Content Include="img\pitb-punjab-gov.png" />
+    <Content Include="img\Thumbs-down-icon.png" />
+    <Content Include="img\Thumbs-up-icon.png" />
+    <Content Include="js\Bridge\FormBuilder\bridge.js" />
+    <Content Include="js\Bridge\FormBuilder\bridge.meta.js" />
+    <Content Include="js\Bridge\FormBuilder\BridgeClassLib.js" />
+    <Content Include="js\Bridge\FormBuilder\BridgeClassLib.meta.js" />
+    <Content Include="js\Bridge\FormBuilder\Form.js" />
+    <Content Include="js\Bridge\FormBuilder\FormBuilder.js" />
+    <Content Include="js\Bridge\FormBuilder\FormCommonMethods.js" />
+    <Content Include="js\Bridge\FormBuilder\FormEventHandler.js" />
+    <Content Include="js\Bridge\FormBuilder\FormInitializer.js" />
+    <Content Include="js\Bridge\FormBuilder\FormValidationHandler.js" />
+    <Content Include="js\Bridge\FormBuilder\jquery-2.2.4.js" />
+    <Content Include="js\Bridge\FormBuilder\jquery-2.2.4.min.js" />
+    <Content Include="js\Bridge\FormBuilder\newtonsoft.json.js" />
+    <Content Include="js\HelperFunctions.js" />
+    <Content Include="js\HtmlTableHandler.js" />
+    <Content Include="js\jquery.inlineStyler.src.js" />
+    <Content Include="js\MyCustomValidation.js" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Views\Shared\Partial\Table\_TableLayout.cshtml" />
+    <Content Include="Views\Shared\Partial\Table\_TableBody.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_PoliceComplaintListing.cshtml" />
+    <Content Include="Views\ExecutiveView\Listing\_ZimmedarShehriComplaintListing.cshtml" />
+    <Content Include="Views\Shared\_LayoutPublicUser.cshtml" />
+    <Content Include="Views\Stakeholder\DcChiniot\DcChiniotComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\DcChiniot\DcChiniotComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\DcChiniot\DcChiniotDetail.cshtml" />
+    <Content Include="Views\Stakeholder\DcChiniot\DcChiniotInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\DcChiniot\DcChiniotSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\DashboardPHCIPEducation.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChartPhcip.cshtml" />
+    <Content Include="Views\Stakeholder\_PartialTablePhcipCategoryStats.cshtml" />
+    <Content Include="Views\Stakeholder\_BarChartPhcip.cshtml" />
+    <Content Include="Web.config" />
+    <Content Include="Views\Stakeholder\CMCC\Detail.cshtml" />
+    <Content Include="Views\Stakeholder\CMCC\ComplaintListingsServerSide.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="bootstrap\css\bootstrap.css" />
+    <Content Include="bootstrap\css\bootstrap.min.css" />
+    <Content Include="bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="bootstrap\js\bootstrap.js" />
+    <Content Include="bootstrap\js\bootstrap.min.js" />
+    <Content Include="bootstrap\js\npm.js" />
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.js" />
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.min.js" />
+    <Content Include="Content\bootstrap-multiselect.css" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
+    <Content Include="Content\DataTables\css\autoFill.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.css" />
+    <Content Include="Content\DataTables\css\autoFill.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.css" />
+    <Content Include="Content\DataTables\css\autoFill.foundation.min.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.css" />
+    <Content Include="Content\DataTables\css\autoFill.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.css" />
+    <Content Include="Content\DataTables\css\buttons.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.css" />
+    <Content Include="Content\DataTables\css\buttons.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.css" />
+    <Content Include="Content\DataTables\css\buttons.foundation.min.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.css" />
+    <Content Include="Content\DataTables\css\buttons.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\colReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\colReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\colReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\colReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.css" />
+    <Content Include="Content\DataTables\css\dataTables.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.css" />
+    <Content Include="Content\DataTables\css\dataTables.foundation.min.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.css" />
+    <Content Include="Content\DataTables\css\dataTables.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedColumns.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.foundation.min.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.css" />
+    <Content Include="Content\DataTables\css\fixedHeader.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\jquery.dataTables_themeroller.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.css" />
+    <Content Include="Content\DataTables\css\keyTable.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.css" />
+    <Content Include="Content\DataTables\css\keyTable.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.css" />
+    <Content Include="Content\DataTables\css\keyTable.foundation.min.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.css" />
+    <Content Include="Content\DataTables\css\keyTable.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.css" />
+    <Content Include="Content\DataTables\css\responsive.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.css" />
+    <Content Include="Content\DataTables\css\responsive.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.css" />
+    <Content Include="Content\DataTables\css\responsive.foundation.min.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.css" />
+    <Content Include="Content\DataTables\css\responsive.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.css" />
+    <Content Include="Content\DataTables\css\rowReorder.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.css" />
+    <Content Include="Content\DataTables\css\rowReorder.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.css" />
+    <Content Include="Content\DataTables\css\rowReorder.foundation.min.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.css" />
+    <Content Include="Content\DataTables\css\rowReorder.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.css" />
+    <Content Include="Content\DataTables\css\scroller.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.css" />
+    <Content Include="Content\DataTables\css\scroller.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.css" />
+    <Content Include="Content\DataTables\css\scroller.foundation.min.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.css" />
+    <Content Include="Content\DataTables\css\scroller.jqueryui.min.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.css" />
+    <Content Include="Content\DataTables\css\select.bootstrap.min.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.css" />
+    <Content Include="Content\DataTables\css\select.dataTables.min.css" />
+    <Content Include="Content\DataTables\css\select.foundation.css" />
+    <Content Include="Content\DataTables\css\select.foundation.min.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.css" />
+    <Content Include="Content\DataTables\css\select.jqueryui.min.css" />
+    <Content Include="Content\DataTables\images\details_close.png" />
+    <Content Include="Content\DataTables\images\details_open.png" />
+    <Content Include="Content\DataTables\images\sort_asc.png" />
+    <Content Include="Content\DataTables\images\sort_asc_disabled.png" />
+    <Content Include="Content\DataTables\images\sort_both.png" />
+    <Content Include="Content\DataTables\images\sort_desc.png" />
+    <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
+    <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="css\crm.css" />
+    <Content Include="css\Dashboard.css" />
+    <Content Include="css\select2.min.css" />
+    <Content Include="css\skins\skin-black-light.css" />
+    <Content Include="css\skins\skin-black-light.min.css" />
+    <Content Include="css\skins\skin-black.css" />
+    <Content Include="css\skins\skin-black.min.css" />
+    <Content Include="css\skins\skin-blue-light.css" />
+    <Content Include="css\skins\skin-blue-light.min.css" />
+    <Content Include="css\skins\skin-blue.css" />
+    <Content Include="css\skins\skin-blue.min.css" />
+    <Content Include="css\skins\skin-green-light.css" />
+    <Content Include="css\skins\skin-green-light.min.css" />
+    <Content Include="css\skins\skin-green.css" />
+    <Content Include="css\skins\skin-green.min.css" />
+    <Content Include="css\skins\skin-purple-light.css" />
+    <Content Include="css\skins\skin-purple-light.min.css" />
+    <Content Include="css\skins\skin-purple.css" />
+    <Content Include="css\skins\skin-purple.min.css" />
+    <Content Include="css\skins\skin-red-light.css" />
+    <Content Include="css\skins\skin-red-light.min.css" />
+    <Content Include="css\skins\skin-red.css" />
+    <Content Include="css\skins\skin-red.min.css" />
+    <Content Include="css\skins\skin-yellow-light.css" />
+    <Content Include="css\skins\skin-yellow-light.min.css" />
+    <Content Include="css\skins\skin-yellow.css" />
+    <Content Include="css\skins\skin-yellow.min.css" />
+    <Content Include="css\skins\_all-skins.css" />
+    <Content Include="css\skins\_all-skins.min.css" />
+    <Content Include="css\sweetalert2.css" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="img\boxed-bg.jpg" />
+    <Content Include="img\boxed-bg.png" />
+    <Content Include="img\default-50x50.gif" />
+    <Content Include="img\head.png" />
+    <Content Include="img\icons.png" />
+    <Content Include="img\Icon_Excel.png" />
+    <Content Include="img\Icon_Pdf.png" />
+    <Content Include="img\Icon_Video.png" />
+    <Content Include="img\Icon_Word.png" />
+    <Content Include="img\Icon_Zip.png" />
+    <Content Include="img\max.png" />
+    <Content Include="img\min.png" />
+    <Content Include="img\PITB-LOGO.gif" />
+    <Content Include="img\test.jpg" />
+    <Content Include="js\app.js" />
+    <Content Include="js\app.min.js" />
+    <Content Include="js\common.js" />
+    <Content Include="js\demo.js" />
+    <Content Include="js\DropDownListHandler.js" />
+    <Content Include="js\MessageHandler.js" />
+    <Content Include="js\notify.js" />
+    <Content Include="js\pages\dashboard.js" />
+    <Content Include="js\pages\dashboard2.js" />
+    <Content Include="js\RuntimeValidation.js" />
+    <Content Include="js\select2.full.js" />
+    <Content Include="js\sjcl.js" />
+    <Content Include="js\sweetalert2.js" />
+    <Content Include="js\table2excel.js" />
+    <Content Include="js\UIUtility.js" />
+    <Content Include="Libraries\wkhtmltopdf.exe" />
+    <Content Include="plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.min.js" />
+    <Content Include="plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.css" />
+    <Content Include="plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.js" />
+    <Content Include="plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.min.css" />
+    <Content Include="plugins\datatables\dataTables.bootstrap.css" />
+    <Content Include="plugins\datatables\dataTables.bootstrap.js" />
+    <Content Include="plugins\datatables\dataTables.bootstrap.min.js" />
+    <Content Include="plugins\datatables\extensions\AutoFill\css\dataTables.autoFill.css" />
+    <Content Include="plugins\datatables\extensions\AutoFill\css\dataTables.autoFill.min.css" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\columns.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\complete-callback.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\fill-both.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\fill-horizontal.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\scrolling.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\examples\step-callback.html" />
+    <Content Include="plugins\datatables\extensions\AutoFill\images\filler.png" />
+    <Content Include="plugins\datatables\extensions\AutoFill\js\dataTables.autoFill.js" />
+    <Content Include="plugins\datatables\extensions\AutoFill\js\dataTables.autoFill.min.js" />
+    <Content Include="plugins\datatables\extensions\AutoFill\Readme.txt" />
+    <Content Include="plugins\datatables\extensions\ColReorder\css\dataTables.colReorder.css" />
+    <Content Include="plugins\datatables\extensions\ColReorder\css\dataTables.colReorder.min.css" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\alt_insert.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\colvis.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\col_filter.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\fixedcolumns.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\fixedheader.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\jqueryui.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\new_init.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\predefined.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\realtime.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\reset.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\scrolling.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\server_side.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\examples\state_save.html" />
+    <Content Include="plugins\datatables\extensions\ColReorder\images\insert.png" />
+    <Content Include="plugins\datatables\extensions\ColReorder\js\dataTables.colReorder.js" />
+    <Content Include="plugins\datatables\extensions\ColReorder\js\dataTables.colReorder.min.js" />
+    <Content Include="plugins\datatables\extensions\ColReorder\License.txt" />
+    <Content Include="plugins\datatables\extensions\ColVis\css\dataTables.colVis.css" />
+    <Content Include="plugins\datatables\extensions\ColVis\css\dataTables.colvis.jqueryui.css" />
+    <Content Include="plugins\datatables\extensions\ColVis\css\dataTables.colVis.min.css" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\button_order.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\exclude_columns.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\group_columns.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\jqueryui.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\mouseover.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\new_init.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\restore.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\text.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\title_callback.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\two_tables.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\examples\two_tables_identical.html" />
+    <Content Include="plugins\datatables\extensions\ColVis\js\dataTables.colVis.js" />
+    <Content Include="plugins\datatables\extensions\ColVis\js\dataTables.colVis.min.js" />
+    <Content Include="plugins\datatables\extensions\ColVis\License.txt" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\css\dataTables.fixedColumns.css" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\css\dataTables.fixedColumns.min.css" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\bootstrap.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\colvis.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\col_filter.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\css_size.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\index_column.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\left_right_columns.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\right_column.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\rowspan.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\server-side-processing.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\size_fixed.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\size_fluid.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\examples\two_columns.html" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\js\dataTables.fixedColumns.js" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\js\dataTables.fixedColumns.min.js" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\License.txt" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\css\dataTables.fixedHeader.css" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\css\dataTables.fixedHeader.min.css" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\header_footer.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\top_left_right.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\two_tables.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\examples\zIndexes.html" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\js\dataTables.fixedHeader.js" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\js\dataTables.fixedHeader.min.js" />
+    <Content Include="plugins\datatables\extensions\FixedHeader\Readme.txt" />
+    <Content Include="plugins\datatables\extensions\KeyTable\css\dataTables.keyTable.css" />
+    <Content Include="plugins\datatables\extensions\KeyTable\css\dataTables.keyTable.min.css" />
+    <Content Include="plugins\datatables\extensions\KeyTable\examples\events.html" />
+    <Content Include="plugins\datatables\extensions\KeyTable\examples\html.html" />
+    <Content Include="plugins\datatables\extensions\KeyTable\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\KeyTable\examples\scrolling.html" />
+    <Content Include="plugins\datatables\extensions\KeyTable\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\KeyTable\js\dataTables.keyTable.js" />
+    <Content Include="plugins\datatables\extensions\KeyTable\js\dataTables.keyTable.min.js" />
+    <Content Include="plugins\datatables\extensions\KeyTable\Readme.txt" />
+    <Content Include="plugins\datatables\extensions\Responsive\css\dataTables.responsive.css" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\column-control.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\custom-renderer.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\disable-child-rows.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\index.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\right-column.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\child-rows\whole-row-control.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\auto.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\classes.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\complexHeader.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\fixedHeader.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\index.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\display-control\init-classes.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\ajax.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\className.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\default.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\index.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\new.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\initialisation\option.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\styling\bootstrap.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\styling\compact.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\styling\foundation.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\styling\index.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\examples\styling\scrolling.html" />
+    <Content Include="plugins\datatables\extensions\Responsive\js\dataTables.responsive.js" />
+    <Content Include="plugins\datatables\extensions\Responsive\js\dataTables.responsive.min.js" />
+    <Content Include="plugins\datatables\extensions\Responsive\License.txt" />
+    <Content Include="plugins\datatables\extensions\Scroller\css\dataTables.scroller.css" />
+    <Content Include="plugins\datatables\extensions\Scroller\css\dataTables.scroller.min.css" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\api_scrolling.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\data\2500.txt" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\large_js_source.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\server-side_processing.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\state_saving.html" />
+    <Content Include="plugins\datatables\extensions\Scroller\images\loading-background.png" />
+    <Content Include="plugins\datatables\extensions\Scroller\js\dataTables.scroller.js" />
+    <Content Include="plugins\datatables\extensions\Scroller\js\dataTables.scroller.min.js" />
+    <Content Include="plugins\datatables\extensions\Scroller\Readme.txt" />
+    <Content Include="plugins\datatables\extensions\TableTools\css\dataTables.tableTools.css" />
+    <Content Include="plugins\datatables\extensions\TableTools\css\dataTables.tableTools.min.css" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\ajax.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\alter_buttons.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\bootstrap.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\button_text.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\collection.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\defaults.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\index.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\jqueryui.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\multiple_tables.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\multi_instance.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\new_init.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\pdf_message.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\plug-in.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\select_column.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\select_multi.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\select_os.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\select_single.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\simple.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\examples\swf_path.html" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\collection.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\collection_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\copy.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\copy_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\csv.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\csv_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\pdf.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\pdf_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\print.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\print_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\xls.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\xls_hover.png" />
+    <Content Include="plugins\datatables\extensions\TableTools\js\dataTables.tableTools.js" />
+    <Content Include="plugins\datatables\extensions\TableTools\js\dataTables.tableTools.min.js" />
+    <Content Include="plugins\datatables\extensions\TableTools\swf\copy_csv_xls.swf" />
+    <Content Include="plugins\datatables\extensions\TableTools\swf\copy_csv_xls_pdf.swf" />
+    <Content Include="plugins\datatables\images\sort_asc.png" />
+    <Content Include="plugins\datatables\images\sort_asc_disabled.png" />
+    <Content Include="plugins\datatables\images\sort_both.png" />
+    <Content Include="plugins\datatables\images\sort_desc.png" />
+    <Content Include="plugins\datatables\images\sort_desc_disabled.png" />
+    <Content Include="plugins\datatables\jquery.dataTables.css" />
+    <Content Include="plugins\datatables\jquery.dataTables.js" />
+    <Content Include="plugins\datatables\jquery.dataTables.min.css" />
+    <Content Include="plugins\datatables\jquery.dataTables.min.js" />
+    <Content Include="plugins\datatables\jquery.dataTables.responsive.css" />
+    <Content Include="plugins\datatables\jquery.dataTables.responsive.js" />
+    <Content Include="plugins\datatables\jquery.dataTables_themeroller.css" />
+    <Content Include="plugins\datepicker\bootstrap-datepicker.js" />
+    <Content Include="plugins\datepicker\datepicker3.css" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ar.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.az.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.bg.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ca.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.cs.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.cy.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.da.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.de.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.el.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.es.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.et.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.fa.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.fi.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.fr.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.gl.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.he.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.hr.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.hu.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.id.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.is.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.it.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ja.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ka.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.kk.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.kr.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.lt.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.lv.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.mk.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ms.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.nb.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.nl-BE.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.nl.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.no.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.pl.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.pt-BR.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.pt.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ro.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.rs-latin.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.rs.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ru.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.sk.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.sl.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.sq.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.sv.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.sw.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.th.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.tr.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.ua.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.vi.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.zh-CN.js" />
+    <Content Include="plugins\datepicker\locales\bootstrap-datepicker.zh-TW.js" />
+    <Content Include="plugins\fullcalendar\fullcalendar.css" />
+    <Content Include="plugins\fullcalendar\fullcalendar.js" />
+    <Content Include="plugins\fullcalendar\fullcalendar.min.css" />
+    <Content Include="plugins\fullcalendar\fullcalendar.min.js" />
+    <Content Include="plugins\fullcalendar\fullcalendar.print.css" />
+    <Content Include="plugins\high-chart\api\css\font-awesome.css" />
+    <Content Include="plugins\high-chart\api\css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="plugins\high-chart\api\css\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="plugins\high-chart\api\css\jquery-ui.css" />
+    <Content Include="plugins\high-chart\api\css\ref.css" />
+    <Content Include="plugins\high-chart\api\highcharts.html" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-114x114.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-120x120.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-144x144.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-152x152.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-180x180.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-57x57.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-60x60.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-72x72.png" />
+    <Content Include="plugins\high-chart\api\images\apple-touch-icon-76x76.png" />
+    <Content Include="plugins\high-chart\api\images\favicon-160x160.png" />
+    <Content Include="plugins\high-chart\api\images\favicon-16x16.png" />
+    <Content Include="plugins\high-chart\api\images\favicon-192x192.png" />
+    <Content Include="plugins\high-chart\api\images\favicon-32x32.png" />
+    <Content Include="plugins\high-chart\api\images\favicon-96x96.png" />
+    <Content Include="plugins\high-chart\api\images\Highcharts.svg" />
+    <Content Include="plugins\high-chart\api\images\splash.svg" />
+    <Content Include="plugins\high-chart\api\images\sprite.png" />
+    <Content Include="plugins\high-chart\api\js\jquery-ui.min.js" />
+    <Content Include="plugins\high-chart\api\js\jquery.min.js" />
+    <Content Include="plugins\high-chart\api\js\ref.js" />
+    <Content Include="plugins\high-chart\gfx\vml-radial-gradient.png" />
+    <Content Include="plugins\high-chart\graphics\meteogram-symbols-30px.png" />
+    <Content Include="plugins\high-chart\graphics\skies.jpg" />
+    <Content Include="plugins\high-chart\graphics\snow.png" />
+    <Content Include="plugins\high-chart\graphics\sun.png" />
+    <Content Include="plugins\high-chart\index.htm" />
+    <Content Include="plugins\high-chart\js\adapters\standalone-framework.js" />
+    <Content Include="plugins\high-chart\js\adapters\standalone-framework.src.js" />
+    <Content Include="plugins\high-chart\js\highcharts-3d.js" />
+    <Content Include="plugins\high-chart\js\highcharts-3d.src.js" />
+    <Content Include="plugins\high-chart\js\highcharts-more.js" />
+    <Content Include="plugins\high-chart\js\highcharts-more.src.js" />
+    <Content Include="plugins\high-chart\js\highcharts.js" />
+    <Content Include="plugins\high-chart\js\highcharts.src.js" />
+    <Content Include="plugins\high-chart\js\modules\broken-axis.js" />
+    <Content Include="plugins\high-chart\js\modules\broken-axis.src.js" />
+    <Content Include="plugins\high-chart\js\modules\canvas-tools.js" />
+    <Content Include="plugins\high-chart\js\modules\canvas-tools.src.js" />
+    <Content Include="plugins\high-chart\js\modules\data.js" />
+    <Content Include="plugins\high-chart\js\modules\data.src.js" />
+    <Content Include="plugins\high-chart\js\modules\drilldown.js" />
+    <Content Include="plugins\high-chart\js\modules\drilldown.src.js" />
+    <Content Include="plugins\high-chart\js\modules\exporting.js" />
+    <Content Include="plugins\high-chart\js\modules\exporting.src.js" />
+    <Content Include="plugins\high-chart\js\modules\funnel.js" />
+    <Content Include="plugins\high-chart\js\modules\funnel.src.js" />
+    <Content Include="plugins\high-chart\js\modules\heatmap.js" />
+    <Content Include="plugins\high-chart\js\modules\heatmap.src.js" />
+    <Content Include="plugins\high-chart\js\modules\no-data-to-display.js" />
+    <Content Include="plugins\high-chart\js\modules\no-data-to-display.src.js" />
+    <Content Include="plugins\high-chart\js\modules\solid-gauge.js" />
+    <Content Include="plugins\high-chart\js\modules\solid-gauge.src.js" />
+    <Content Include="plugins\high-chart\js\modules\treemap.js" />
+    <Content Include="plugins\high-chart\js\modules\treemap.src.js" />
+    <Content Include="plugins\high-chart\js\themes\dark-blue.js" />
+    <Content Include="plugins\high-chart\js\themes\dark-green.js" />
+    <Content Include="plugins\high-chart\js\themes\dark-unica.js" />
+    <Content Include="plugins\high-chart\js\themes\gray.js" />
+    <Content Include="plugins\high-chart\js\themes\grid-light.js" />
+    <Content Include="plugins\high-chart\js\themes\grid.js" />
+    <Content Include="plugins\high-chart\js\themes\sand-signika.js" />
+    <Content Include="plugins\high-chart\js\themes\skies.js" />
+    <Content Include="plugins\jQueryUI\jquery-ui-1.10.3.js" />
+    <Content Include="plugins\jQueryUI\jquery-ui-1.10.3.min.js" />
+    <Content Include="plugins\jQuery\jQuery-2.1.4.min.js" />
+    <Content Include="plugins\listSearch\list.min.js" />
+    <Content Include="plugins\StickyTableHeaders\css\component.css" />
+    <Content Include="plugins\StickyTableHeaders\css\demo.css" />
+    <Content Include="plugins\StickyTableHeaders\css\normalize.css" />
+    <Content Include="plugins\StickyTableHeaders\index.html" />
+    <Content Include="plugins\StickyTableHeaders\js\jquery.stickyheader.js" />
+    <Content Include="plugins\timepicker\bootstrap-timepicker.css" />
+    <Content Include="plugins\timepicker\bootstrap-timepicker.js" />
+    <Content Include="plugins\timepicker\bootstrap-timepicker.min.css" />
+    <Content Include="plugins\timepicker\bootstrap-timepicker.min.js" />
+    <Content Include="plugins\typeahead\bloodhound.js" />
+    <Content Include="plugins\typeahead\bloodhound.min.js" />
+    <Content Include="plugins\typeahead\typeahead.bundle.js" />
+    <Content Include="plugins\typeahead\typeahead.bundle.min.js" />
+    <Content Include="plugins\typeahead\typeahead.jquery.js" />
+    <Content Include="plugins\typeahead\typeahead.jquery.min.js" />
+    <Content Include="Response.txt" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
+    <Content Include="Scripts\bootstrap-multiselect-collapsible-groups.js" />
+    <Content Include="Scripts\bootstrap-multiselect.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="bootstrap\css\bootstrap.css.map" />
+    <Content Include="bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="img\Thumbs.db" />
+    <Content Include="plugins\datatables\extensions\ColReorder\Readme.md" />
+    <Content Include="plugins\datatables\extensions\ColVis\Readme.md" />
+    <Content Include="plugins\datatables\extensions\FixedColumns\Readme.md" />
+    <Content Include="plugins\datatables\extensions\Responsive\css\dataTables.responsive.scss" />
+    <Content Include="plugins\datatables\extensions\Responsive\Readme.md" />
+    <Content Include="plugins\datatables\extensions\Scroller\examples\data\ssp.php" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\psd\collection.psd" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\psd\copy document.psd" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\psd\file_types.psd" />
+    <Content Include="plugins\datatables\extensions\TableTools\images\psd\printer.psd" />
+    <Content Include="plugins\datatables\extensions\TableTools\Readme.md" />
+    <Content Include="plugins\high-chart\api\fonts\fontawesome-webfont.woff" />
+    <Content Include="plugins\high-chart\api\js\highcharts.json" />
+    <Content Include="plugins\high-chart\gfx\Thumbs.db" />
+    <Content Include="plugins\high-chart\graphics\Thumbs.db" />
+    <Content Include="plugins\listSearch.rar" />
+    <Content Include="plugins\StickyTableHeaders\js\.DS_Store" />
+    <Content Include="plugins\typeahead.rar" />
+    <Content Include="Content\DataTables\css\mixins.scss" />
+    <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="App_Browsers\qt.browser" />
+    <Content Include="GeoData\Punjab_Districts.json" />
+    <Content Include="GeoData\Punjab_Divisions.json" />
+    <Content Include="GeoData\Punjab_Province.json" />
+    <Content Include="GeoData\Punjab_Tehsils.json" />
+    <Content Include="ComplaintsXML" />
+    <Content Include="js\inlineStyler.jquery.json" />
+    <None Include="Scripts\jquery-2.1.4.intellisense.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
+    <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.js" />
+    <Content Include="Scripts\DataTables\autoFill.foundation.min.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.js" />
+    <Content Include="Scripts\DataTables\autoFill.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.js" />
+    <Content Include="Scripts\DataTables\buttons.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.js" />
+    <Content Include="Scripts\DataTables\buttons.colVis.min.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.js" />
+    <Content Include="Scripts\DataTables\buttons.flash.min.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.js" />
+    <Content Include="Scripts\DataTables\buttons.foundation.min.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.js" />
+    <Content Include="Scripts\DataTables\buttons.html5.min.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.js" />
+    <Content Include="Scripts\DataTables\buttons.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\buttons.print.js" />
+    <Content Include="Scripts\DataTables\buttons.print.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.js" />
+    <Content Include="Scripts\DataTables\dataTables.autoFill.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.js" />
+    <Content Include="Scripts\DataTables\dataTables.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.js" />
+    <Content Include="Scripts\DataTables\dataTables.buttons.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.colReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedColumns.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.js" />
+    <Content Include="Scripts\DataTables\dataTables.fixedHeader.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.js" />
+    <Content Include="Scripts\DataTables\dataTables.foundation.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.js" />
+    <Content Include="Scripts\DataTables\dataTables.jqueryui.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.js" />
+    <Content Include="Scripts\DataTables\dataTables.keyTable.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.js" />
+    <Content Include="Scripts\DataTables\dataTables.responsive.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.js" />
+    <Content Include="Scripts\DataTables\dataTables.rowReorder.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.js" />
+    <Content Include="Scripts\DataTables\dataTables.scroller.min.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.js" />
+    <Content Include="Scripts\DataTables\dataTables.select.min.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.js" />
+    <Content Include="Scripts\DataTables\jquery.dataTables.min.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.js" />
+    <Content Include="Scripts\DataTables\responsive.bootstrap.min.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.js" />
+    <Content Include="Scripts\DataTables\responsive.foundation.min.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.js" />
+    <Content Include="Scripts\DataTables\responsive.jqueryui.min.js" />
+    <Content Include="Scripts\exporting.js" />
+    <Content Include="Scripts\highchartdata.js" />
+    <Content Include="Scripts\highcharts.js" />
+    <Content Include="Scripts\jquery-2.1.4.js" />
+    <Content Include="Scripts\jquery-2.1.4.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="plugins\datatables\jquery.dataTables.columnFilter.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\MicrosoftAjax.debug.js" />
+    <Content Include="Scripts\MicrosoftAjax.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.debug.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.js" />
+    <Content Include="Scripts\MicrosoftMvcValidation.debug.js" />
+    <Content Include="Scripts\MicrosoftMvcValidation.js" />
+    <Content Include="Scripts\piechartdrilldown.js" />
+    <Content Include="Scripts\script-custom-validator.js" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Scripts\jquery-2.1.4.min.map" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Complaint\Add.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Shared\_MainLayout.cshtml" />
+    <Content Include="Views\Shared\ViewUserControls\_ProvinceDropDown.cshtml" />
+    <Content Include="Views\Agent\Search.cshtml" />
+    <Content Include="Views\Complaint\_PersonComplaints.cshtml" />
+    <Content Include="Views\Shared\ViewUserControls\_MessageBox.cshtml" />
+    <Content Include="Views\Agent\_CampaignsList.cshtml" />
+    <Content Include="Views\Agent\_ComplaintListings.cshtml" />
+    <Content Include="Views\Agent\Index.cshtml" />
+    <Content Include="Views\Shared\_ComplaintDetail.cshtml" />
+    <Content Include="Views\Agent\_SearchedComplainantInfo.cshtml" />
+    <Content Include="Views\Report\Crm\AgentWise.cshtml" />
+    <Content Include="Views\Stakeholder\ComplaintListings.cshtml" />
+    <Content Include="Views\Shared\_StakeholderLayout.cshtml" />
+    <Content Include="Views\Stakeholder\Detail.cshtml" />
+    <Content Include="Views\Stakeholder\ComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Account\Settings.cshtml" />
+    <Content Include="Views\Account\_ChangePassword.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Stakeholder\dashboard.cshtml" />
+    <Content Include="Views\Stakeholder\_PieChart.cshtml" />
+    <Content Include="Views\Stakeholder\_StackedChart.cshtml" />
+    <Content Include="Views\Stakeholder\_LineChart.cshtml" />
+    <Content Include="Views\Shared\_AdminStakeholderLayout.cshtml" />
+    <Content Include="Views\AdminStakeholder\AddEditUser.cshtml" />
+    <Content Include="Views\Stakeholder\SuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\InquiryListingsServerSide.cshtml" />
+    <Content Include="Views\AdminStakeholder\_AddForm.cshtml" />
+    <Content Include="Views\Agent\SuggestionsListingServerSide.cshtml" />
+    <Content Include="Views\Agent\InquiryListingServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\ComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\_TransferComplaint.cshtml" />
+    <Content Include="Views\Shared\_FileViewer.cshtml" />
+    <Content Include="Views\Account\LoginWithCampaign.cshtml" />
+    <Content Include="Views\Shared\_AdminCampaignLayout.cshtml" />
+    <Content Include="Views\AdminCampaign\ViewCampaigns.cshtml" />
+    <Content Include="Views\Agent\TagListing.cshtml" />
+    <Content Include="Views\Agent\_TagEdit.cshtml" />
+    <Content Include="Views\Stakeholder\MessageListing.cshtml" />
+    <Content Include="Views\Stakeholder\_ReplyPopup.cshtml" />
+    <Content Include="Views\Stakeholder\_MessageThreadPopup.cshtml" />
+    <Content Include="Views\Stakeholder\_MassReplyPopup.cshtml" />
+    <Content Include="Views\Stakeholder\ComplaintListingsSmartLahoreLowerHierarchy.cshtml" />
+    <Content Include="Views\Complaint\SchoolEducation\AddSchoolEducation.cshtml" />
+    <Content Include="Views\Stakeholder\DashboardMain.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChart.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SchoolEducationComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SchoolEducationSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SchoolEducationInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SchoolEducationComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SchoolEducationDetail.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_SchoolEducationTransferComplaint.cshtml" />
+    <Content Include="Views\Stakeholder\_BarChartStakeholder.cshtml" />
+    <Content Include="Views\Shared\SchoolEducation\_SchoolEducationStakeholderLayout.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_SchoolEducationComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Shared\SchoolEducation\_SduSchoolEducationStakeholderLayout.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SDU\SDUSchoolEducationComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SDU\SDUSchoolEducationInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\SDU\SDUSchoolEducationSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\DistrictWiseGraphMain.cshtml" />
+    <Content Include="Views\Stakeholder\_DistrictWiseGraph.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\DashboardSchoolEducationDetail.cshtml" />
+    <Content Include="Views\Agent\ComplaintListingAll.cshtml" />
+    <Content Include="Views\Agent\_AgentDetail.cshtml" />
+    <Content Include="Views\Stakeholder\DashboardTeachingQuality.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChartTeachingQuality.cshtml" />
+    <Content Include="Views\Stakeholder\_BarChartStakeholderTeachingQuality.cshtml" />
+    <Content Include="Views\Stakeholder\AgingReportMonthly.cshtml" />
+    <Content Include="Views\Stakeholder\AgingReportYearly.cshtml" />
+    <Content Include="Views\Stakeholder\AgingReportQuarterly.cshtml" />
+    <Content Include="Views\Stakeholder\CategoryWiseDrillDownMain.cshtml" />
+    <Content Include="Views\Stakeholder\_BarChartCategoryWise.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_SchoolEducationComplaintListingNotification.cshtml" />
+    <Content Include="Views\Complaint\Wasa\AddWasa.cshtml" />
+    <Content Include="Views\Shared\_ResolverDetail.cshtml" />
+    <Content Include="Views\Shared\ResolverDetail.cshtml" />
+    <Content Include="Views\Shared\_StatusHistory.cshtml" />
+    <Content Include="Views\Stakeholder\Wasa\WasaComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Wasa\WasaComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Wasa\WasaSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Wasa\WasaInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Wasa\WasaDetail.cshtml" />
+    <Content Include="Views\Shared\Wasa\_WasaStakeholderLayout.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\MainSummaryReport.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_BarChartMainSummary.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_OverdueComplaintsSummary.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_RegionStatusWiseSummary.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_TopOverdueComplaintsByOfficers.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\ExportReport.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\DistrictReport.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_DistrictOverdueComplaintsSummary.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_DistrictOpenComplaintsSummary.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_DistrictReOpenedComplaintsSummary.cshtml" />
+    <Content Include="Views\Stakeholder\_BarChartCategoryWiseForDistrictReport.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChartForDistrictReport.cshtml" />
+    <Content Include="Views\Account\RoleSetting.cshtml" />
+    <Content Include="Views\Agent\SearchList.cshtml" />
+    <Content Include="Views\Agent\_SearchedComplainantListInfo.cshtml" />
+    <Content Include="Views\Shared\HttpErrorPage.cshtml" />
+    <Content Include="Views\Shared\_ErrorLayout.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\DivisionReport.cshtml" />
+    <Content Include="Views\Account\PasswordRestore.cshtml" />
+    <Content Include="Views\Account\_ShowAuthenticatedPhone.cshtml" />
+    <Content Include="Views\Account\_EnterVerificationCode.cshtml" />
+    <Content Include="Views\Account\_ForgotPasswordChange.cshtml" />
+    <Content Include="Views\Account\_EnterUsername.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\ProvinceReport.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChartCallVolume.cshtml" />
+    <Content Include="Views\Stakeholder\_PieLegendChartTop5ComplaintCategories.cshtml" />
+    <Content Include="Views\Complaint\AddDynamic.cshtml" />
+    <Content Include="Views\Shared\_PriviledgedUserLayout.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\DistrictReportsForProvince.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_ProvinceDistricts.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\UserWiseReportMain.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_ComplaintListingNotification.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_ZimmedarShehriComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\DivisionReportsForProvince.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_ProvinceDivisions.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_RegionStatusWiseCountForProvinceDistrict.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_ComplaintsSummary.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\ZimmerdarShehriComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\ZimmedarShehriComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\ZimmedarShehriSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\ZimmedarShehriInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\ZimmedarShehriDetail.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_ComplaintCategoryWiseRegionWiseCount.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\GetDistrictComplaintsData.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_RegionStatusWiseCountSummaryDistrict.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\GetDivisionComplaintsData.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_RegionStatusWiseCountSummaryDivision.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_TehsilByDistrictPartialView.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\TehsilByDistrict.cshtml" />
+    <Content Include="Views\Stakeholder\Combined\CombinedDashboard.cshtml" />
+    <Content Include="Views\Shared\Executive\_ExecutiveDashboardLayout.cshtml" />
+    <Content Include="Views\ExecutiveView\Dashboard.cshtml" />
+    <Content Include="Views\Stakeholder\_TransferComplaintDynamic.cshtml" />
+    <Content Include="Views\Complaint\AddDynamic2.cshtml" />
+    <Content Include="Views\Complaint\AddDynamicChild.cshtml" />
+    <Content Include="Views\ExecutiveView\_CampaignCard.cshtml" />
+    <Content Include="Views\Account\_ShowCnicForm.cshtml" />
+    <Content Include="Views\ExecutiveView\_ExecutiveCampaignView.cshtml" />
+    <Content Include="Views\Complaint\DC Office\AddDcOffice.cshtml" />
+    <Content Include="Views\Report\HierarchyWiseReport.cshtml" />
+    <Content Include="Views\Report\_HierarchyWiseReportPartialView.cshtml" />
+    <Content Include="Views\Complaint\Police\AddPolice.cshtml" />
+    <Content Include="Views\Stakeholder\Police\PoliceComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Police\PoliceComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Police\PoliceInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Police\PoliceSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Police\PoliceDetail.cshtml" />
+    <Content Include="Views\Shared\Police\_PoliceStakeholderLayout.cshtml" />
+    <Content Include="Views\Stakeholder\Police\_PoliceTransferComplaint.cshtml" />
+    <Content Include="Views\Data Representation\DistrictResponseTimeReport.cshtml" />
+    <Content Include="Views\Stakeholder\Police\_ComplaintActions.cshtml" />
+    <Content Include="Views\Agent\Police\_AgentPoliceDetail.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\AdminStakeholder\_EditUserForm.cshtml" />
+    <Content Include="Views\Shared\_AgentPoliceLayout.cshtml" />
+    <Content Include="Views\Agent\Police\AgentPoliceComplaintListingAll.cshtml" />
+    <Content Include="Views\Agent\Police\AgentPoliceComplaintListingMy.cshtml" />
+    <Content Include="Views\Stakeholder\ZimmedarShehri\_RegionWiseFeedbackSummary.cshtml" />
+    <Content Include="Views\Stakeholder\LWMC\LwmcComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\LWMC\LwmcComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\_AreawiseCategoryReport.cshtml" />
+    <Content Include="Views\Stakeholder\AreawiseCategoryReport.cshtml" />
+    <Content Include="Views\Stakeholder\SchoolEducation\_CategorywiseAndStatuswiseCount.cshtml" />
+    <Content Include="Views\Stakeholder\Health\HealthComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\Health\HealthComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Shared\_PLRAMainLayout.cshtml" />
+    <Content Include="Views\Stakeholder\PLRA\_PLRAComplaintDetails.cshtml" />
+    <Content Include="Views\Stakeholder\DashboardSpecific1.cshtml" />
+    <Content Include="Views\Shared\SchoolEducation\_SchoolEducationSpecificLayout.cshtml" />
+    <Content Include="Views\Agent\ZimmedarShehri\_AgentZimmedarShehriDetail.cshtml" />
+    <Content Include="Views\Complaint\SpecialEducation\AddSpecialEducation.cshtml" />
+    <Content Include="Views\Stakeholder\LWMC\LwmcDetail.cshtml" />
+    <Content Include="Views\Stakeholder\RegionWiseResolvedComplaints.cshtml" />
+    <Content Include="Views\AdminStakeholder\BlockUser.cshtml" />
+    <Content Include="Views\Shared\_AgentSpecialEducationLayout.cshtml" />
+    <Content Include="Views\Stakeholder\CombinedCampaign\CombinedCampaignDetail.cshtml" />
+    <Content Include="Views\Stakeholder\CombinedCampaign\CombinedCampaignComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\CombinedCampaign\CombinedCampaignComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\CombinedCampaign\CombinedCampaignInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\CombinedCampaign\CombinedCampaignSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Complaint\LGCD\AddLGCD.cshtml" />
+    <Content Include="Views\Stakeholder\LGCD\LGCDDetail.cshtml" />
+    <Content Include="Views\Stakeholder\LGCD\LGCDComplaintListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\LGCD\LGCDComplaintListingsLowerHierarchyServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\LGCD\LGCDSuggestionListingsServerSide.cshtml" />
+    <Content Include="Views\Stakeholder\LGCD\LGCDInquiryListingsServerSide.cshtml" />
+    <Content Include="Views\Shared\SchoolEducation\_SchoolEducationPMIULayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Common\" />
+    <Folder Include="Handler\Business\" />
+    <Folder Include="Manager\" />
+    <Folder Include="Properties\PublishProfiles\" />
+    <Folder Include="Views\Agent\SpecialSchool\" />
+    <Folder Include="Views\ApiPolice\" />
+    <Folder Include="Views\ApiSchoolEducation\" />
+    <Folder Include="Views\CmccPublic\" />
+    <Folder Include="Views\CommonView\" />
+    <Folder Include="Views\Controller\" />
+    <Folder Include="Views\DcChiniot\" />
+    <Folder Include="Views\DynamicForm\" />
+    <Folder Include="Views\Table\" />
+    <Folder Include="Views\Tagging\" />
+    <Folder Include="Views\WasaComplaint\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PITB.CMS_Common\PITB.CMS_Common.csproj">
+      <Project>{b71c1498-572f-4f45-8eca-60f3fee5efa3}</Project>
+      <Name>PITB.CMS_Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>1443</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:1443/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

@@ -1,0 +1,585 @@
+﻿@using System.Web.UI.WebControls
+@using PITB.CMS_Common
+@using PITB.CMS_Common.Models
+
+@{
+    //Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+    DateTime startDate = DateTime.Now.AddMonths(-3);
+}
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+</style>
+
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h3 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">@ViewBag.CampaignName Complaint Listing (Assigned To Me)</h3>
+        </div>
+        <div class="box-body-white">
+            @{
+                //int margin = (100 / ((List<SelectListItem>)ViewBag.StatusList).Count) / 2;
+            }
+            <div class="row">
+                @*style="margin-left: @(margin)%" >*@
+                @{
+                    int count = 0;
+
+                    foreach (SelectListItem listItem in (List<SelectListItem>)ViewBag.StatusList)
+                    {
+
+                        <div class="col-md-2">
+                            <a class="info-tiles tiles-inverse has-footer dashboardLabelStatusContainer" href="#">
+                                <div class="tiles-heading">
+
+                                    <div>@listItem.Text</div>
+
+                                </div>
+                                <div class="tiles-body">
+                                    <div id=@(listItem.Value+"_DashboardLabelStatus") class="text-center dashboardLabelStatus">0</div>
+                                </div>
+                                <div class="tiles-footer">
+                                    @*<div class="pull-left">manage orders</div>
+                                        <div class="pull-right percent-change">+20.7%</div>*@
+                                </div>
+                            </a>
+                        </div>
+                        count++;
+                    }
+
+                    <div class="col-md-2">
+                        <a class="info-tiles tiles-grape has-footer" href="#">
+                            <div class="tiles-heading">
+
+                                <div>Agent</div>
+
+                            </div>
+                            <div class="tiles-body">
+                                <div id=@(Convert.ToInt32(Config.ComplaintSource.Agent) + "_DashboardLabelComplaintSrc") class="text-center">0</div>
+                            </div>
+                            <div class="tiles-footer">
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-md-2">
+                        <a class="info-tiles tiles-grape has-footer" href="#">
+                            <div class="tiles-heading">
+
+                                <div>Mobile</div>
+
+                            </div>
+                            <div class="tiles-body">
+                                <div id=@(Convert.ToInt32(Config.ComplaintSource.Mobile) + "_DashboardLabelComplaintSrc") class="text-center">0</div>
+                            </div>
+                            <div class="tiles-footer">
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+
+            <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    @*<div class="col-md-12">
+                                <input type="text" id="from" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-2 col-sm-12 col-xs-12">
+                            <div class="col-md-12">
+                                <input type="text" id="to" value="@ViewBag.EndDate" placeholder="example: 2016-01-05"
+                                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+                            </div>*@
+                    <input type="text" id="dateRange" placeholder="" class="form-control">
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div data-original-title="Campaign(s)" data-toggle="tooltip">
+                        @Html.DropDownList("campaignsList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div data-original-title="Department" data-toggle="tooltip">
+                        @Html.DropDownList("departmentList", (List<SelectListItem>)ViewBag.DepartmentList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div data-original-title="Category" data-toggle="tooltip">
+                        @Html.DropDownList("categoryList", (List<SelectListItem>)ViewBag.ComplaintTypeList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div data-original-title="Status" data-toggle="tooltip">
+                        @Html.DropDownList("statusList", (List<SelectListItem>)ViewBag.StatusList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                    <div data-original-title="Is Transfered" data-toggle="tooltip">
+                        @Html.DropDownList("transferedList", (List<SelectListItem>)ViewBag.ListTransfered, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:15px;">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="pull-right">
+                        <button id="FilterBtn" class="btn btn-primary" type="button"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+                        <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                    </div>
+                    @*<div class="col-md-1 col-xs-1 col-sm-1" data-placement="left" data-animation="true" data-toggle="tooltip" title="Your export of data depends upon your selection of filters">
+                            <div class="pull-right">
+                                <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                            </div>
+                        </div>*@
+                </div>
+                @*<div class="form-group col-md-12 col-xs-12">
+
+                        <div class="col-md-12 col-xs-12 col-md-offset-11 col-xs-offset-11" data-placement="left" data-animation="true" data-toggle="tooltip" title="Your export of data depends upon your selection of filters">
+                            <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                        </div>
+                    </div>*@
+
+            </div>
+
+        </div>
+
+
+
+
+        @*<div class="box-body-white">
+                <div class="col-md-12 col-sm-12">
+                    <div class="form-group col-md-2 col-sm-12">
+                        <div class="col-md-12" data-original-title="Is Transfered" data-toggle="tooltip">
+                            @Html.DropDownList("transferedList", (List<SelectListItem>)ViewBag.ListTransfered, new { @class = "form-control", @multiple = "multiple" })
+                        </div>
+
+                    </div>
+                </div>
+            </div>*@
+
+
+
+
+        @*<div class="box-body-white">
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>From</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="from" value="@DateTime.Now.AddMonths(-6).ToShortDateString()" placeholder="example: 11/21/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>To</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="to" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4" style="padding:20px;">
+                <div class="col-md-3">
+                    <label>Campaigns</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownList("campaignList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    @*<input type="text" id="campaignsList" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control">*@
+
+        @*<div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-rocket"></i>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-md-2" style="padding:20px;"><button id="FilterBtnAgent" class="btn btn-primary col-md-12" type="submit">Filter</button></div>
+            </div>*@
+        <div class="box-body-white">
+
+            <table id="agentListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Complaint No</th>
+                        <th>Campaign</th>
+                        <th>District</th>
+                        <th>Tehsil</th>
+                        <th>Union Council</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Escalation</th>
+                        <th>Remaining Time</th>
+                        <th>Cms Id</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tfoot style="display:table-header-group">
+                    <tr>
+                        <td><input type="text" data-column="0" class="search-input-text"></td>
+                        <td><input type="text" data-column="1" class="search-input-text"></td>
+                        <td><input type="text" data-column="2" class="search-input-text"></td>
+                        <td><input type="text" data-column="3" class="search-input-text"></td>
+                        <td><input type="text" data-column="4" class="search-input-text"></td>
+                        <td><input type="text" data-column="5" class="search-input-text"></td>
+                        <td><input type="text" data-column="6" class="search-input-text"></td>
+                        <td><input type="text" data-column="7" class="search-input-text"></td>
+                        <td><input type="text" data-column="8" class="search-input-text"></td>
+                        <td><input type="text" data-column="9" class="search-input-text"></td>
+                        <td><input type="text" data-column="10" class="search-input-text"></td>
+                        <td><input type="text" data-column="11" class="search-input-text"></td>
+                        <td><input type="text" data-column="12" class="search-input-text"></td>
+                    </tr>
+                </tfoot>
+
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    var loadCount = 0;
+    //var dashboardStatus = 'DashboardStatus';
+    //var dashboardComplaintSrc = 'DashboardComplaintSrc';
+
+    var dashboardStatusLabel = '_DashboardLabelStatus';
+    var dashboardComplaintSrcLabel = '_DashboardLabelComplaintSrc';
+
+    $(document).ready(function () {
+        $('#dateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+
+        loadCount ++;
+        ResetAllDashboardLabels(dashboardStatusLabel);
+        ResetAllDashboardLabels(dashboardComplaintSrcLabel);
+        // Setup - add a text input to each footer cell
+        //$('#agentListing .filters td').each(function () {
+        //    var title = $('#example thead th').eq($(this).index()).text();
+        //    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        //});
+
+        //// DataTable
+        //var table = $('#agentListing').DataTable();
+
+        //// Apply the search
+        //table.columns().eq(0).each(function (colIdx) {
+        //    $('input', $('.filters td')[colIdx]).on('keyup change', function () {
+        //        table
+        //            .column(colIdx)
+        //            .search(this.value)
+        //            .draw();
+        //    });
+        //});
+        //$('.search-input-text').on('keyup click', function () {   // for text boxes
+        //    var i = $(this).attr('data-column');  // getting column index
+        //    var v = $(this).val();  // getting search input value
+        //    $('#agentListing').DataTable().columns(i).search(v).draw();
+        //});
+        //$('.search-input-select').on('keyup click', function () {   // for select box
+        //    var i = $(this).attr('data-column');
+        //    var v = $(this).val();
+        //    $('#agentListing').DataTable().columns(i).search(v).draw();
+        //});
+
+    });
+
+    function ResetAllDashboardLabels(dashboardLabel) {
+        $("div[id$='"+dashboardLabel+"']").each(function(i, el) {
+            //alert('zeeshi');
+            //alert(el.id);
+            $('#' + el.id).text("0");
+            //this.text("0");
+            //It'll be an array of elements
+        });
+
+    }
+
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#agentListing').DataTable().columns(i).search(v).draw();
+    });
+    @*$('.search-input-select').on('keyup', function () {   // for select box
+       var i = $(this).attr('data-column');
+      var v = $(this).val();
+       $('#agentListing').DataTable().columns(i).search(v).draw();
+    });*@
+
+    $(function () {
+        $.enableMultiselectOf("campaignList");
+        $("#FilterBtn").trigger('click');
+
+        $("#campaignsList").change(function () {
+            debugger;
+            var campaigns = $("#campaignsList").val();
+            if(campaigns != null){
+                    var elem = $("#departmentList");
+                    elem.empty();
+                    if (campaigns != '' && campaigns != null) {
+                        var api = "../GeneralApi/GetDepartmentsOfCampaignOfUser";
+                        $.ajax({
+                            url: api,
+                            type: 'POST',
+                            data: { id: campaigns },
+                            async: false,
+                            success: function(resultSet) {
+                                debugger;
+
+                                $.each(resultSet, function(index, data) {
+                                    elem.append($('<option/>', { value: data.Value, text: data.Text }));
+                                });
+                            }
+                        });
+                    }
+
+
+            }else if(campaigns  == null){
+                $("#departmentList").empty();
+                $("#categoryList").empty();
+            }
+
+            $.enableMultiselectOf("departmentList");
+            $('#departmentList').trigger('change');
+            $.loadDropdown("statusList", "GetStatusesOfCampaign", $("#campaignsList").val());
+            $.enableMultiselectOf("categoryList");
+            $.enableMultiselectOf("statusList");
+            $.enableMultiselectOf("transferedList");
+        });
+        $("#departmentList").change(function () {
+            debugger;
+            var campaigns = $("#campaignsList").val();
+            var departments = $("#departmentList").val();
+            if(campaigns != null && departments != null){
+                var elem = $("#categoryList");
+                elem.empty();
+                if (campaigns != '' && campaigns != null && departments != '' && departments != null) {
+                    var api = "../GeneralApi/GetCategoriesOfCampaignOfUserWithDepartment";
+                    $.ajax({
+                        url: api,
+                        type: 'POST',
+                        data: { campaignIds: campaigns,departmentIds:departments },
+                        async: false,
+                        success: function(resultSet) {
+                            debugger;
+
+                            $.each(resultSet, function(index, data) {
+                                elem.append($('<option/>', { value: data.Value, text: data.Text }));
+                            });
+                        }
+                    });
+                }
+
+
+            }else if(departments  == null){
+                $("#categoryList").empty();
+            }
+
+            $.loadDropdown("statusList", "GetStatusesOfCampaign", $("#campaignsList").val());
+            $.enableMultiselectOf("categoryList");
+            $.enableMultiselectOf("statusList");
+            $.enableMultiselectOf("transferedList");
+        });
+        debugger;
+
+    });
+
+    $("#FilterBtn").click(function (e) {
+        e.preventDefault();
+        @*$.loadAgentListings("@Url.Action("GetStakeholderComplaints","GeneralApi")", $("#from").val(), $("#to").val(), $("#campaignList").val());*@
+        LoadTable("@Url.Action("GetStakeholderComplaintsServerSide", "GeneralApi")", $('#dateRange').val().split('To')[0].trim(), $('#dateRange').val().split('To')[1].trim(), $("#campaignsList").val(), $("#categoryList").val(), $("#statusList").val(), $("#transferedList").val());
+        //SetDashboardLabels(dashboardStatusLabel);
+        //SetDashboardLabels(dashboardComplaintSrcLabel);
+    });
+
+    function SetDashboardLabels(dashboardLabel) {
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: '@Url.Action("GetDashboardLabelsStakeholderData", "generalapi")', //'../GeneralApi/GetStakeholderComplaintsServerSide',
+            data: { from: $('#dateRange').val().split('To')[0].trim(), to: $('#dateRange').val().split('To')[1].trim(), campaign: $("#campaignsList").val(), cateogries: $("#categoryList").val(), statuses: $("#statusList").val(), transferedStatus: $("#transferedList").val(), complaintType: @Convert.ToInt32(Config.ComplaintType.Complaint), listingType: @Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe), aoData: aoDataStringify, dashboardType: dashboardLabel },
+            success: function(data) {
+                //if(dashboardType==dashboardStatus)
+                {
+                    ResetAllDashboardLabels(dashboardLabel);
+                    var totalCount = 0;
+                    var idToSet = "";
+                    for(var i = 0; i < data.length; i++) {
+                        totalCount = totalCount + data[i].Count;
+                        idToSet = "#"+data[i].Id + dashboardLabel;
+                        $(idToSet).text(""+data[i].Count);
+                    }
+                    idToSet = "#-1"+dashboardLabel;
+                    $(idToSet).text(""+totalCount);
+                }
+                /*else if (dashboardType==dashboardComplaintSrc) {
+                    ResetAllDashboardLabels(dashboardComplaintSrcLabel);
+                }*/
+            }
+        });
+    }
+
+    $("#ExcelExportBtn").click(function(e) {
+        e.preventDefault();
+        @*window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + '&campaign=' + $("#campaignsList").val() + '&category=' + $("#categoryList").val() + '&status=' + $("#statusList").val() + '&complaintType='+@Convert.ToInt32(Config.ComplaintType.Complaint)+ '&listingType='+@Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe);*@
+        var data = JSON.stringify({ from: $('#dateRange').val().split('To')[0].trim(), to: $('#dateRange').val().split('To')[1].trim(), campaign: $("#campaignsList").val(), cateogries: $("#categoryList").val(), statuses: $("#statusList").val(), transferedStatus: $("#transferedList").val(), complaintType: @Convert.ToInt32(Config.ComplaintType.Complaint), listingType: @Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe), aoData: aoDataStringify });
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: '@Url.Action("ExportStakeHolderData", "generalapi")',//'../GeneralApi/GetStakeholderComplaintsServerSide',
+            data: data @*{ from: $("#from").val(), to: $("#to").val(), campaign: $("#campaignsList").val(), cateogries: $("#categoryList").val(), statuses: $("#statusList").val() , transferedStatus:$("#transferedList").val(), complaintType: @Convert.ToInt32(Config.ComplaintType.Complaint), listingType:@Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe) , aoData: aoDataStringify }*@,
+            success: function (dataId) {
+                //alert(dataId);
+                window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?dataId=' + dataId;
+            }
+
+            /*"success": function callback() {
+
+            },*/
+        });
+    });
+
+
+    $( ".dashboardLabelStatusContainer" ).on( "click", function() {
+        //var statusId = this.id.split("_")[0];
+        //$("#statusList").val(['1', '2']);
+        //var spans = $( ".dashboardLabelStatus" );
+        var statusId = $(this).find($("div.tiles-body")).find($("div.dashboardLabelStatus"))[0].id.split("_")[0];//.split("_")[0];
+        $.enableMultiselectWithAlreadySelectedValues("statusList",statusId);
+
+        $("#FilterBtn").click();
+    });
+
+    var table;
+    var aoDataStringify;
+    function LoadTable(api, from, to, campaign, cateogries, statuses, transferedStatus) {
+        //alert(api);
+        table = $('#agentListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                aoDataStringify = JSON.stringify(aoData);
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": api,//'../GeneralApi/GetStakeholderComplaintsServerSide',
+                    "data": { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: statuses, transferedStatus:transferedStatus,complaintType: @Convert.ToInt32(Config.ComplaintType.Complaint), listingType:@Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe), aoData: aoDataStringify},
+                    "success": fnCallback,
+                });
+                SetDashboardLabels(dashboardStatusLabel);
+                SetDashboardLabels(dashboardComplaintSrcLabel);
+            },
+
+            // Denormalized
+            "columns": [
+                { "data": "Id" },
+                { "data": "Campaign_Name" },
+                { "data": "District_Name" },
+                { "data": "Tehsil_Name" },
+                { "data": "UnionCouncil_Name" },
+                { "data": "Person_Name" },
+                { "data": "Created_Date" },
+                { "data": "Complaint_Category_Name" },
+                { "data": "Complaint_Computed_Status" },
+                { "data": "Complaint_Computed_Hierarchy" },
+                { "data": "Computed_Remaining_Time_To_Escalate" },
+                { "data": "Ref_Complaint_Id" },
+                { "data": "ComplaintId" }
+            ],
+
+
+            aoColumnDefs: [{
+                "aTargets": [12],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    var ExtraColumn = '<td style="text-align:center">' +
+                        '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenStakeholderDetailPopup(this.id);"><span class="fa fa-eye"></span></a>';
+
+                    var TransferColumn = '<span>|</span><a data-original-title="Transfer" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenTransferPopup(this.id);"><span class="glyphicon glyphicon-transfer"></span></a>';
+
+                    @{
+                            List<DbPermissionsAssignment> listPermissions = ((List<DbPermissionsAssignment>) ViewBag.ListPermissions);
+                            if(listPermissions!=null && listPermissions.Where(n=>n.Permission_Id==(int)Config.Permissions.TransferComplaint).Count()!=0)
+                            {
+                                <text>
+                    ExtraColumn = ExtraColumn + TransferColumn;
+                    </text>
+
+                                //ExtraColumn = ExtraColumn + '<span>|</span><a data-original-title="Transfer" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenTransferPopup(this.id);"><span class="glyphicon glyphicon-transfer"></span></a>';
+
+                            }
+                        }
+
+
+                    ExtraColumn = ExtraColumn + '</td>';
+                    return ExtraColumn;
+
+                    @*return '<td style="text-align:center">' +
+                        '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenStakeholderDetailPopup(this.id);"><span class="fa fa-eye"></span></a>' +
+                        @{
+                            List<DbPermissionsAssignment> listPermissions = ((List<DbPermissionsAssignment>) ViewBag.ListPermissions);
+                            if(listPermissions!=null && listPermissions.Where(n=>n.Permission_Id==Config.Permissions.TransferComplaint).Count()!=0)
+                            {
+
+                            }
+                        }
+                        '<span>|</span>'+
+                        '<a data-original-title="Transfer" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenTransferPopup(this.id);"><span class="glyphicon glyphicon-transfer"></span></a>' +
+                        '</td>';*@
+                }
+            }],
+        });
+    }
+    function OpenStakeholderDetailPopup(complaintId) {
+        $('#PopupDiv').empty();
+        //$('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId);
+        $('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId+"&detailType="+@Convert.ToInt32(VmStakeholderComplaintDetail.DetailType.AssignedToMe));
+        $('#PopupDiv').modal();
+    }
+
+    function OpenTransferPopup(complaintId) {
+        $('#PopupDiv').empty();
+        $('#PopupDiv').load("../Complaint/TransferComplaint?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }
+</script>
+

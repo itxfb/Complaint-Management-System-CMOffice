@@ -1,0 +1,123 @@
+﻿
+@model IEnumerable<VmCampaignDepartment>
+@using PITB.CMS_Common.Handler.Authentication;
+@{
+
+}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<style type="text/css">
+    .ui-autocomplete-row {
+        padding: 4px;
+        background-color: #f4f4f4;
+        border-bottom: 1px solid #ccc;
+        font-weight: bold;
+    }
+
+        .ui-autocomplete-row:hover {
+            background-color: #ddd;
+        }
+
+    .boxes {
+        border: medium none;
+        opacity: 1;
+        box-shadow: 0px 0px 10px 3px #cccccc;
+    }
+</style>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Campaign Departments</h4>
+        </div>
+        <div class="box-body-white">
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6 col-sm-12">
+                    <label for="">Search Tag</label>
+                    <input type="text" name="autocomplete" id="autocomplete" class="form-control" />
+                </div>
+            </div>
+            <hr />
+            <div class='row'>
+                @foreach (VmCampaignDepartment c in Model)
+                {
+                    <div class="col-sm-6 col-md-4 col-lg-2 campaignDepartment" style="cursor: pointer;" id="@c.Id">
+
+                        <div class="box box-warning boxes" style="border: none" id="box_@c.Id">
+                            <div class="box-header bg-navy" style="min-height:52px;">
+                                <h6 class="box-title">@c.Name</h6>
+                            </div>
+                            <div class="box-body-white" style="margin-top: 5px;">
+                                <div style="text-align: center;height: 100px">
+                                    <img src="@Url.Content(c.Logo)" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @using (Html.BeginForm("AddComplaint", "Complaint", FormMethod.Post, new { @style = "", id = "frmAddComplaint" }))
+            {
+                @Html.Hidden("campaign", "");
+                @Html.Hidden("personId", AuthenticationHandler.GetCookie().PersonalInfo_Id);
+            }
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" type="text/css" media="all" />
+<script>
+    $(function () {
+
+        $(".campaignDepartment").on('click', function () {
+
+            $('#PopupDiv').empty();
+            $('#PopupDiv').load("../PublicUserComplaints/GetCampaigns?CampaignDepartmentId=" + $(this).attr('id'));
+            $('#PopupDiv').modal();
+        });
+
+
+        $("#autocomplete").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("SearchCampaign", "GeneralApi")',
+                    type: "POST",
+                    dataType: "json",
+                    data: { searchParam: request.term },
+                    success: function (data) {
+                        debugger;
+                        
+                        response($.map(data, function (item) {
+                            debugger;
+                            return { Id: item.Id, label: item.Name, value: item.Name, LogoUrl: item.LogoUrl };
+                        }))
+
+                    }
+                })
+            },
+            //messages: {
+            //    noResults: "", results: ""
+            //},
+            select: function (e, ui) {
+                
+                $("#campaign").val(ui.item.Id);
+                setTimeout(function () {
+                    $("#frmAddComplaint").submit();
+                }, 100);
+            }
+        }).data('ui-autocomplete')._renderItem = function (ul, item) {
+            debugger;
+            var inner_html = '<img src="' + item.LogoUrl + '" width="70" id="ui-id-13" tabindex="-1" class="ui-menu-item-wrapper">&nbsp;&nbsp;&nbsp' + item.label;
+            return $("<li class='ui-autocomplete-row'></li>")
+                .data("item.autocomplete", item)
+                .append(inner_html)
+                .appendTo(ul);
+        }
+    })
+
+    function setStyle(objId, propertyObject) {
+        var elem = document.getElementById(objId);
+
+        for (var property in propertyObject)
+            elem.style[property] = propertyObject[property];
+    }
+</script>

@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    //Layout = ViewBag.Layout;
+}
+<style>
+    .form-padding {
+        padding: 25px 15px;
+        border-radius: 4px;
+    }
+
+    .btn-load {
+        font-size: 14px;
+        margin-top: 22px;
+        padding: 6px 25px;
+    }
+
+        .btn-load span {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+    .content-wrapper {
+        min-height: 20px !important;
+    }
+
+    #datepicker > span:hover {
+        cursor: pointer;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row margin-bottom">
+        @*<div class="col-md-4">
+            <span style="color:#fff">From Date</span>
+
+            <div id="datepickerFrom" class="input-group date">
+                <input id="StartDate" class="form-control" type="text" readonly value="@ViewBag.StartDate" />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+
+        </div>
+        <div class="col-md-4">
+            <span style="color:#fff">To Date</span>
+
+            <div id="datepickerTo" class="input-group date">
+                <input id="EndDate" class="form-control" type="text" readonly value="@ViewBag.EndDate" />
+                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+            </div>
+        </div>*@
+        <div class="col-lg-3 col-md-3 col-sm-3">
+            <span>Select Date</span>
+            <input type="text" id="dateRange" placeholder="" class="form-control">
+        </div>
+        <div class="col-md-4">
+            <button type="button" value="Load" onclick="LoadData()" class="btn btn-success btn-sm btn-load"><span class="glyphicon glyphicon-refresh"></span>Load</button>
+        </div>
+    </div>
+
+    <div id="CampaignList">
+        @{Html.RenderAction("ExecutiveCampaignView", "Executive", new { startDate = ViewBag.StartDate, endDate = ViewBag.EndDate });}
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(function () {
+        //$("#datepickerFrom").datepicker({
+        //    format: 'yyyy-mm-dd',//mm/dd/yyyy
+        //    autoclose: true,
+        //    todayHighlight: true,
+        //});
+        //$("#datepickerTo").datepicker({
+        //    format: 'yyyy-mm-dd',
+        //    autoclose: true,
+        //    todayHighlight: true
+        //});
+        //$("#datepickerFrom").on("dp.change", function (e) {
+        //    $('#datepickerTo').data("DateTimePicker").minDate(e.date);
+        //});
+        //$("#datepickerTo").on("dp.change", function (e) {
+        //    $('#datepickerFrom').data("DateTimePicker").maxDate(e.date);
+        //});
+        $('#dateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+    });
+    function LoadData() {
+        debugger;
+        var startDate = $('#dateRange').val().split('To')[0].trim();
+        var endDate = $('#dateRange').val().split('To')[1].trim();
+        var url = '/Executive/ExecutiveCampaignView';
+        $.ajax({
+            async: false,
+            contentType: 'application/x-www-form-urlencoded',
+            type: 'GET',
+            dataType: 'html',
+            data: { startDate: startDate, endDate: endDate },
+            url: url,
+            success: function (result, status, xhr) {
+                debugger;
+                $("#CampaignList").empty();
+                $("#CampaignList").html(result);
+            },
+            error: function (xhr, status, error) {
+                debugger;
+                alert(error);
+            }
+        });
+    }
+    function getHTML(url, callback) {
+        debugger;
+        if (!window.XMLHttpRequest)
+            return;
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.onload = function () {
+            if (callback && typeof (callback) === 'function') {
+                callback(this.responseXML);
+            }
+        }
+
+        xhr.open('GET', url);
+        xhr.responseType = 'document';
+        xhr.send();
+    }
+    function getData(id) {
+        debugger;
+        var CampaignId = id;
+        var startDate = document.getElementById('lowerdatepicker_' + id).value;
+        var endDate = document.getElementById('upperdatepicker_' + id).value;
+        var url = '/Executive/GetCampaignDataById';
+        $.ajax({
+            async: false,
+            contentType: 'application/x-www-form-urlencoded',
+            type: 'GET',
+            dataType: 'json',
+            data: { campaignId: CampaignId, startDate: startDate, endDate: endDate },
+            url: url,
+            success: function (result, status, xhr) {
+                debugger;
+                var campId = result.CampaignId;
+                for (i = 0; i < result.Status.length; i++) {
+                    var obj = result.Status[i];
+                    var count = result.Status[i].StatusCount;
+                    var s = '#statusCount_' + campId + '_' + result.Status[i].StatusId;
+                    //var doc = document.getElementById(s).innerHTML;
+                    var elem = document.getElementById(s);
+                    if (typeof elem !== 'undefined' && elem !== null) {
+                        document.getElementById(s).innerHTML = count;
+                    }
+                    var d;
+                }
+                debugger;
+                var e = 1;
+
+            },
+            error: function (xhr, status, error) {
+                debugger;
+                alert(error);
+            }
+        });
+    }
+</script>

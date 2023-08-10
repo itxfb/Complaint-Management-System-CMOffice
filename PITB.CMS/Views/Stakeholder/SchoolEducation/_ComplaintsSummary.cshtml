@@ -1,0 +1,66 @@
+﻿
+
+<div class="box-header-blue with-border btn-header">
+    <h4 class="box-title">Summary</h4>
+</div>
+<div class="box-body-white">
+    <table id="tblSummary@(ViewBag.divTag)" style="width:100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid">
+        <thead>
+            <tr role="row" class="tableHeader">
+                <th>Sr No</th>
+                <th>Summary</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>        
+    </table>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $(function() {
+        debugger;
+        LoadData@(ViewBag.divTag)();
+
+    });
+    function LoadData@(ViewBag.divTag)()
+    {
+        GetComplaintsSummary@(ViewBag.divTag)();
+    }
+    function GetComplaintsSummary@(ViewBag.divTag)() {
+        debugger;
+        $.ajax({
+            url: "@Url.Action("GetComplaintsSummary", "ApiSchoolEducation")",
+            type: "Post",
+            data: {
+                startDate: $("#Piedatepickerlower").val(),
+                endDate: $("#Piedatepickermax").val(),
+                campId: @((string)ViewBag.campId),
+                hierarchyId: @((int)ViewBag.HierarchyId),
+                commaSepVal: '@((string)ViewBag.commaSepVal)',
+                statusIds: '@(ViewBag.statusIds)',
+            },
+            async: true,
+            success: function (data) {
+                debugger;
+                //data = $.parseJSON(data);
+                $("#tbody").children().remove();
+                //$("#tblSummary@(ViewBag.divTag) > tbody").html("");
+                //tblSummary.empty();
+                $.each(data, function (index, item) {
+                    debugger;
+                    var tr = $("<tr></tr>");
+                    tr.html(("<td>"+item.Item1+"</td>")
+                    + " " + ("<td>" + item.Item2 + "</td>")
+                    + " " + ("<td>" + item.Item3 + "</td>"));
+                    $("#tblSummary@(ViewBag.divTag) tbody").append(tr);
+                });
+            }
+        });
+    }
+
+</script>

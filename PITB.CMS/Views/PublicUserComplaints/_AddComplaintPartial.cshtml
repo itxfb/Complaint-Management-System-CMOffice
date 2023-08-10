@@ -1,0 +1,49 @@
+﻿@model PITB.CMS_Common.Models.View.VmAddComplaint
+
+
+<div id="dynamicF"> 
+    @foreach (var x in Model.ComplaintVm.ListDynamicDropDown)
+    {
+        int index = Model.ComplaintVm.ListDynamicDropDown.FindIndex(n => n == x);
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                <label>@x.FieldName</label>
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownListFor(m => m.ComplaintVm.ListDynamicDropDown[index].Setting, Model.ComplaintVm.ListDynamicDropDown[index].FieldValue, new { @Id= Model.ComplaintVm.ListDynamicDropDown[index].Setting.Split('.')[1], @class = "form-control", @required = Model.ComplaintVm.ListDynamicDropDown[index].IsRequired })
+                @Html.ValidationMessageFor(m => m.ComplaintVm.ListDynamicDropDown[index].Setting, "", new { @class = "label label-warning" })
+
+
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var dynamicFDict = [];
+
+
+        dynamicFDict.push({
+            key: "Province_Id",
+            value: "Divisions?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+        dynamicFDict.push({
+            key: "Division_Id",
+            value: "Districts?campaignId=" + $('#ComplaintVm_Compaign_Id').val()
+        });
+
+        dynamicFDict.push({
+            key: "Tehsil_Id",
+            value: null
+        });
+
+        RegisterDropDownListChangeEventsCustomDictionary(dynamicFDict);
+
+
+    });
+
+</script>

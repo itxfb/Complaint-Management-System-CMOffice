@@ -1,0 +1,11 @@
+﻿@*@using PITB.CMS.Models.View
+@model VmAddComplaint
+
+
+    @Html.DropDownList(m => m.District_Id, Model.DistrictsList, "--Select--", new { @Id = "userControlProvince", @class = "form-control" })
+
+<script type="text/javascript">
+    $('#userControlProvince').change(function () {
+        $(this).parents('form').submit();
+    });
+</script>*@

@@ -1,0 +1,190 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - PITB CRM</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/dataTables")
+    @Scripts.Render("~/bundles/bootstrap")
+    
+    @*<link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+        <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <script src="~/Scripts/modernizr-2.6.2.js"></script>*@
+</head>
+<body>
+    @*<div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    <h2 class="navbar-brand">  PITB Attendance Logging System </h2>
+                   @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="@Url.Action("OnLogout", "Account")">Logout</a></li>
+                    </ul>
+
+                </div>
+                <p class="navbar-btn navbar-collapse">
+                    <a href="@Url.Action("Employee", "AttendanceController","id=1")" class="btn btn-default">Home</a>
+                </p>
+                <p class="navbar-btn navbar-collapse">
+                    <a href="@Url.Action("Employee", "AttendanceController","id=1")" class="btn btn-default">Home</a>
+                </p>
+
+            </div>
+        </div>*@
+
+    <nav class="navbar navbar-default navbar-default navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>*@
+                <a class="navbar-brand" href="@Url.Action("Employee", "Attendance")">PITB Attendance Reporting System</a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    @*<li class="active"><a href="@Url.Action("Employee", "AttendanceController")" class="btn btn-default">Home</a></li>*@
+                    <li><a href="@Url.Action("Employee", "Attendance")">Home</a></li>
+                    
+                        <li><a href="@Url.Action("AttendanceLogsForAll", "Attendance"/*, new { id = -1 }*/)">View All</a></li>
+                    @*<li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Action</a></li>
+                                <li><a href="#">Another action</a></li>
+                                <li><a href="#">Something else here</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Separated link</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">One more separated link</a></li>
+                            </ul>
+                        </li>*@
+                </ul>
+                @*<form class="navbar-form navbar-left" role="search">
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Search">
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>*@
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="@Url.Action("OnLogout", "Account")">Logout</a></li>
+                    @*<li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Separated link</a></li>
+                </ul>
+            </li>*@
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" id="ChangePassword">Change Password</a></li>
+                </ul>
+                
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <div id="DivChangePasswordPartialView">
+
+    </div>
+
+    <div class="container body-content" style="margin-top:40px">
+        @RenderBody()
+        <div id="Loading" style="display:none;" class="LoadingBlock">
+          
+        </div>
+        <hr />
+        @*<footer>
+                <p>&copy; @DateTime.Now.Year - Attendance Logging System</p>
+            </footer>*@
+        <footer class="main-footer" style="text-align: center;">
+            <div class="container">
+                <strong>Copyright &copy; @DateTime.Now.Year <a href="http://www.pitb.gov.pk/">Punjab Information Technology Board</a>.</strong> All rights reserved.
+            </div>
+            <!-- /.container -->
+        </footer>
+    </div>
+
+    @*<div id="Loading" class="modal fade">
+       
+    </div>*@
+
+ 
+
+
+    @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+    $(document).ready(function () {
+        //$('#Loading').modal('show');
+        //alert('zeeshi');
+        var url = window.location;
+        $('ul.nav a[href="' + this.location.pathname + '"]').parent().addClass('active');
+        $('ul.nav a').filter(function () {
+            return this.href == url;
+        }).parent().parent().parent().addClass('active');
+
+        //$('.navbar-nav').on('click', 'li', function () {
+        //    $('.navbar-nav li.active').removeClass('active');
+        //    $(this).addClass('active');
+        //});
+    });
+
+    function OnChangePasswordClick() { // on change password of popup click
+        @*var url = "@Html.Raw(Url.Action("PopupChangePassword", "Attendance", new { param = "-parameter" }))";*@
+        //url = url.replace("-parameter", dataId);
+        //dataId = dataId.replace(/\s/g, '');
+        var oldPassword = $('#OldPassword').val();
+        var newPassword = $('#NewPassword').val();
+        var confirmPassword = $('#ConfirmPassword').val();
+        @*var url = "@Html.Raw(Url.Action("OnChangePassword", "Attendance", new { OldPassword = "-OldPassword", NewPassword = "-NewPassword", ConfirmPassword = "-ConfirmPassword" }))";*@
+        var url = "@Html.Raw(Url.Action("OnChangePassword", "Account", new { OldPassword = "-OldPassword", NewPassword = "-NewPassword" }))";
+        url = url.replace("-OldPassword", oldPassword);
+        url = url.replace("-NewPassword", newPassword);
+        url = url.replace("-ConfirmPassword", confirmPassword);
+        @*url = @Html.ActionLink("PopupChangePassword", "Attendance", new { OldPassword = oldPassword, NewPassword = 2 })*@
+
+        $('#DivChangePasswordPartialView').load(url);
+    }
+
+    $(function () {
+        $('#ChangePassword').click(function () {
+            var url = "@Html.Raw(Url.Action("PopupChangePassword", "Attendance"))";
+            $('#DivChangePasswordPartialView').load(url);
+        });
+    });
+    /*
+    $.ajax({
+        beforeSend: function () {
+            $('#Loading').fadeIn('slow');
+        },
+        complete: function () {
+            $('#Loading').fadeOut('slow');
+        }
+    });
+    */
+
+</script>
+    @*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/bootstrap.min.js"></script>*@
+    
+</body>
+</html>

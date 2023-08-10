@@ -1,0 +1,263 @@
+﻿
+
+
+<div class="position-r">
+    <div class="cust-overlay pie-overlay">Loading...</div>
+    <h4>Category/Subcategory Wise Complaint  <a href="#" class="view-full pull-right" id="PieFull"><img src="~/img/max.png" /></a> <a href="#" id="PieExit" class="exit pull-right"><img src="~/img/min.png" /></a></h4>
+    <div class="row">
+
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <!--<span>From Date</span>-->
+            @*@Html.TextBox("CRONo", DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx datepicker", @id = "Piedatepickerlower" })*@
+            <!--<input type="text" id="Piedatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>To Date</span>-->
+            @*@Html.TextBox("CRONo", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx", @id = "Piedatepickermax" })*@
+            <!--<input type="text" id="Piedatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+            class="form-control datepicker" data-original-title="To" data-toggle="tooltip">-->
+            <span>Select Date</span>
+            <input type="text" id="pieDateRange" placeholder="" class="form-control">
+        </div>
+    </div>
+    <div id="CategoryCountChart" style="width:100%; height:450px; margin-top:20px;"></div>
+
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#pieDateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#pieDateRange').on('apply.daterangepicker', function (ev, picker) {
+            $.LoadPieChart();
+        });
+    });
+
+    //var oldStart = $('#Piedatepickerlower').val();
+    //var oldenddate = $('#Piedatepickermax').val();
+    var campaignId = '@(ViewBag.campaignId)';
+
+    $(function () {
+        $.LoadPieChart();
+    });
+    //jQuery('#Piedatepickerlower').change(function () {
+    //    if (oldStart != $('#Piedatepickerlower').val()) {
+    //        $.LoadPieChart();
+    //        oldStart = $('#Piedatepickerlower').val();
+    //    }
+    //     //$.LoadPieChart();
+    //});
+    //jQuery('#Piedatepickermax').change(function () {
+    //    if (oldenddate != $('#Piedatepickermax').val()) {
+    //        $.LoadPieChart();
+    //        oldenddate = $('#Piedatepickermax').val();
+    //    }
+    //    //$.LoadPieChart();
+    //});
+
+    $("#PieFull").click(function (e) {
+        e.preventDefault();
+
+        $(this).parent("h4").parent("div").addClass("full-screen");
+        $("#CategoryCountChart").css("height", "650px");
+        $.LoadPieChart();
+        $(this).hide();
+        $(this).parent("h4").children(".exit").fadeIn();
+    });
+    $("#PieExit").click(function (e) {
+        e.preventDefault();
+        $(this).parent("h4").parent("div").removeClass("full-screen");
+        $("#CategoryCountChart").css("height", "450px");;
+        $.LoadPieChart();
+        $(this).hide();
+        $(this).parent("h4").children(".view-full").fadeIn();
+    });
+
+
+
+    $.LoadPieChart = function () {
+        var totalList = [];
+        var distName = [];
+        var categoryCount = [];
+        var categoryDrillDown = [];
+
+
+
+        $(".pie-overlay").fadeIn();
+        $.ajax({
+            url: "@Url.Action("PieChartProgress", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $('#pieDateRange').val().split('To')[0].trim(),
+                datemax: $('#pieDateRange').val().split('To')[1].trim(),
+                campaignId : campaignId
+            },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var detailObj;
+                //debugger;
+                $.each(data.DistrictTotalSum, function (idx, obj) {
+                    //New Object
+                    var TotalDistrictObject = new Object();
+                    TotalDistrictObject.name = (obj.ComplaintCategory);
+                    TotalDistrictObject.y = (obj.TotalComplaints);
+                    TotalDistrictObject.drilldown = (obj.ComplaintCategory);
+
+                    //Add in list
+                    totalList.push(TotalDistrictObject);
+
+                    //New Object
+                    detailObj = new Object();
+                    detailObj.id = (obj.ComplaintCategory);
+                    detailObj.name = obj.ComplaintCategory;
+                    var dataArr = [];
+                    detailObj.data = [];
+
+                    var result = $.grep(data.Detail, function (e) { return e.ComplaintCategory === obj.ComplaintCategory; });
+                    if (result != null)
+                    {
+                        
+
+                        $.each(result, function (idx1, obj1) {
+                            //New Object
+
+                            //detailObj.data = [];
+                            dataArr = [];
+                            dataArr.push(obj1.ComplaintSubCategory);
+                            dataArr.push(obj1.TotalComplaints);
+                            detailObj.data.push(dataArr);
+                            categoryDrillDown.push(detailObj);
+
+                            //detailObj.data.push(obj1.category_desc);
+                            //detailObj.data.push(obj1.total);
+
+                            //  value: obj1.total;
+
+
+
+
+                        });
+
+
+                        
+
+                    }
+                    $(".pie-overlay").fadeOut(1000);
+                });
+                //Add in list
+
+                
+                //$.each($.parseJSON(data), function (idx, obj) {
+                
+                //    //DailyDistrictCount.push(obj.entries);
+                //    //DailyDistrictName.push(obj.dst_desc.toString());
+                //    //DailyPictureCount.push(obj.photographs);
+                //    //FingerPrintsCount.push(obj.finger_prints);
+                //});
+
+
+                // Create the chart
+                $('#CategoryCountChart').highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: 'pie'
+                    },
+                    title: {
+                        text: 'Category Wise Complaint'
+                    },
+
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y:.0f}'
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        headerFormat: '<span style="font-size:11px" class="txt-urdu">{series.name}</span><br>',
+                        pointFormat: '<span style="color:{point.color}" class="txt-urdu" >{point.name}</span>: <b>{point.y:.0f}</b>'
+                    },
+                    series: [{
+                        name: 'Category',
+                        colorByPoint: true,
+                        data: totalList
+                        //data: [{
+                        //    name: 'Microsoft Internet Explorer',
+                        //    y: 56.33,
+                        //    drilldown: 'Microsoft Internet Explorer'
+                        //}, {
+                        //    name: 'Chrome',
+                        //    y: 24.03,
+                        //    drilldown: 'Chrome'
+                        //}]
+                    }],
+                    exporting: {
+                        chartOptions: {
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    drilldown: {
+                        series: categoryDrillDown
+                        //series: [{
+                        //    name: 'Microsoft Internet Explorer',
+                        //    id: 'Microsoft Internet Explorer',
+                        //    data: [
+                        //        ['v11.0', 24.13],
+                        //        ['v8.0', 17.2],
+                        //        ['v9.0', 8.11],
+                        //        ['v10.0', 5.33],
+                        //        ['v6.0', 1.06],
+                        //        ['v7.0', 0.5]
+                        //    ]
+                        //}, {
+                        //    name: 'Chrome',
+                        //    id: 'Chrome',
+                        //    data: [
+                        //        ['v40.0', 5],
+                        //        ['v41.0', 4.32],
+                        //        ['v42.0', 3.68],
+                        //        ['v39.0', 2.96],
+                        //        ['v36.0', 2.53],
+                        //        ['v43.0', 1.45],
+                        //        ['v31.0', 1.24],
+                        //        ['v35.0', 0.85],
+                        //        ['v38.0', 0.6],
+                        //        ['v32.0', 0.55],
+                        //        ['v37.0', 0.38],
+                        //        ['v33.0', 0.19],
+                        //        ['v34.0', 0.14],
+                        //        ['v30.0', 0.14]
+                        //    ]
+                        //}]
+                    }
+                });
+                $(".pie-overlay").fadeOut(1000);
+            }
+        });
+    }
+
+
+</script>
+

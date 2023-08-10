@@ -1,0 +1,19 @@
+﻿@model PITB.CRM.Public_Web.Models.ViewModels.VmDropdown
+
+@using (Ajax.BeginForm("LoadTehsils", "General",
+new AjaxOptions { UpdateTargetId = "TehsilArea" }))
+{
+    @Html.DropDownListFor(
+            m => m.SelectedValue,
+            new SelectList(Model.DropdownValuesList, "Value", "Text"),
+            "-- District --", new { @class = "form-control", id = "DistrictsDDL" }
+        )
+}
+
+
+
+<script type="text/javascript">
+    $('#DistrictsDDL').change(function () {
+        $(this).parents('form').submit();
+    });
+</script>

@@ -1,0 +1,387 @@
+﻿@model PITB.CMS_Common.Models.View.Data_Representation.VmResponseTime
+@*@model PITB.CMS.Models.View.Data_Representation.VmResponseTime*@
+@using System.Web.Mvc;
+@{
+    //Layout = "~/Views/Shared/Executive/_ExecutiveDashboardLayout.cshtml";
+}
+@{
+    string a = Request.Url.Authority;
+    string lObjDate = DateTime.Now.Date.ToString("MMMM dd, yyyy");
+}
+
+<style>
+    .btn-load {
+        font-size: 14px;
+        margin-top: 22px;
+        padding: 6px 25px;
+    }
+
+        .btn-load span {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+    #datepicker > span:hover {
+        cursor: pointer;
+    }
+</style>
+<div id="spinner" class="spinner" style="display:none; width:100%;height:100%;top:50px;left:50px; background-color:rgba(60,60,60,0.5)">
+    @*<img id="img-spinner" style="top:50%;left:50%" src="~/img/executive-spinner.gif" alt="Loading"/>*@
+
+</div>
+<div class="container-fluid">
+    <div class="box box-solid" style="padding:25px;">
+        <div class="row" style="padding-bottom:15px;padding-left:25px;padding-right:25px">
+            <div class="col-md-6">
+                <h3 style="font-size: 20px; font-weight:600; color:#404040; line-height:1px;">District Performance Report</h3>
+            </div>
+            @*<div class="col-md-6 text-right">
+                    <button class="btn btn-success" data-toggle="tooltip" title="Export"><i class="fa fa-download"> &nbsp Export</i></button>
+                </div>*@
+        </div>
+
+        <div class="row margin-bottom" style="padding-left:25px; padding-right:25px;">
+            <div class="col-md-4">
+                @Html.Label("SelectedCampaignIds")
+                @Html.DropDownListFor(x => Model.SelectedCampaignIds, new SelectList(Model.CampaignList, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "CampaignIds" })
+                <label id="campaignMsg" class="text-danger" style="display:none">Please select campaign</label>
+            </div>
+        </div>
+
+        <div class="col-md-4" style="display:none">
+            @Html.Label("SelectedHierarchyId")
+            @Html.DropDownListFor(x => Model.SelectedHierarchyId, new SelectList(Model.HierarchyList, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "HierarchyId" })
+            <label id="hierarchyMsg" class="text-danger" style="display:none">Please select hierarchy</label>
+        </div>
+        <div class="row margin-bottom" style="padding-left:25px; padding-right:25px;">
+            <div class="col-md-4" style="margin-top:15px">
+                @Html.Label("SelectedEscalationLevel")
+                @Html.DropDownListFor(x => Model.SelectedEscalationLevel, new SelectList(Model.EscalationLevelList, "Value", "Text"), htmlAttributes: new { @class = "form-control", id = "EscalationLevelId" })
+                <label id="escalationMsg" class="text-danger" style="display:none">Please select escalation level</label>
+            </div>
+        </div>
+
+        <div class="row margin-bottom" style="padding:0px 25px">
+
+            @*<div class="col-md-4">
+                    <div class="">
+                        <label>From Date</label>
+
+                        <div id="datepickerFrom" class="input-group date">
+                            <input class="form-control" type="text" readonly value="@DateTime.Now.AddMonths(-3).ToString("MM/dd/yyyy")" />
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="">
+                        <label>To Date</label>
+
+                        <div id="datepickerTo" class="input-group date">
+                            <input class="form-control" type="text" readonly value="@DateTime.Now.ToString("MM/dd/yyyy")" />
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="col-lg-4 col-md-4 col-sm-4">
+                <label>Select Date</label>
+                <input type="text" id="dateRange" placeholder="" class="form-control">
+            </div>
+            <div class="col-md-4" style="display:inline-block">
+                <button type="button" value="Load" onclick="LoadData()" class="btn btn-success" style="margin-top:25px;"><span class="glyphicon glyphicon-refresh"></span>&nbsp Load</button>
+                <button type="button" value="Export" onclick="ExportData()" class="btn btn-linkedin" style="margin-top:25px;"><span class="glyphicon glyphicon-download"></span>&nbsp Export</button>
+            </div>
+        </div>
+
+        <div id="PrintableDiv" style="margin:auto;background-color:white;">
+            <link rel="stylesheet" type="text/css" href="https://@a/Content/bootstrap.css">
+            <link rel="stylesheet" type="text/css" href="https://@a/Content/bootstrap.min.css">
+            <link rel="stylesheet" type="text/css" href="https://@a/Content/DataTables/css/dataTables.bootstrap.css">
+            <link rel="stylesheet" type="text/css" href="https://@a/Content/DataTables/css/responsive.bootstrap.css">
+            <link rel="stylesheet" type="text/css" href="https://@a/css/crm.css">
+            <style type="text/css">
+                .table > thead > tr > th,
+                .table > tbody > tr > th,
+                .table > tfoot > tr > th {
+                    background-color: rgb(65, 94, 97);
+                    color: rgb(255,255,255);
+                }
+
+                .table > thead > tr > th,
+                .table > tfoot > tr > th,
+                .table > thead > tr > td,
+                .table > tbody > tr > td,
+                .table > tfoot > tr > td {
+                    page-break-inside: avoid;
+                }
+
+                .table > thead > tr {
+                    page-break-inside: avoid;
+                }
+
+                .table > tbody > tr {
+                    page-break-inside: avoid;
+                }
+
+                .table > tfoot > tr {
+                    page-break-inside: avoid;
+                }
+            </style>
+
+
+
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-xs-12 col-md-12">
+                    <div id="pageHeader" class="box-body-white clearfix">
+                        <div style="display:compact;">
+                            <img src="~/img/PITB-LOGO.gif" style="max-width:70px; max-height:70px; margin-top: -3px; margin-right: 15px;position:absolute" />
+                            <p style="position:relative; text-align:center;margin:0px"><b>Chief Minister Helpline (0800-02345)</b></p>
+                            <p style="position:relative; text-align:center;margin:0px"><b>District Performance Summary <i>as of <span id="docDate">@DateTime.Now.Date.ToShortDateString()</span></i></b></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tablediv" style="padding:20px 25px;background-color:white">
+                <table id="myTable" class="table table-striped table-bordered table-hover table-responsive"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $('#dateRange').daterangepicker({
+            startDate: '@(DateTime.Now.AddMonths(-3).ToString("yyyy-MM-dd"))',
+            endDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+        $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+            document.getElementById('docDate').innerText = $("#dateRange").val().split('To')[1].trim();
+        });
+
+        $("#spinner").bind("ajaxSend", function () {
+            $(this).show();
+        }).bind("ajaxStop", function () {
+            $(this).hide();
+        }).bind("ajaxError", function () {
+            $(this).hide();
+        });
+
+        //$("#datepickerFrom").datepicker({
+        //    format: 'mm/dd/yyyy',
+        //    autoclose: true,
+        //    todayHighlight: true,
+        //});
+        //$("#datepickerTo").datepicker({
+        //    format: 'mm/dd/yyyy',
+        //    autoclose: true,
+        //    todayHighlight: true,
+        //    onSelect: function (e) {
+        //        debugger;
+        //        document.getElementById('docDate').innerText = e;
+        //    }
+        //});
+        //$("#datepickerFrom").on("dp.change", function (e) {
+        //    $('#datepickerTo').data("DateTimePicker").minDate(e.date);
+        //});
+        //$("#datepickerTo").on("dp.change", function (e) {
+        //    $('#datepickerFrom').data("DateTimePicker").maxDate(e.date);
+        //});
+        //LoadData();
+    });
+    $('#CampaignIds').change(function () {
+        var selectedCampaign = $('#CampaignIds option:selected').text();
+        var HierarchyId = $('#HierarchyId');
+        HierarchyId.empty();
+        var EscalationLevelId = $('#EscalationLevelId');
+        EscalationLevelId.empty();
+        if (selectedCampaign != null && selectedCampaign != '') {
+            $.getJSON('@Url.Action("GetHierarchyList","DataRepresentation")', { campaignText: selectedCampaign }, function (hierarchyList) {
+                if (hierarchyList != null && !jQuery.isEmptyObject(hierarchyList)) {
+                    $.each(hierarchyList, function (index, item) {
+                        HierarchyId.append($('<option/>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                };
+            });
+            $.getJSON('@Url.Action("GetEscalationLevelList", "DataRepresentation")', { campaignText: selectedCampaign }, function (escalationList) {
+                if (escalationList != null && !jQuery.isEmptyObject(escalationList)) {
+                    $.each(escalationList, function (index, item) {
+                        EscalationLevelId.append($('<option/>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                };
+            });
+        }
+    });
+
+    function LoadData() {
+        debugger;
+        // ExecutiveShowLoading();
+
+        var campaignId = $('#CampaignIds option:selected').val();
+        var hierarchyId = 3;//$('#HierarchyId option:selected').val();
+        var escalationLevelId = $('#EscalationLevelId option:selected').val();
+        if (campaignId.length == 0 || campaignId == ' ') {
+            $("#campaignMsg").css("display", "block");
+            return;
+        } else {
+            $("#campaignMsg").css("display", "none");
+        }
+        if (escalationLevelId.length == 0 || escalationLevelId == ' ') {
+            $("#escalationMsg").css("display", "block");
+            return;
+        } else {
+            $("#escalationMsg").css("display", "none");
+        }
+        var startDate = $("#dateRange").val().split('To')[0].trim();
+        var endDate = $("#dateRange").val().split('To')[1].trim();
+        document.getElementById('docDate').innerText = endDate;
+       // alert(startDate);
+        //alert(endDate)
+        $.ajax({
+            async: false,
+            url: '/GeneralApi/GetHierarchyReponseTime',
+            contentType: 'application/json; charset=utf-8',
+            type: 'GET',
+            dataType: 'xml',
+            data: { hierarchyId: hierarchyId, campaignId: campaignId, escalationId: escalationLevelId, startDate: startDate, endDate: endDate },
+            success: function (result, status, xhr) {
+                debugger;
+                $(".tablediv").empty();
+                $(".tablediv").append("<table id='myTable' class='table table-striped table-bordered table-hover table-responsive'></table>");
+                //alert(result);
+                var hierarchyList = result.getElementsByTagNameNS("PITB.CMS", "Hierarchy");
+                var xLen = hierarchyList.length;
+                //alert(xLen);
+                if (xLen != 'undefined' && xLen > 0) {
+                    var tableHTML = "";
+                    tableHTML = tableHTML +
+                      "<thead><tr>"
+                    + "<th>Sr No.</th>"
+                    + "<th>" + hierarchyList[0].getElementsByTagNameNS("PITB.CMS", "HierarchyHeading")[0].childNodes[0].nodeValue + " Name</th>"
+                    + "<th>" + "Pending" + "</th>"
+                    + "<th>" + "Overdue" + "</th>"
+                    + "<th>" + "Resolved" + "</th>"
+                    + "<th>" + "Total" + "</th>"
+                    + "<th>" + "Resolved %age" + "</th>"
+                    + "<th>" + "Avg.ResponseTime Per Complaint" + "</th>"
+                    + "</tr></thead>"
+                    + "<tbody>";
+                    var pendingTotal = 0;
+                    var overdueTotal = 0;
+                    var resolvedTotal = 0;
+                    var total = 0;
+                    for (i = 0; i < hierarchyList.length; i++) {
+                        tableHTML = tableHTML +
+                            "<tr>"
+                        + "<td>" + (i + 1) + "</td>"
+                        + "<td>" + GetNodeValue(hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "HierarchyName")[0]) + "</td>"
+                        + "<td>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Pending")[0].childNodes[0].nodeValue + "</td>"
+                        + "<td>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Overdue")[0].childNodes[0].nodeValue + "</td>"
+                        + "<td>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Resolved")[0].childNodes[0].nodeValue + "</td>"
+                        + "<td>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Total")[0].childNodes[0].nodeValue + "</td>"
+                        + "<td>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "ResolutionPercentage")[0].childNodes[0].nodeValue + "%" + "</td>"
+                        + "<td data-order='" + i + "'>" + hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "ResponseTime")[0].childNodes[0].nodeValue + "</td>"
+                        + "</tr>";
+                        pendingTotal = pendingTotal + parseInt(hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Pending")[0].childNodes[0].nodeValue, 10);
+                        overdueTotal = overdueTotal + parseInt(hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Overdue")[0].childNodes[0].nodeValue, 10);
+                        resolvedTotal = resolvedTotal + parseInt(hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Resolved")[0].childNodes[0].nodeValue, 10);
+                        total = total + parseInt(hierarchyList[i].getElementsByTagNameNS("PITB.CMS", "Total")[0].childNodes[0].nodeValue, 10);
+                    }
+                    debugger;
+                    DivData = [];
+                    tableHTML = tableHTML + "</tbody><tfoot><tr><th></th><th>Total</th><th>" + pendingTotal + "</th><th>" + overdueTotal + "</th><th>" + resolvedTotal + "</th><th>" + total + "</th><th>"+Math.round(resolvedTotal*1.0*100/total)+"%</th><th></th></tr></tfoot>";
+                    document.getElementById('myTable').innerHTML = tableHTML;
+                    var table = $('#myTable').DataTable({
+                        "paging": true,
+                        "ordering": true,
+                        "info": false,
+                        "destroy": true,
+                        "pageLength": 50
+                    });
+                    var table = $('#myTable').dataTable();
+                    $('#myTable_length').css('display', 'block');
+                    $('#myTable_filter').css('display', 'block');
+                    $('#myTable_paginate').css('display', 'block');
+                    DivData.push(table);
+                } else {
+                    $(".tablediv").append(document.createTextNode("No data in system"));
+                }
+
+                ExecutiveHideLoading();
+            },
+            error: function (xhr, status, error) {
+                debugger;
+                //alert("Internal error");
+                ExecutiveHideLoading();
+            }
+        });
+    }
+    function GetNodeValue(node) {
+        if (node.childNodes != undefined) {
+            if (node.childNodes.length > 0) {
+                return node.childNodes[0].nodeValue;
+            }
+        } else {
+            return "";
+        }
+    }
+    function ExecutiveShowLoading() {
+        $("#spinner").show();
+    }
+    function ExecutiveHideLoading() {
+        $("#spinner").hide();
+    }
+    function ExportData() {
+        debugger;
+        try {
+            ExecutiveShowLoading();
+            $('#myTable_length').css('display', 'none');
+            $('#myTable_filter').css('display', 'none');
+            $('#myTable_paginate').css('display', 'none');
+
+            debugger;
+
+            var lObjPageHeader = $('#pageHeader').html();
+
+            var printContents = $('#PrintableDiv').html();
+            var lObjHtmlStr = lObjPageHeader + printContents;
+            var filename = "District Performance Report.pdf";
+            var htmlData = {
+                id: 1,
+                htmlStr: GetLinkStrOnPage() + printContents
+            };
+            $.ajax({
+                dataType: 'json',
+                type: 'POST',
+                url: '@Url.Action("ExportPdfWithHtml", "generalapi")',
+                data: { htmlData: htmlData, orientation: 2 },
+                success: function (dataId) {
+                    //alert(dataId);
+                    debugger;
+                    window.location = '@Url.Action("ExportPdfWithHtml", "generalapi")?dataId=' + dataId + '&filename=' + filename;
+                    ExecutiveHideLoading();
+                },
+                error: function (xhr, status, error) {
+                    var err = eval("(" + xhr.responseText + ")");
+                    ExecutiveHideLoading();
+                }
+
+            });
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>

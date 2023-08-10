@@ -1,0 +1,71 @@
+﻿@{
+    ViewBag.Title = "DistrictWiseGraphMain";
+    //Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+}
+
+<div class="">
+    <div class="">
+           
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+
+                    @{ Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpa", StatusId = "2" }); }
+                </div>
+
+            </div>
+        </div>
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+                    @{
+                        Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpb", StatusId = "1" });
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+                    @{
+                        Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpc", StatusId = "6" });
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+                    @{
+                        Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpd", StatusId = "11" });
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+                    @{
+                        Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpd12", StatusId = "3" });
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary margin-bottom row">
+            <div class="col-md-12 col-sm-12">
+                <div>
+                    @{
+                        Html.RenderAction("DistrictWiseGraphReport", "Report", new { campId = ViewBag.CampignIds, graphName = "gpd23", StatusId = "7" });
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/highcharts.js"></script>
+<script src="~/Scripts/exporting.js"></script>
+<script src="~/Scripts/highchartdata.js"></script>
+<script src="~/Scripts/piechartdrilldown.js"></script>
+

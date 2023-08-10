@@ -1,0 +1,147 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Models
+@{
+    ViewBag.Title = "DashboardMain";
+    //Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+}
+<style>
+    .modal-dialog {
+        margin: 0 auto !important;
+    }
+
+    #PopupDiv2 {
+        z-index: 1053 !important;
+    }
+</style>
+<div class="cust-overlay pie-overlay" style="display:none;">Loading...</div>
+<div class="cust-overlay popup-overlay" style="display:none;"></div>
+@*<div id="cust-popup">
+        <div class="text-right"><a href="#" class="crose-link" id="List-Close">x</a></div>
+        <div class="List-data" style="margin-top:-3px;background:#ffffff; padding:10px 0px;"></div>
+    </div>
+    <div class="cust-overlay-detail"></div>
+    <div id="cust-popup-detail">
+        <div class="text-right" style="max-width:900px; margin:0 auto;"><a href="#" class="crose-link" id="crose-link-detail">x</a></div>
+        <div class="List-data-detail"></div>
+    </div>*@
+<div class="row">
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h3 class="box-title">
+                    PHCIP Education Component Dashboard
+                </h3>
+            </div>
+            <div class="box-body-white clearfix">
+                <div class="col-md-12 col-sm-12">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4">
+                                <span>Select Date</span>
+                                <input type="text" id="dateRange" placeholder="" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div id="d-complaintsTableStats"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <h3 class="text-center">Complaint Status - Overall</h3>
+                            <div id="d-complaintsStatus"></div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <h3 class="text-center">Source of Lodged Complaints</h3>
+                            <div id="d-complaintsSource"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                        @*<div class="col-lg-6 col-md-6 col-sm-6">
+                                <h3 class="text-center">Complaints Raised by Stakeholder Name</h3>
+                                <div id="d-complaintsByStakeholder"></div>
+                            </div>*@
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <h3 class="text-center">Open Complaints by District</h3>
+                            <div id="d-complaintsByDistrict"></div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<div class="Others-Graphs">
+
+    </div>*@
+
+<div class="scroll"></div>
+<script src="~/Scripts/highcharts.js"></script>
+<script>
+    function getBarGraphs(campId, gName, gType) {
+        var url = "@Url.Action("BarChartPhcipReport", "Report")";
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { campaignId: campId, graphName: gName, graphType: gType },
+            success: function (result) {
+                $("#d-" + gName).append(result);
+            }
+        })
+    }
+
+    function getTableStats(campId, tName, gType) {
+        var url = '@(Url.Action("TablePhcipCategoryStatReport", "Report"))';
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                campaignId: campId, tableName: tName,
+                startDate: $("#dateRange").val().split('To')[0].trim(),
+                endData: $("#dateRange").val().split('To')[1].trim()
+            },
+            success: function (result) {
+                $("#d-" + tName).html(result);
+            }
+        })
+    };
+
+    function getPieGraphs(campId, gName, gType) {
+        var url = '@(Url.Action("PieLegendChartPhcipReport", "Report"))';
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { campaignId: campId, graphName: gName, graphType: gType },
+            success: function (result) {
+                $("#d-" + gName).append(result);
+            }
+        })
+    };
+
+    $(document).ready(function () {
+        $('#dateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+
+        getTableStats('@(ViewBag.CampignIds)', 'complaintsTableStats', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+        getPieGraphs('@(ViewBag.CampignIds)', 'complaintsStatus', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+        getPieGraphs('@(ViewBag.CampignIds)', 'complaintsSource', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+        getBarGraphs('@(ViewBag.CampignIds)', 'complaintsByDistrict', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+
+        $('#dateRange').on('apply.daterangepicker', function (ev, picker) {
+            $(".pie-overlay").fadeIn();
+
+            getTableStats('@(ViewBag.CampignIds)', 'complaintsTableStats', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+            getPieGraphs('@(ViewBag.CampignIds)', 'complaintsStatus', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+            getPieGraphs('@(ViewBag.CampignIds)', 'complaintsSource', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+            getBarGraphs('@(ViewBag.CampignIds)', 'complaintsByDistrict', '@(Config.PieGraphTypes.SchoolEducationPhcipDashboard)');
+            $(".pie-overlay").fadeOut();
+        });
+    });
+</script>

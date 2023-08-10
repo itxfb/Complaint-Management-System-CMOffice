@@ -1,0 +1,138 @@
+﻿@model IEnumerable<VmCampaign>
+@using PITB.CMS_Common.Handler.Authentication;
+
+@{
+    bool showInDialog = !(ViewBag.UseLayout !=null) ? (bool)ViewBag.UseLayout: false;
+}
+@if (showInDialog)
+{
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Campaigns</h4>
+                    </div>
+                    <div class='row'>
+                        <br />
+                        @foreach (VmCampaign c in Model)
+                        {
+                            <div class="col-sm-6 col-md-4 col-lg-4 campaignBox" style="cursor: pointer;" onmouseover="setStyle('box_'+@c.Id, { 'opacity': '1', 'box-shadow': '0px 0px 10px 3px #cccccc' });" onmouseout="setStyle('box_'+@c.Id, { 'opacity': '0.8', 'box-shadow': 'none' });" id="@c.Id">
+                                @using (Html.BeginForm("AddComplaint", "Complaint", FormMethod.Post, new { @style = "" }))
+                                {
+
+
+                                    @Html.Hidden("campaign", c.Id);
+                                    @Html.Hidden("personId", AuthenticationHandler.GetCookie().PersonalInfo_Id);
+
+
+                                    <div class="box box-warning" style="border: none" id="box_@c.Id">
+                                        <div class="box-header bg-navy" style="min-height:52px;">
+                                            <h6 class="box-title">@c.Campaign_Name</h6>
+                                        </div>
+                                        <div class="box-body-white" style="margin-top: 5px;">
+                                            <div style="text-align: center;height: 100px">
+                                                <img src="@Url.Content(c.LogoUrl)" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                                            </div>
+                                        </div>
+                                        <div class="box-footer" style="background-color: #F7F7F7">
+                                            <div class="text-center" style="font-size: 15px; font-weight: bold"><i class="fa fa-phone-square"></i>&nbsp;@c.Campaign_HelpLine</div>
+                                        </div>
+                                    </div>
+
+                                }
+                            </div>
+
+                          
+                        }
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+                        
+                        <h4 class="box-title">Departments</h4>
+                    </div>
+                    <div class='row'>
+                        <br />
+                        @foreach (VmCampaign c in Model)
+                        {
+                            <div class="col-sm-6 col-md-4 col-lg-4 campaignBox" style="cursor: pointer;" onmouseover="setStyle('box_'+@c.Id, { 'opacity': '1', 'box-shadow': '0px 0px 10px 3px #cccccc' });" onmouseout="setStyle('box_'+@c.Id, { 'opacity': '0.8', 'box-shadow': 'none' });" id="@c.Id">
+                                @using (Html.BeginForm("AddComplaint", "Complaint", FormMethod.Post, new { @style = "" }))
+                                {
+
+
+                                    @Html.Hidden("campaign", c.Id);
+                                    @Html.Hidden("personId", AuthenticationHandler.GetCookie().PersonalInfo_Id);
+
+
+                                    <div class="box box-warning" style="border: none" id="box_@c.Id">
+                                        <div class="box-header bg-navy" style="min-height:52px;">
+                                            <h6 class="box-title">@c.Campaign_Name</h6>
+                                        </div>
+                                        <div class="box-body-white" style="margin-top: 5px;">
+                                            <div style="text-align: center;height: 100px">
+                                                <img src="@Url.Content(c.LogoUrl)" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                                            </div>
+                                        </div>
+                                        <div class="box-footer" style="background-color: #F7F7F7">
+                                            <div class="text-center" style="font-size: 15px; font-weight: bold"><i class="fa fa-phone-square"></i>&nbsp;@c.Campaign_HelpLine</div>
+                                        </div>
+                                    </div>
+
+                                }
+                            </div>
+                        }
+                        @*<div class="col-sm-6 col-md-4 col-lg-4 campaignBox" style="cursor: pointer;" onmouseover="setStyle('box_c_health', { 'opacity': '1', 'box-shadow': '0px 0px 10px 3px #cccccc' });" onmouseout="setStyle('box_c_health', { 'opacity': '0.8', 'box-shadow': 'none' });" id="c_health">
+                               
+
+
+                            <div class="box box-warning" style="border: none" id="box_health">
+                                <div class="box-header bg-navy" style="min-height:52px;">
+                                    <h6 class="box-title">Health</h6>
+                                </div>
+                                <div class="box-body-white" style="margin-top: 5px;">
+                                    <div style="text-align: center;height: 100px">
+                                        <img src="//storage.punjab.gov.pk/crm-cms/campaignimages/goplogo.png" style="display: inline-block;vertical-align: middle;max-height: 100%;max-width: 100%" />
+                                    </div>
+                                </div>
+                                <div class="box-footer" style="background-color: #F7F7F7">
+                                    <div class="text-center" style="font-size: 15px; font-weight: bold"><i class="fa fa-phone-square"></i>&nbsp;Please call at 0800-02345 to register your complaint</div>
+                                </div>
+                            </div>
+
+                                
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    $(function () {
+        $(".campaignBox").on('click', function () {
+            @* window.location.href="@Url.Action("Add","Complaint")?personId=" +@ViewBag.PersonId+"&campaign=" + $(this).attr('id');*@
+            $(this).find('form').submit();
+        });
+    });
+
+    function setStyle(objId, propertyObject) {
+        var elem = document.getElementById(objId);
+
+        for (var property in propertyObject)
+            elem.style[property] = propertyObject[property];
+    }
+</script>

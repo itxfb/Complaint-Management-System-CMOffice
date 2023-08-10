@@ -1,0 +1,272 @@
+﻿@using System.Web
+@using PITB.CMS_Common.Models.View.Message
+@{
+    Layout = null;
+}
+
+
+@model VmMassMessageReply
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+
+    #MassReplyListing tr td:nth-child(2) {
+        word-break: break-all;
+        width: 400px !important;
+    }
+    #MassReplyListing tr th:nth-child(2) {
+        word-break: break-all;
+        width: 400px !important;
+    }
+
+    .text {
+        border: 1px solid #CCC;
+        resize: none;
+        height: 50px;
+    }
+    .text-area-height {
+        height: 150px !important;
+        resize: none;
+    }
+    input[type="checkbox"]{
+      width: 25px; /*Desired width*/
+      height: 25px; /*Desired height*/
+    }
+</style>
+<div id="TagEdit" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+
+
+            <div class="box box-primary" style="box-shadow:none;">
+                <div class="box-header-blue with-border btn-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <input id="CallerNo" type="hidden" name="country" value=@ViewBag.CallerNo>
+                    <h4 class="box-title">Mass Message</h4>
+
+                </div>
+                @using (Ajax.BeginForm("OnMassReplySubmit", "Message", new AjaxOptions()
+                {
+                    HttpMethod = "POST",
+                    OnBegin = "$.loading(this,false)",
+                    OnComplete = "$.loading(this,true)",
+                    OnSuccess = "$.Show(data,'TagEdit')",
+                    AllowCache = false
+                }))
+                {
+                    @Html.HiddenFor(m => m.CommaSeperatedIds)
+                    <div class="form-group col-md-12" style="padding: 20px;">
+                        <div class="col-md-1">
+                            <label>Reply</label>
+                        </div>
+                        <div class="col-md-11">
+                            @Html.TextAreaFor(m => m.ReplyMessageStr, new { @class = "form-control characters-only-with-space text-area-height", @placeholder = "Enter Msg" })
+                            @Html.ValidationMessageFor(m => m.ReplyMessageStr, "", new { @class = "label label-warning" })
+                        </div>
+                    </div>
+                    <div class="row" style="padding:20px;">
+                        <div class="col-md-2 col-xs-2 pull-right" data-placement="right" data-animation="true" data-toggle="tooltip" title="Reply">
+                            <button id="MassReplyBtn" class="btn btn-primary" type="submit"><i class="fa fa-reply"></i>&nbsp; Reply</button>
+                        </div>
+
+                        @*<div class="col-md-2 col-xs-2 pull-right" data-animation="true" data-toggle="tooltip" title="Select All">
+                                <button id="SelectAllBtn" class="btn btn-success" type="button"><i class="glyphicon glyphicon-asterisk"></i>&nbsp;Select All</button>
+                            </div>*@
+                    </div>
+                }
+                   
+                
+
+                <div class="box-body-white">
+
+                    <table id="MassReplyListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                        <thead>
+                            <tr role="row" class="tableHeader">
+                                @*<th>ID</th>*@
+                                @*<th>Campaign ID</th>*@
+                                <th style="width: 93px;">Caller No</th>
+                                <th>Message</th>
+                                <th>DateTime</th>
+                                @*<th>Is Reply</th>*@
+                                @*<th>Duration</th>
+            <th>Caller Name</th>
+            <th>Department</th>
+            <th>PPMRP Service</th>
+            <th>Recording ID</th>*@
+                                <th style="width: 70px;"><button id="SelectAllBtn" class="btn btn-success" type="button"><i class="glyphicon glyphicon-asterisk"></i>&nbsp;Select All</button></th>
+                                @*<th>Register</th>*@
+
+
+                                @*<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Complaint Number: activate to sort column descending" style="width: 180px;">Complaint Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Complainant's Name: activate to sort column ascending" style="width: 191px;">Complainant's Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Father/Husband Name: activate to sort column ascending" style="width: 213px;">Father/Husband Name</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Gender: activate to sort column ascending" style="width: 77px;">Gender</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CNIC Number: activate to sort column ascending" style="width: 138px;">CNIC Number</th>
+            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Cell Number : activate to sort column ascending" style="width: 135px;">Cell Number </th>
+            <th style="text-align: center; width: 78px;" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Actions</th>*@
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+
+    var dtData;
+    var checkboxValues = [];
+    var tempCheckboxValues = [];
+    var isAllChecked = false;
+
+
+    var table;
+
+    var colorArr = ['#ffffff', '#ffe6e6'];
+    var colorIndex = 0;
+
+    $(document).ready(function () {
+        LoadTaggingTable();
+        //SelectAllCheckbox();
+    });
+
+    $("#SelectAllBtn").click(function (e) {
+        SelectAllCheckbox();
+    });
+
+    function LoadTaggingTable() {
+        table = $('#MassReplyListing').DataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                SelectAllCheckbox();
+                //counter = 1;
+                //dtData = oSettings.aoData;
+                
+            },
+            "ordering": true,
+            "responsive": false,
+            "bDestroy": true,
+            "ajax": "@Url.Action("GetMassMessagePopupList", "Message")",
+            "contentType": "application/json",
+            "type": "GET",
+            "columns": [
+                //{ "data": "Id" },
+                { "data": "Caller_No" },
+                { "data": "Msg_Text" },
+                { "data": "Created_DateTime" },
+                //{ "data": "Is_Incoming_Message" }
+                //,
+                //{ "data": "Duration" },
+                //{ "data": "Caller_Name" },
+                //{ "data": "DepartmentCategoryName" },
+                //{ "data": "DepartmentSubCategoryName" },
+                //{ "data": "Recording_ID" }
+
+            ],
+            "order": [],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }],
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                /*if (aData['Is_Incoming_Message'] == 'True') {
+                    //empId = aData['employeeId'];
+                    colorIndex = 1;
+                } else {
+                    colorIndex = 0;
+                }*/
+                //$(nRow).css('color', 'white');
+                $('td', nRow).css('background-color', colorArr[colorIndex]);
+                //$('td', nRow).css('background-color', colorArr[colorIndex]);
+            },
+            aoColumnDefs: [{
+                "aTargets": [3],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    //var asd = full.Is_Incoming_Message ;
+                    var index = checkboxValues.indexOf(parseInt(full.Id));
+                    if (index == -1){
+                        checkboxValues.push(full.Id);
+                        $("#CommaSeperatedIds").val(checkboxValues.join());
+                    }
+                    return '<td style="text-align:center">' +
+                        // '<a href="user-registration.html" ><span class="fa fa-pencil"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                        '<input type="checkbox" " id="' + full.Id + '" onclick="OnCheckBoxClick(this);" value="CheckBoxInput">' +
+                        '</td>';
+
+                }
+            }
+            ],
+
+
+        });
+        tempCheckboxValues = checkboxValues;
+    }
+
+    function SelectAllCheckbox() {
+
+        isAllChecked = !isAllChecked;
+        debugger;
+        if (!isAllChecked) {
+            checkboxValues = [];
+            $("#CommaSeperatedIds").val(checkboxValues.join());
+        } else {
+            checkboxValues = tempCheckboxValues;
+            $("#CommaSeperatedIds").val(checkboxValues.join());
+        }
+
+        if (isAllChecked) {
+            $("#SelectAllBtn").html('<i class="glyphicon glyphicon-asterisk"></i>&nbsp; Deselect All');
+        } else {
+            $("#SelectAllBtn").html('<i class="glyphicon glyphicon-asterisk"></i>&nbsp; Select All');
+        }
+
+        
+        
+        var cells = table.cells().nodes();
+        $(cells).find(':checkbox').prop('checked', isAllChecked);
+        //checkboxValues = $(cells).find(':checkbox');
+    }
+
+    function pad(d) {
+        return (d < 10) ? '0' + d.toString() : d.toString();
+    }
+
+    function dtCallBack() {
+
+    }
+
+
+    function OnCheckBoxClick(checkbox) {
+        debugger;
+
+        if (checkbox.checked) {
+            var index = checkboxValues.indexOf(parseInt(checkbox.id));
+            if (index == -1) {
+                checkboxValues.push(parseInt(checkbox.id));
+            }
+            $("#CommaSeperatedIds").val(checkboxValues.join());
+        } else {
+            var index = checkboxValues.indexOf(parseInt(checkbox.id));
+            if (index > -1) {
+                checkboxValues.splice(index, 1);
+            }
+            $("#CommaSeperatedIds").val(checkboxValues.join());
+        }
+        //checkboxValues.attr('id');
+    }
+
+</script>

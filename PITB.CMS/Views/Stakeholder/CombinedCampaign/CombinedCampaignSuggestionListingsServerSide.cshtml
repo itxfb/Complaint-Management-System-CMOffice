@@ -1,0 +1,308 @@
+﻿@using PITB.CMS_Common
+@{
+//Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+}
+<style>
+    .search-input-text {
+        width: 100%;
+    }
+</style>
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h3 class="box-title"><img style="max-width:40px;  max-height: 40px; margin-top: -3px; margin-right: 15px;" src="@ViewBag.LogoUrl">Suggestion Listing</h3>
+        </div>
+        <div class="box-body-white">
+            <div class="col-md-12 col-sm-12">
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12">
+                        <input type="text" id="from" value="@DateTime.Parse("01/08/2018").ToString("yyyy-MM-dd")" placeholder="example: 2015-05-18"
+                               class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12 col-sm-12">
+                        <input type="text" id="to" value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="example: 2016-01-05"
+                               class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12" data-original-title="Campaign(s)" data-toggle="tooltip">
+                        @Html.DropDownList("campaignsList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12" data-original-title="Category" data-toggle="tooltip">
+                        @Html.DropDownList("categoryList", (List<SelectListItem>)ViewBag.ComplaintTypeList, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+
+                @*<div class="form-group col-md-2 col-sm-12">
+                        <div class="col-md-12" data-original-title="Status" data-toggle="tooltip">
+                            @Html.DropDownList("statusList", (List<SelectListItem>)ViewBag.StatusList, new { @class = "form-control", @multiple = "multiple" })
+                        </div>
+
+                    </div>*@
+
+                <div class="form-group col-md-1 col-xs-12">
+                    <div class="col-md-12 col-xs-12">
+                        <button id="FilterBtn" class="btn btn-primary" type="button"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+                    </div>
+
+                </div>
+                <div class="form-group col-md-1 col-xs-12">
+
+                    <div class="col-md-12 col-xs-12" data-placement="left" data-animation="true" data-toggle="tooltip" title="Your export of data depends upon your selection of filters">
+                        <button id="ExcelExportBtn" class="btn btn-success" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;Export</button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        @*<div class="box-body-white">
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>From</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="from" value="@DateTime.Now.AddMonths(-6).ToShortDateString()" placeholder="example: 11/21/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-3" style="padding:20px;">
+                <div class="col-md-2">
+                    <label>To</label>
+                </div>
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input type="text" id="to" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control datepicker">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-4" style="padding:20px;">
+                <div class="col-md-3">
+                    <label>Campaigns</label>
+                </div>
+                <div class="col-md-9">
+                    @Html.DropDownList("campaignList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    @*<input type="text" id="campaignsList" value="@DateTime.Now.ToShortDateString()" placeholder="example: 12/31/2015" class="form-control">*@
+
+        @*<div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-rocket"></i>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <div class="col-md-2" style="padding:20px;"><button id="FilterBtnAgent" class="btn btn-primary col-md-12" type="submit">Filter</button></div>
+            </div>*@
+        <div class="box-body-white">
+
+            <table id="agentListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="agentListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Complaint No</th>
+                        <th>Campaign</th>
+                        <th>District</th>
+                        <th>Tehsil</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Category</th>
+                        @*<th>Status</th>
+                            <th>Escalation</th>*@
+                        <th>Action</th>
+
+
+                        @*<th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Complaint Number: activate to sort column descending" style="width: 180px;">Complaint Number</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Complainant's Name: activate to sort column ascending" style="width: 191px;">Complainant's Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Father/Husband Name: activate to sort column ascending" style="width: 213px;">Father/Husband Name</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Gender: activate to sort column ascending" style="width: 77px;">Gender</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="CNIC Number: activate to sort column ascending" style="width: 138px;">CNIC Number</th>
+                            <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Cell Number : activate to sort column ascending" style="width: 135px;">Cell Number </th>
+                            <th style="text-align: center; width: 78px;" class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending">Actions</th>*@
+                    </tr>
+                </thead>
+                <thead>
+                    <tr>
+                        <th><input type="text" data-column="0" class="search-input-text"></th>
+                        <th><input type="text" data-column="1" class="search-input-text"></th>
+                        <th><input type="text" data-column="2" class="search-input-text"></th>
+                        <th><input type="text" data-column="3" class="search-input-text"></th>
+                        <th><input type="text" data-column="4" class="search-input-text"></th>
+                        <th><input type="text" data-column="5" class="search-input-text"></th>
+                        <th><input type="text" data-column="6" class="search-input-text"></th>
+                        @*<th><input type="text" data-column="7" class="search-input-text"></th>
+                            <th><input type="text" data-column="8" class="search-input-text"></th>*@
+                        <th></th>
+                    </tr>
+
+
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Setup - add a text input to each footer cell
+        //$('#agentListing .filters td').each(function () {
+        //    var title = $('#example thead th').eq($(this).index()).text();
+        //    $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+        //});
+
+        //// DataTable
+        //var table = $('#agentListing').DataTable();
+
+        //// Apply the search
+        //table.columns().eq(0).each(function (colIdx) {
+        //    $('input', $('.filters td')[colIdx]).on('keyup change', function () {
+        //        table
+        //            .column(colIdx)
+        //            .search(this.value)
+        //            .draw();
+        //    });
+        //});
+        //$('.search-input-text').on('keyup click', function () {   // for text boxes
+        //    var i = $(this).attr('data-column');  // getting column index
+        //    var v = $(this).val();  // getting search input value
+        //    $('#agentListing').DataTable().columns(i).search(v).draw();
+        //});
+        //$('.search-input-select').on('keyup click', function () {   // for select box
+        //    var i = $(this).attr('data-column');
+        //    var v = $(this).val();
+        //    $('#agentListing').DataTable().columns(i).search(v).draw();
+        //});
+
+    });
+    $('.search-input-text').on('keyup', function (e) {
+
+        e.preventDefault();
+        var i = $(this).attr('data-column');
+        var v = $(this).val();
+        $('#agentListing').DataTable().columns(i).search(v).draw();
+    });
+    @*$('.search-input-select').on('keyup', function () {   // for select box
+       var i = $(this).attr('data-column');
+      var v = $(this).val();
+       $('#agentListing').DataTable().columns(i).search(v).draw();
+    });*@
+
+    $(function () {
+        $.enableMultiselectOf("campaignList");
+        $("#FilterBtn").trigger('click');
+
+        $("#campaignsList").change(function () {
+            $.loadDropdown("categoryList", "GetCategoriesOfCampaignOfUser", $("#campaignsList").val());
+            $.enableMultiselectOf("categoryList");
+        });
+
+
+        $.enableMultiselectOf("categoryList");
+    });
+
+    $("#FilterBtn").click(function (e) {
+        e.preventDefault();
+        @*$.loadAgentListings("@Url.Action("GetStakeholderComplaints","GeneralApi")", $("#from").val(), $("#to").val(), $("#campaignList").val());*@
+        LoadTable("@Url.Action("GetStakeholderComplaintsServerSide", "GeneralApi")", $("#from").val(), $("#to").val(), $("#campaignsList").val(), $("#categoryList").val()/*, $("#statusList").val()*/);
+    });
+
+    @*$("#ExcelExportBtn").click(function(e) {
+        e.preventDefault();
+        window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + '&campaign=' + $("#campaignsList").val() + '&category=' + $("#categoryList").val() + '&complaintType='+@Convert.ToInt32(Config.ComplaintType.Suggestion)+ '&listingType='+@Convert.ToInt32(Config.StakeholderComplaintListingType.Suggestion);
+    });*@
+
+    $("#ExcelExportBtn").click(function(e) {
+        e.preventDefault();
+        @*window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?startDate=' + $("#from").val() + '&endDate=' + $("#to").val() + '&campaign=' + $("#campaignsList").val() + '&category=' + $("#categoryList").val() + '&status=' + $("#statusList").val() + '&complaintType='+@Convert.ToInt32(Config.ComplaintType.Complaint)+ '&listingType='+@Convert.ToInt32(Config.StakeholderComplaintListingType.AssignedToMe);*@
+        var data = JSON.stringify({ from: $("#from").val(), to: $("#to").val(), campaign: $("#campaignsList").val(), cateogries: $("#categoryList").val(), statuses: '', transferedStatus: '', complaintType: @Convert.ToInt32(Config.ComplaintType.Suggestion), listingType: @Convert.ToInt32(Config.StakeholderComplaintListingType.Suggestion), aoData: aoDataStringify });
+        $.ajax({
+            dataType: 'json',
+            type: 'POST',
+            url: '@Url.Action("ExportStakeHolderData", "generalapi")',//'../GeneralApi/GetStakeholderComplaintsServerSide',
+            data: data,
+            success: function (dataId) {
+                //alert(dataId);
+                window.location = '@Url.Action("ExportStakeHolderData", "generalapi")?dataId=' + dataId;
+            }
+
+            /*"success": function callback() {
+
+            },*/
+        });
+    });
+
+    var table;
+    var aoDataStringify;
+    function LoadTable(api, from, to, campaign, cateogries/*, statuses*/) {
+        //alert(api);
+        table = $('#agentListing').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": true,
+            "responsive": true,
+            "serverSide": true,
+
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                aoDataStringify = JSON.stringify(aoData);
+                $.ajax({
+                    "dataType": 'json',
+                    "type": "POST",
+                    "url": api,//'../GeneralApi/GetStakeholderComplaintsServerSide',
+                    "data": { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: '', transferedStatus:'',complaintType:@Convert.ToInt32(Config.ComplaintType.Suggestion)/*, statuses: statuses*/,listingType:0, aoData: JSON.stringify(aoData) },
+                    "success": fnCallback,
+                });
+            },
+
+            // Denormalized
+            "columns": [
+                       { "data": "Id" },
+                       { "data": "Campaign_Name" },
+                       { "data": "District_Name" },
+                       { "data": "Tehsil_Name" },
+                       { "data": "Person_Name" },
+                       { "data": "Created_Date" },
+                       { "data": "Complaint_Category_Name" },
+                       //{ "data": "Complaint_Computed_Status" },
+                       //{ "data": "Complaint_Computed_Hierarchy" },
+                       { "data": "ComplaintId" }
+            ],
+
+
+            aoColumnDefs: [{
+                "aTargets": [7],
+                "bSearchable": false,
+                "bSortable": false,
+                "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                    $(nTd).css('text-align', 'center');
+                },
+                "mData": null,
+                "mRender": function (data, type, full) {
+
+                    return '<td style="text-align:center">' +
+                        '<a data-original-title="View details" data-toggle="tooltip" href="javascript:void(0);" " id="' + full.ComplaintId + '" onclick="OpenDetailPopup(this.id);"><span class="fa fa-eye"></span></a>' +
+                        '</td>';
+                }
+            }],
+        });
+    }
+    /*function OpenStakeholderDetailPopup(complaintId) {
+        $('#PopupDiv').load("../Complaint/StakeholderDetail?complaintId=" + complaintId);
+        $('#PopupDiv').modal();
+    }*/
+</script>
+

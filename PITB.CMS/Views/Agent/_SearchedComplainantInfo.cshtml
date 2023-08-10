@@ -1,0 +1,103 @@
+﻿@model VmPersonalInfo
+@{
+    int? personId = (Model == null) ? 0 : Model.Person_id;
+}
+
+@* Showing data to agent if complainant data already exists *@
+@if (Model != null)
+{
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-primary">
+            <div class="box-header-blue with-border btn-header">
+                <h4 class="box-title">Complainant's Information</h4>
+            </div>
+            <form class="form-horizontal" method="post">
+
+                <div class="box-body-white" style="margin-top:5px;">
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Name</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Person_Name, new { @class = "form-control", @placeholder = "Complainant Name" })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Father/Husband Name</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Person_Father_Name, new { @class = "form-control", @placeholder = "Father/Husband Name" })
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>CNIC</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Cnic_No, new { @class = "form-control", @placeholder = "ex 3520174842579", @maxlength = 13 })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Gender</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Gender, null@*EnumHelper.GetSelectList(typeof(Config.Gender))*@, "--Select--", new { @class = "form-control", @placeholder = "ex 3520174842579" })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Cell Number</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Mobile_No, new { @class = "form-control", @placeholder = "03001234567", @maxlength = 11 })
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Secondary Contact No</label>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DisplayFor(m => m.Secondary_Mobile_No, new { @class = "form-control", @placeholder = "04235880062" })
+
+
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Address</label>
+                        </div>
+                        <div class="col-md-8 col-xs-12">
+                            @Html.DisplayFor(m => m.Person_Address, new { @class = "form-control", rows = 3 })
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-6">
+                        <div class="col-md-4">
+                            <label>Nearest location (if any)</label>
+                        </div>
+                        <div class="col-md-8 col-xs-12">
+                            @Html.DisplayFor(m => m.Nearest_Place, new { @class = "form-control", rows = 3 })
+                        </div>
+
+                    </div>
+                    <br style="clear: both;" />
+
+                </div>
+                <div class="box-footer">
+                    <div class="col-md-8 col-md-offset-2 text-center">
+                        @Html.ActionLink("Launch Complaint", "Add", "Complaint", new { profileId = @Model.Person_id }, new { @class = "btn btn-primary", Id = "LaunchBtn" })
+
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+
+    Html.RenderAction("PersonComplaintsHistory", "Complaint", new { Person_Id = Model.Person_id });
+    // Html.RenderPartial("~/Views/Agent/_CampaignsList.cshtml",(List<VmCampaign>)ViewBag.Campaigns);
+}

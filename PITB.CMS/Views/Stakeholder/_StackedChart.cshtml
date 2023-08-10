@@ -1,0 +1,249 @@
+﻿
+
+
+<div class="position-r">
+    <div class="cust-overlay Stacked-overlay">Loading...</div>
+    <h4>Status Wise Complaint <a href="#" class="view-full pull-right" id="StackedFull"><img src="~/img/max.png" /></a> <a href="#" id="StackedExit" class="exit pull-right"><img src="~/img/min.png" /></a></h4>
+    <div class="row">
+
+        <div class="col-lg-2 col-md-2 col-sm-2">
+            <!--<span>From Date</span>-->
+            @*@Html.TextBox("CRONo", DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx datepicker", @id = "Piedatepickerlower" })*@
+            <!--<input type="text" id="Stackeddatepickerlower" value="@ViewBag.StartDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>To Date</span>-->
+            @*@Html.TextBox("CRONo", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"), new { placeholder = "Select Date", @class = "SearchTxtbx", @id = "Piedatepickermax" })*@
+            <!--<input type="text" id="Stackeddatepickermax" value="@ViewBag.EndDate" placeholder="example: 2015-05-18"
+                       class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+            </div>-->
+            <span>Select Date</span>
+            <input type="text" id="stackedDateRange" placeholder="" class="form-control">
+        </div>
+        <div id="StackedChart" style="width:100%; height:450px; margin-top:20px;"></div>
+
+    </div>
+</div>
+<script>
+      $(document).ready(function () {
+          $('#stackedDateRange').daterangepicker({
+            startDate: '@ViewBag.StartDate',
+            endDate: '@ViewBag.EndDate',
+            maxDate: '@(DateTime.Now.ToString("yyyy-MM-dd"))',
+            showDropdowns: true,
+            locale: {
+                format: 'YYYY-MM-DD',
+                separator: ' To ',
+            }
+        });
+          $('#stackedDateRange').on('apply.daterangepicker', function (ev, picker) {
+              $.LoadStackedChart();
+        });
+    });
+    //var StackedoldStart = $('#Stackeddatepickerlower').val();
+    //var Stackedoldenddate = $('#Stackeddatepickermax').val();
+    var campaignId = '@(ViewBag.campaignId)';
+
+    $(function () {
+
+        $.LoadStackedChart();
+
+    });
+    //jQuery('#Stackeddatepickerlower').change(function () {
+    //    if (StackedoldStart != $('#Stackeddatepickerlower').val()) {
+    //        $.LoadStackedChart();
+    //        StackedoldStart = $('#Stackeddatepickerlower').val();
+    //    }
+    //    //$.LoadPieChart();
+    //});
+    //jQuery('#Stackeddatepickermax').change(function () {
+    //    if (Stackedoldenddate != $('#Stackeddatepickermax').val()) {
+    //        $.LoadStackedChart();
+    //        Stackedoldenddate = $('#Stackeddatepickermax').val();
+    //    }
+    //    //$.LoadPieChart();
+    //});
+
+    $("#StackedFull").click(function (e) {
+        e.preventDefault();
+
+        $(this).parent("h4").parent("div").addClass("full-screen");
+        $("#StackedChart").css("height", "650px");
+        $.LoadStackedChart();
+        $(this).hide();
+        $(this).parent("h4").children(".exit").fadeIn();
+    });
+    $("#StackedExit").click(function (e) {
+        e.preventDefault();
+        $(this).parent("h4").parent("div").removeClass("full-screen");
+        $("#StackedChart").css("height", "450px");;
+        $.LoadStackedChart();
+        $(this).hide();
+        $(this).parent("h4").children(".view-full").fadeIn();
+    });
+
+
+    $.LoadStackedChart = function () {
+
+        var CatNameArr = [];
+        var StatusAndCountDict = [];
+        var StatusCountArr = [];
+        //var StatusNameArr = [];
+        var prevStatus = '';
+        $(".Stacked-overlay").fadeIn();
+
+        $.ajax({
+            url: "@Url.Action("StackedChartProgress", "api/Report")",
+            type: "GET",
+            data: {
+                datelow: $('#stackedDateRange').val().split('To')[0].trim(),
+                datemax: $('#stackedDateRange').val().split('To')[1].trim(),
+                campaignId: campaignId
+            },
+            async: false,
+            success: function (data) {
+                data = $.parseJSON(data);
+                var detailObj;
+                //ComplaintCategory,[status],TotalComplaints
+                var count = 1;
+                $.each(data.CategoryTable, function (idx, obj) {
+                    //New Object
+                    var complaintCat = obj.ComplaintCategory.toString();
+                    var currStatus = obj.status.toString();
+                    var totalComplaints = obj.status.toString();
+
+                    if (CatNameArr.indexOf(complaintCat) == -1) {
+                        CatNameArr.push(complaintCat);
+                    }
+
+                    if ((prevStatus != '' && prevStatus != currStatus) || data.CategoryTable.length == count) { // if status is not present then add in dictionary
+                        if (StatusCountArr.length > 0) {
+                            StatusAndCountDict.push({
+                                name: prevStatus,
+                                data: StatusCountArr
+                            });
+                        }
+                        StatusCountArr = [];
+                        //StatusNameArr.push();
+                        StatusCountArr.push(parseInt(obj.TotalComplaints));
+                    }
+                    else {
+                        //StatusNameArr.push();
+                        StatusCountArr.push(parseInt(obj.TotalComplaints));
+                    }
+
+                    prevStatus = currStatus;
+                    count++;
+                    //if()
+                    /*
+                    if (CatName.indexOf(temp) > -1) { // if category is not present
+                        CatName.push(temp);
+
+                        if (StatusCountArr.length > 0) {
+                            StatusAndCountDict.push({
+                                key: obj.status,
+                                value: StatusAndCountArr
+                            });
+                        }
+                        //StatusAndCountArr = [];
+                        StatusCountArr.push(obj.TotalComplaints);
+                    }
+                    else {
+                        StatusCountArr.push(obj.TotalComplaints);
+                        CatName = [];
+                    }
+                    */
+
+                    $(".Stacked-overlay").fadeOut(1000);
+
+                });
+                debugger;
+
+                $('#StackedChart').highcharts({
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Category Wise Complaint'
+                    },
+                    xAxis: {
+                        categories: CatNameArr
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'No of Complaints'
+                        },
+                        stackLabels: {
+                            enabled: true,
+                            style: {
+                                fontWeight: 'bold',
+                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                            }
+                        }
+                    },
+                    legend: {
+                        align: 'right',
+                        x: -30,
+                        verticalAlign: 'top',
+                        y: 25,
+                        floating: true,
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                        borderColor: '#CCC',
+                        borderWidth: 1,
+                        shadow: false
+                    },
+                    tooltip: {
+                        headerFormat: '<b>{point.x}</b><br/>',
+                        pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                    },
+                    plotOptions: {
+                        column: {
+                            stacking: 'normal',
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    //debugger;
+                                    return (this.y != 0) ? this.y : "";
+                                },
+                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                style: {
+                                    textShadow: '0 0 3px black'
+                                }
+                            }
+
+                        }
+                    },
+                    exporting: {
+                        chartOptions: {
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: true,
+                                        formatter: function () {
+                                            //debugger;
+                                            return (this.y != 0) ? this.y : "";
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    series: StatusAndCountDict
+                    /*[{
+                        name: 'John',
+                        data: [5, 3, 4, 7, 2]
+                    }, {
+                        name: 'Jane',
+                        data: [2, 2, 3, 2, 1]
+                    }, {
+                        name: 'Joe',
+                        data: [3, 4, 4, 2, 5]
+                    }]*/
+                });
+                $(".Stacked-overlay").fadeOut(1000);
+            }
+        });
+    }
+</script>

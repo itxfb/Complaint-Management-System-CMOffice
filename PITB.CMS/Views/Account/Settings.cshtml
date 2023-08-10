@@ -1,0 +1,191 @@
+﻿@using OfficeOpenXml.FormulaParsing.Excel.Functions.Math
+@using OfficeOpenXml.FormulaParsing.Excel.Functions.Text
+@using PITB.CMS_Common
+@using PITB.CMS_Common.Handler.Authentication
+@using PITB.CMS_Common.Models.Custom
+@using PITB.CMS_Common.Models.View.Account
+@model VmUserSettings
+@{
+    //CMSCookie cmsCookie = AuthenticationHandler.GetCookie();
+    //if (Model.Role == Config.Roles.Stakeholder)
+    //{
+    //    if (cmsCookie.Campaigns == Convert.ToInt32(Config.Campaign.SchoolEducationEnhanced).ToString())
+    //    {
+    //        if (cmsCookie.SubRoles == Config.SubRoles.SDU)
+    //        {
+    //            Layout = "~/Views/Shared/SchoolEducation/_SduSchoolEducationStakeholderLayout.cshtml";
+    //        }
+    //        else
+    //        {
+    //            Layout = "~/Views/Shared/SchoolEducation/_SchoolEducationStakeholderLayout.cshtml";
+    //        }
+    //    }
+    //    else
+    //    {
+    //        Layout = "~/Views/Shared/_StakeholderLayout.cshtml";
+    //    }
+    //}
+    //if (Model.Role == Config.Roles.Executive)
+    //{
+    //    Layout = "~/Views/Shared/Executive/_ExecutiveDashboardLayout.cshtml";
+    //}
+    //Layout = ViewBag.Layout;
+    ViewBag.Title = "Settings";
+}
+
+<div class="row">
+    <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="box box-primary">
+            <div class="box-body-white">
+
+                <h3 class="profile-username text-center">@Model.Name</h3>
+
+                <p class="text-muted text-center">@Model.RoleName</p>
+
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Username</b> <span style="color: #3c8dbc" class="pull-right">@Model.Username</span>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Password update</b>
+                        @if (Model.PasswordUpdateDate.HasValue)
+                        {
+                            <span style="color: #3c8dbc" class="pull-right">
+                                @Model.PasswordUpdateDate.Value.ToString("dd-MMM-yy")
+                            </span>
+                        }
+
+                    </li>
+                    <li class="list-group-item">
+                        <b>User of</b>
+                        @*<a class="pull-right"></a>*@
+                        <div class="">
+                            @{
+                                int colorCount = 4;
+                                int count = 0;
+                                int wrappedIndex = 0;
+
+                                foreach (string n in Model.CampaignName)
+                                {
+
+                                    wrappedIndex = count % colorCount;
+                                    @*<span class="label label-danger">@n</span>*@
+                                    <div class="row" style="margin-top: 12px;">
+                                        <div class="col-md-12">
+                                            @if (wrappedIndex == 0)
+                                            {
+
+                                                <span class="label label-success">@n</span>
+                                            }
+                                            @if (wrappedIndex == 1)
+                                            {
+                                                <span class="label label-info">@n</span>
+                                            }
+                                            @if (wrappedIndex == 2)
+                                            {
+                                                <span class="label label-warning">@n</span>
+                                            }
+                                            @if (wrappedIndex == 3)
+                                            {
+                                                <span class="label label-primary">@n</span>
+                                            }
+                                            @{ count = count + 1; }
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </li>
+                </ul>
+
+                @*<a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>*@
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class=""><a href="#security" data-toggle="tab" aria-expanded="false"><i class="fa fa-lock"></i> Security</a></li>
+                <li class="active"><a href="#settings" data-toggle="tab" aria-expanded="true"><i class="fa fa-user"></i> Profile</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane" id="security">
+                    @Html.Partial("_ChangePassword", Model.VmChangePassword)
+                </div>
+
+
+                <div class="tab-pane active" id="settings">
+                    <div class="box box-primary">
+                        <div class="box-body-white">
+                            <div class="form-horizontal">
+                                @using (Ajax.BeginForm("OnSettingSave", "Account", new AjaxOptions()
+                                {
+                                    HttpMethod = "POST",
+                                    OnBegin = "$.loading(this,false)",
+                                    OnComplete = "$.loading(this,true)",
+                                    OnSuccess = "$.Show(data)",
+                                    AllowCache = false
+                                }))
+                                {
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Username, "Username", new { @class = "col-sm-2 control-label" })
+
+                                        <div class="col-sm-10">
+                                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", @disabled = "disabled" })
+                                            @*@Html.LabelFor(m => m.Name, new { @class = "form-control" })*@
+                                            <small class="bg-yellow-gradient">@Html.ValidationMessageFor(m => m.Username, "")</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Name, "Full Name", new { @class = "col-sm-2 control-label" })
+
+                                        <div class="col-sm-10">
+                                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                            @*@Html.LabelFor(m => m.Name, new { @class = "form-control" })*@
+                                            <small class="bg-yellow-gradient">@Html.ValidationMessageFor(m => m.Name, "")</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Email, null, new { @class = "col-sm-2 control-label" })
+
+                                        <div class="col-sm-10">
+                                            @Html.EditorFor(m => m.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                            <small class="bg-yellow-gradient">@Html.ValidationMessageFor(m => m.Email, "")</small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Phone, null, new { @class = "col-sm-2 control-label" })
+
+                                        <div class="col-sm-10">
+                                            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control" })
+                                            <small class="bg-yellow-gradient">@Html.ValidationMessageFor(m => m.Phone, "")</small>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="col-sm-offset-2 col-sm-10">
+                                            <button type="submit" class="btn btn-success">Save</button>
+                                        </div>
+                                    </div>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>

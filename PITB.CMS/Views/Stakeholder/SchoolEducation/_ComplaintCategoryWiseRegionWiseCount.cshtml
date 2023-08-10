@@ -1,0 +1,161 @@
+﻿
+<div class="box-header-blue with-border btn-header">
+    <h4 class="box-title"><img style="max-width:40px; max-height: 40px; margin-top: -3px; margin-right: 15px;">@ViewBag.Heading Complaints</h4>
+</div>
+
+<div class="box-body-white">
+    <table id="ZavoreTaleemRegionWiseCount_@(ViewBag.divTag)" class="table table-bordered table-condensed table-responsive table-hover table-striped" role="grid" >
+        <thead>
+            <tr role="row">
+                <th>Sr No</th>
+                <th>District</th>
+                <th>Resolved</th>
+                <th>Open</th>
+                <th>Overdue</th>
+                <th>Reopened</th>
+                <th>Closed</th>
+                <th>Total</th>
+                @*<th hidden>Closed %</th>*@
+            </tr>    
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th></th>
+                <th>Total</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                @*<th></th>*@
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<script type="text/javascript">
+
+    $(function () {
+
+        LoadData@(ViewBag.divTag)()
+    })
+    function LoadData@(ViewBag.divTag)() {
+        LoadTable@(ViewBag.divTag)("@Url.Action("ComplaintCategoriesWiseRegionWiseCount", "ApiSchoolEducation")");
+    }
+    function LoadTable@(ViewBag.divTag)(apiUrl) {
+        var table = $('#ZavoreTaleemRegionWiseCount_@(ViewBag.divTag)').dataTable({
+            "dom": '<"top"<"col-md-6"l><"col-md-6"f><"col-md-6"i><"col-md-6"p>>',
+            fnInitComplete: function (oSettings, json) {
+                counter = 1;
+            },
+            drawCallback: function(row, data, start, end, display) {
+                var api = this.api();
+                debugger;
+                data = api.column(7).data();
+                var totalcount = data.length ? data.reduce(function(a,b){
+                    var x = parseFloat(a) || 0;
+                    var y = parseFloat(b) || 0;
+                    return x + y;}):0;
+                api.columns('.sum', { page: 'current' }).every(function () {
+                    var sum = api
+                        .cells( null, this.index(), { page: 'current'} )
+                        .render('display')
+                        .reduce(function (a, b) {
+                            var x = parseFloat(a) || 0;
+                            var y = parseFloat(b) || 0;
+                            return x + y;
+                        }, 0);
+                    var val = sum*100/totalcount;
+                    
+                    $(this.footer()).html(sum +'  ('+ Math.floor(val) + '%)');
+                });   
+                
+            },
+            "footerCallback": function () {
+                debugger;
+                //var api = this.api();
+
+                //var table = api.table();
+                //var closed =  0;
+                //var reopened = 0;
+                //var tab = table.column(6).data();
+                //if (tab.length > 0 ){
+                //    var x = table.column(6).data();
+                //    for (i = 0; i < x.length; i++) { 
+                //        closed = closed + x[i];
+                //    }
+                //}
+                //var tab2 = table.column(5).data();
+                //if (tab2.length > 0 ){
+                //    var x = table.column(5).data();
+                //    for (i = 0; i < x.length; i++) { 
+                //        reopened = reopened + x[i];
+                //    }
+                    
+                //}
+                
+          
+
+                ///// (api.column( 5, {page:'current'} ).data().sum() + api.column( 6, {page:'current'} ).data().sum());
+                //////Sub Total
+                //if (table !== undefined){ 
+                //    if ((closed + reopened) > 0)
+                //    {
+                //        $(api.column(8).footer()).html(                    
+                //            Math.round((closed / (closed + reopened))*100) + ' %'                        
+                //        );
+                //    }
+                //}
+            },
+            "bDestroy": true,
+            "iDisplayLength": 50,
+            "processing": false,
+            "responsive": true,
+            "serverSide": false,
+            "order" : [[4,"desc"]],
+            'columnDefs': [{
+                "targets": [ ], //first column / numbering column
+                "orderable": true, //set not orderable
+            }],
+            "ajax": {
+                "url": apiUrl,//'../GeneralApi/GetStakeholderComplaints',
+                "type": "POST",
+                data: {
+                    startDate: $("#Piedatepickerlower").val(),
+                    endDate: $("#Piedatepickermax").val(),
+                    campId: @((string)ViewBag.CampaignId),
+                    hierarchyId: @(Convert.ToInt32(ViewBag.HierarchyId)),
+                    userHierarchyId: @(Convert.ToInt32(ViewBag.UserHierarchyId)),
+                    commaSepVal: '@((string)ViewBag.commaSepVal)',
+                    statusIds: '@((string)ViewBag.statusIds)',
+                    categories : '@((string)ViewBag.CategoriesId)',
+                    divTag: @((string)ViewBag.divTag),
+                }
+                //data: { from: from, to: to, campaign: campaign, cateogries: cateogries, statuses: statuses }
+                },
+                "columns": [
+                           { "data": "SrNo",
+                               render: function (data, type, row, meta) {
+                                   return meta.row + meta.settings._iDisplayStart + 1;
+                               },"bSortable": true
+                           },
+                           { "data": "Hierarchy1Data" },
+                           { "data": "Resolved", className: "sum" },
+                           { "data": "Opened", className: "sum" },
+                           { "data": "Overdue" , className: "sum"},
+                           { "data": "Reopened" , className: "sum"},
+                           { "data": "Closed" , className: "sum"},
+                           { "data": "Total" , className: "sum"},
+                           //{ "data": "PercentageClosed", className: "percentage" }
+                ],
+                });
+                debugger;
+                //table.on( 'order.dt search.dt', function () {
+                //    table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                //        cell.innerHTML = i+1;
+                //    } );
+                //} ).draw();
+                DivData.push(table);
+                }
+</script>

@@ -1,0 +1,1411 @@
+﻿@using PITB.CMS_Common
+@using PITB.CMS_Common.Models
+@model PITB.CMS_Common.Models.View.Police.VmPolice.VmComplaintAction
+<style>
+    .Complaint.active {
+        border-top-color: #fbcc3e !important;
+    }
+
+    .Suggestion.active {
+        border-top-color: #008000 !important;
+    }
+
+    .Inquiry.active {
+        border-top-color: #ff0000 !important;
+    }
+
+    label.normalFont {
+        font-weight: normal;
+    }
+
+    .dynamicDivAdded {
+        background: #e3f1cd; /*#efefee*/
+        /*padding: 10px 0px; */
+        padding-top: 25px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+
+    .dynamicDiv {
+        background: #f7f7f7; /*#efefee*/
+        /*padding: 10px 0px; */
+        padding-top: 25px;
+        border-radius: 5px;
+        border: 1px solid #c2c2c2;
+    }
+    /*.select2 {
+        width: 100% !important;
+    }*/
+    /*input {
+        text-transform: uppercase;
+    }*/
+</style>
+<div id="ComplaintAction" class=" modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-body">
+            @using (Html.BeginForm("OnSubmitComplaintAction", "Police", FormMethod.Post, new { id = "SubmitComplaintAction", enctype = "multipart/form-data", data_post_config = "method::ajax||type::post||callback::PostActionCallback||url::../Police/PostComplaintAction?complaintId=" + @Model.ComplaintId }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="box box-primary" style="box-shadow: none;">
+                    <div class="box-header-blue with-border btn-header">
+
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title">Reporting of marking authority [@Model.ComplaintIdStr]</h4>
+                        @*<button class="pull-right btn btn-success" style="margin-right: 30px; margin-top: -25px" onclick=" PrintReport() ">Print</button>*@
+                    </div>
+                    <div class="box-body-white" style="margin-top: 5px;">
+                        <div id="CallComplainantWithinTime">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>1) Call (within 08 Hours)*</u></h5>
+                                </div>
+                            </div>
+                            @{
+                                if (Model.CurrentStep <= 0)
+                                {
+                                    <div id="Step0Editable" class="form-group row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-6">
+                                                <div class="col-md-6">
+                                                    <label>Call to the complainant with in time </label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input id="RadioCallWithin08Hours" name="RadioCallWithin08Hours" type="radio" class="hidden" data-val-tag="T1" @*data-val-is-required="True"*@ data-group-name="CallWithin08Hours" value="">
+                                                    <label class="normalFont"><input type="radio" name="CallWithin08Hours" value="6223___Yes"> Yes </label>@*<br>*@
+                                                    <label class="normalFont"><input type="radio" name="CallWithin08Hours" value="6224___No"> No </label>@*<br>*@
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="CallWithin08Hours">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioCallWithin08Hours::6224___No">
+                                                <div class="col-md-4">
+                                                    <label>Give reason*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control textDetail" name="CallWithin08HoursReason" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="CallWithin08HoursReason">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="Step0NonEditable" class="form-group row dynamicDivAdded">
+                                        @{
+                                            List<DbDynamicComplaintFields> listToShow = Model.ListDbDynamicComplaintFields.Where(n => n.Filter2 == 0).ToList();
+                                            for (int i = 0; i < listToShow.Count; i++)
+                                            {
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-6">
+                                                        <label>@listToShow[i].FieldName</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.DisplayFor(m => listToShow[i].FieldValue)
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="MeetingWithin48Hours" class="box-body-white" style="margin-top: 5px;display: none;" data-display-if="CurrentDivIndex::1,2,3,4,5" @*data-display-if="BtnMeetingWithin48Hours::Show"*@>
+                        <div id="DivMeetingWithin48Hours">
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <h5><u>2) Meeting (within 48 Hours)*</u></h5>
+                                </div>
+                            </div>
+                            @{
+                                if (Model.CurrentStep <= 1)
+                                {
+                                    <div id="Step1Editable" class="form-group row ">
+                                        <div class="col-md-12">
+                                            <div class="col-md-6">
+                                                <div class="col-md-6">
+                                                    <label>Complainant was called & meeting was made (heard in person) </label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input id="RadioMeetingWithin24Hours" name="RadioMeetingWithin24Hours" type="radio" class="hidden" data-val-tag="T1" @*data-val-is-required="True"*@ data-group-name="MeetingWithin24Hours" value="">
+                                                    <label class="normalFont"><input type="radio" name="MeetingWithin24Hours" value="6225___Yes"> Yes </label>@*<br>*@
+                                                    <label class="normalFont"><input type="radio" name="MeetingWithin24Hours" value="6226___No"> No </label>@*<br>*@
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="MeetingWithin24Hours">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group col-md-6 dynamicDiv" style="display: none;" data-display-if="RadioMeetingWithin24Hours::6226___No">
+                                                <div class="col-md-4">
+                                                    <label>Give reason*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control textDetail" name="MeetingWithin24HoursReason" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="MeetingWithin24HoursReason">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="Step1NonEditable" class="form-group row dynamicDivAdded">
+                                        @{
+                                            List<DbDynamicComplaintFields> listToShow = Model.ListDbDynamicComplaintFields.Where(n => n.Filter2 == 1).ToList();
+                                            for (int i = 0; i < listToShow.Count; i++)
+                                            {
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-6">
+                                                        <label>@listToShow[i].FieldName</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.DisplayFor(m => listToShow[i].FieldValue)
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+                        @*<div class="form-group row">
+                        <div class="col-md-8">
+
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="BtnShowProceedingWithin48Hours" data-val-tag="T1" name="BtnProceedingWithin48Hours" value="Show" class="btn btn-primary pull-right"><span class="fa fa-eye"></span>&nbsp;Show Next</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="BtnHideProceedingWithin48Hours" data-val-tag="T1" name="BtnProceedingWithin48Hours" value="Hide" class="btn btn-primary pull-right"><span class="fa fa-eye-slash"></span>&nbsp;Hide Next</button>
+                        </div>
+                    </div>*@
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="box-body-white" style="margin-top: 5px;display: none;" data-display-if="CurrentDivIndex::2,3,4,5" @*data-display-if="BtnProceedingWithin48Hours::Show"*@>
+                        <div id="BtnProceedingWithin48Hours" name="ProceedingWithin48Hours" data-clone-config="CloneName::ClonableDivProceeding||OnEventOfName::AddBtnProceeding||EventType::click">
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <h5><u>3) Proceeding (within 48 Hours)*</u></h5>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                                @{
+                                    if (Model.CurrentStep <= 2)
+                                    {
+                                        <div class="col-md-5">
+                                            <button id="BtnAddProceeding" type="button" name="AddBtnProceeding" class="btn btn-primary"><span class="fa fa-adn"></span>&nbsp;Add Proceeding</button>
+                                            <button id="BtnRemoveProceeding" disabled="" type="button" name="BtnRemoveProceeding" class="btn btn-primary"><span class="fa fa-times"></span>&nbsp;Remove Proceeding</button>
+                                        </div>
+                                        @*<div class="col-md-">
+                                    </div>*@
+                                    }
+                                }
+                            </div>
+                            @{
+                                {
+                                    List<DbPoliceActionReportLogs> listInterimLogs = Model.ListDbActionReportLogs.Where(n => n.Type == Config.PoliceActionReportType.Interim).ToList();
+
+                                    if (listInterimLogs.Count > 0)
+                                    {
+                                        <div class="form-group row">
+                                            <div class="col-md-12">
+                                                <h6><u>i) previous proceedings</u></h6>
+                                            </div>
+                                        </div>
+                                        <div id="InterimReportProceeding" class="form-group">
+                                            @{ int count = 1; }
+                                            @foreach (DbPoliceActionReportLogs dbPoliceActionReportLogs in listInterimLogs)
+                                            {
+                                                @*<span>"@count")</span>*@
+                                                @*<span>@count) </span>*@
+                                                <h6>@count) </h6>
+                                                <div class="form-group dynamicDivAdded">
+                                                    @*<h6>@count) </h6>*@
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+
+                                                                    <label>Proceeding Date</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.ProceedingDateTime)
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Detail</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.Comments)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Entry Date</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.CreatedDateTime)
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Attachment</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @if (dbPoliceActionReportLogs.DbAttachment != null)
+                                                                    {
+                                                                        string url = System.IO.Path.GetExtension(dbPoliceActionReportLogs.DbAttachment.Source_Url).ToLower();
+                                                                        string source = (url == ".pdf" || url == ".docx" || url == ".csv" || url == ".xlsx" || url == ".xls")
+                                                                            ? "/img/file.svg" : dbPoliceActionReportLogs.DbAttachment.Source_Url;
+
+                                                                        <a target="_blank" href=@dbPoliceActionReportLogs.DbAttachment.Source_Url>
+                                                                            <img width="100" height="100"
+                                                                                 src=@source
+                                                                                 alt="@dbPoliceActionReportLogs.DbAttachment.FileName">
+                                                                            <label>@dbPoliceActionReportLogs.DbAttachment.FileName</label>
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.Raw("N/A")
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                { count++; }
+                                            }
+                                        </div>
+                                    }
+
+                                }
+                                if (Model.CurrentStep <= 2)
+                                {
+                                    <div id="ClonableDivProceeding" class="form-group row dynamicDiv proceedingInfo" style="display: none;" name="ClonableDivProceeding" @*data-clone-config="ChildOfName::MeetingWithin48Hours||OnEventOfName::AddBtnProceeding||EventType::click||NamesToReplicate::Proceeding_Date,Proceeding_Detail,Proceeding_Attachment,Proceeding_IsInterim"*@>
+                                        <div class="col-md-12">
+                                            <div class="form-group col-md-6">
+                                                <div class="col-md-4">
+                                                    <label>Date*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control" readonly data-date-end-date="0d" data-input-format="Date" data-input-date-format="mm/dd/yyyy" name="Proceeding_Date" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter date" data-validation-for-type="text" data-val-for-name="Proceeding_Date">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 ">
+                                                <div class="col-md-4">
+                                                    <label>Detail*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control textDetail" name="Proceeding_Detail" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="Proceeding_Detail">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group col-md-6 ">
+                                                <div class="col-md-4">
+                                                    <label>Please attach file</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="file" accept="image/*,.pdf,.csv,.docx,.xlsx,.xls" data-val-tag="T1" class="form-control" name="Proceeding_Attachment" @*data-val-is-required="True"*@ />
+                                                    @*<span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail"  >
+
+                                                </span>*@
+                                                </div>
+                                            </div>
+                                            @*<div class="col-md-6">
+                                            <div class="col-md-6">
+                                                <label>Is Interim* </label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="Proceeding_IsInterim" name="RadioProceeding_IsInterim" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Proceeding_IsInterim" value="">
+                                                <label class="normalFont"><input type="radio" name="Proceeding_IsInterim" value="6230___Yes"> Yes </label>
+                                                <label class="normalFont"><input type="radio" name="Proceeding_IsInterim" value="6231___No"> No </label>
+                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select Any Value" data-val-for-name="Proceeding_IsInterim">
+
+                                                </span>
+                                            </div>
+                                        </div>*@
+
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        @*<div class="form-group row">
+                        <div class="col-md-8">
+
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="BtnShowFinalReport" data-val-tag="T1" name="BtnFinalReport" value="Show" class="btn btn-primary pull-right"><span class="fa fa-eye"></span>&nbsp;Show Next</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" id="BtnHideFinalReport" data-val-tag="T1" name="BtnFinalReport" value="Hide" class="btn btn-primary pull-right"><span class="fa fa-eye-slash"></span>&nbsp;Hide Next</button>
+                        </div>
+                    </div>*@
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-body-white" style="margin-top: 5px;display: none;" data-display-if="CurrentDivIndex::3,4,5" @*data-display-if="BtnFinalReport::Show"*@>
+                        <div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <h5><u>4) Final Report*</u></h5>
+                                </div>
+                            </div>
+                            @{
+                                {
+                                    List<DbPoliceActionReportLogs> listFinalLogs = Model.ListDbActionReportLogs.Where(n => n.Type == Config.PoliceActionReportType.Final).ToList();
+
+                                    if (listFinalLogs.Count > 0)
+                                    {
+                                        @*<div class="form-group row">
+                                        <div class="col-md-12">
+                                            <h6><u>i) previous proceedings</u></h6>
+                                        </div>
+                                    </div>*@
+                                        <div id="InterimReportProceeding" class="form-group" style="word-break: break-word;">
+                                            @*@{ int count = 1; }*@
+                                            @foreach (DbPoliceActionReportLogs dbPoliceActionReportLogs in listFinalLogs)
+                                            {
+                                                @*<span>"@count")</span>*@
+                                                @*<span>@count) </span>*@
+                                                @*<h6>@count) </h6>*@
+                                                <div class="form-group dynamicDivAdded">
+                                                    @*<h6>@count) </h6>*@
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+
+                                                                    <label>Proceeding Date</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.ProceedingDateTime)
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Detail</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.Comments)
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Entry Date</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @Html.DisplayFor(m => dbPoliceActionReportLogs.CreatedDateTime)
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="form-group col-md-6">
+                                                                <div class="col-md-6">
+                                                                    <label>Attachment</label>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    @if (dbPoliceActionReportLogs.DbAttachment != null)
+                                                                    {
+                                                                        string url = System.IO.Path.GetExtension(dbPoliceActionReportLogs.DbAttachment.Source_Url).ToLower();
+                                                                        string source = (url == ".pdf" || url == ".docx" || url == ".csv" || url == ".xlsx" || url == ".xls")
+                                                                            ? "/img/file.svg" : dbPoliceActionReportLogs.DbAttachment.Source_Url;
+
+                                                                        <a target="_blank" href=@dbPoliceActionReportLogs.DbAttachment.Source_Url>
+                                                                            <img width="100" height="100"
+                                                                                 src=@source
+                                                                                 alt="@dbPoliceActionReportLogs.DbAttachment.FileName">
+                                                                            <label>@dbPoliceActionReportLogs.DbAttachment.FileName</label>
+                                                                        </a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.Raw("N/A")
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                //{ count++;}
+                                            }
+                                        </div>
+                                    }
+
+                                }
+                                if (Model.CurrentStep <= 3)
+                                {
+                                    <div id="FinalReport" class="form-group row dynamicDiv">
+                                        <div class="col-md-12">
+                                            <div class="form-group col-md-6">
+                                                <div class="col-md-4">
+                                                    <label>Date*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control" readonly data-input-format="Date" data-date-end-date="0d" data-input-date-format="mm/dd/yyyy" name="FinalReportDate" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter date" data-validation-for-type="text" data-val-for-name="FinalReportDate">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 ">
+                                                <div class="col-md-4">
+                                                    <label>Detail*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="text" data-val-tag="T1" class="form-control textDetail" name="FinalReportDetail" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="FinalReportDetail">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group col-md-6 ">
+                                                <div class="col-md-4">
+                                                    <label>Please attach file*</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input type="file" accept="image/*,.pdf,.csv,.docx,.xlsx,.xls" data-val-tag="T1" class="form-control" name="FinalReportDetailAttachment" data-val-is-required="True" />
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-for-name="FinalReportDetailAttachment" data-val-is-required-message="Please add attachment">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-body-white" style="margin-top: 5px;display: none;" data-display-if="CurrentDivIndex::4,5" @*data-display-if="BtnFinalReport::Show"*@>
+                        <div>
+                            <div class="form-group row">
+                                <div class="col-md-6">
+                                    <h5><u>5) Disposal*</u></h5>
+                                </div>
+                            </div>
+                            @{
+                                if (Model.CurrentStep <= 4)
+                                {
+                                    <div id="DisposalForm">
+                                        <div id="FinalReport" class="form-group row">
+                                            <div class="col-md-12">
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <label>Disposal Category*</label>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(m => m.DisposalCatId, Model.ListSelectDisposalCat, "--Select--", new
+                                                        {
+                                                            @Id = "DisposalCatId"@*, @name = "complaintUserControlDivision"*@,
+@class = "form-control",
+@data_val_tag = "T1",
+@data_val_is_required = "True",
+@type = "select"
+})
+                                                        @*@Html.ValidationMessageFor(m => m.ComplaintVm.Division_Id, "", new { @class = "label label-warning" })*@
+                                                        <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Region is required" data-validation-for-type="text" data-val-for-name="DisposalCatId">
+
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-6 ">
+                                                    <div class="col-md-4">
+                                                        <label>Will be used in case of</label>
+                                                    </div>
+                                                    <div class="hidden">
+                                                        <input id="IdealAction" name="IdealAction" type="text" data-val-tag="T1" data-force-post="True" />
+                                                    </div>
+                                                    <div id="IdealActionDiv" class="col-md-8">
+                                                        @*@Html.DisplayFor(m => Model.ListDbDisposalCategories[0].Ideal_Action)*@
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div id="FinalReportForm" class="form-group">
+                                            <div id="Compromise" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2115,2127,2139,2151,2163,2175,2187,2199,2211,2223,2235,2247,2259,2271,2283,2295,2307,2319,2331,2343">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Affidavit attached duly signed by both *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioCompromiseInvestigationAffidavitAttached" name="RadioCompromiseInvestigationAffidavitAttached" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="CompromiseInvestigationAffidavitAttached" value="">
+                                                                <label class="normalFont"><input type="radio" name="CompromiseInvestigationAffidavitAttached" value="6243___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="CompromiseInvestigationAffidavitAttached" value="6244___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="CompromiseInvestigationAffidavitAttached">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioCompromiseInvestigationSignedReport" name="RadioCompromiseInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="CompromiseInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="CompromiseInvestigationSignedReport" value="6245___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="CompromiseInvestigationSignedReport" value="6246___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="CompromiseInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="FalseInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2116,2128,2140,2152,2164,2176,2188,2200,2212,2224,2236,2248,2260,2272,2284,2296,2308,2320,2332,2344">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="FalseInvestigationReason" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="FalseInvestigationReason">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioFalseInvestigationSignedReport" name="RadioFalseInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="FalseInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="FalseInvestigationSignedReport" value="6227___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="FalseInvestigationSignedReport" value="6228___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="FalseInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="RedressedInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2117,2129,2141,2153,2165,2177,2189,2201,2213,2225,2237,2249,2261,2273,2285,2297,2309,2321,2333,2345">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="RedressedInvestigationReason" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="RedressedInvestigationReason">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioRedressedInvestigationSignedReport" name="RadioRedressedInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="RedressedInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="RedressedInvestigationSignedReport" value="6229___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="RedressedInvestigationSignedReport" value="6230___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="RedressedInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="Non-CognizableInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2118,2130,2142,2154,2166,2178,2190,2202,2214,2226,2238,2250,2262,2274,2286,2298,2310,2322,2334,2346">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="Non-CognizableInvestigationReason" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="Non-CognizableInvestigationReason">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioNon-CognizableInvestigationSignedReport" name="RadioNon-CognizableInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Non-CognizableInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="Non-CognizableInvestigationSignedReport" value="6231___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="Non-CognizableInvestigationSignedReport" value="6232___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="Non-CognizableInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="Matter-In-CourtInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2119,2131,2143,2155,2167,2179,2191,2203,2215,2227,2239,2251,2263,2275,2287,2299,2311,2323,2335,2347">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Name of Court and writ No*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="Matter-In-CourtInvestigationNameofCourt" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please give Name of court and writ No" data-validation-for-type="text" data-val-for-name="Matter-In-CourtInvestigationNameofCourt">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioMatter-In-CourtInvestigationSignedReport" name="RadioMatter-In-CourtInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Matter-In-CourtInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="Matter-In-CourtInvestigationSignedReport" value="6233___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="Matter-In-CourtInvestigationSignedReport" value="6234___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="Matter-In-CourtInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="Other-DepartmentsInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2120,2132,2144,2156,2168,2180,2192,2204,2216,2228,2240,2252,2264,2276,2288,2300,2312,2324,2336,2348">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Related to Department enter name (other than Police)*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="Other-DepartmentsInvestigationDepartmentName" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please fill required info" data-validation-for-type="text" data-val-for-name="Other-DepartmentsInvestigationDepartmentName">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioOther-DepartmentsInvestigationSignedReport" name="RadioOther-DepartmentsInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="Other-DepartmentsInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="Other-DepartmentsInvestigationSignedReport" value="6235___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="Other-DepartmentsInvestigationSignedReport" value="6236___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="Other-DepartmentsInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="FIR-RegisteredInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2121,2133,2145,2157,2169,2181,2193,2205,2217,2229,2241,2253,2265,2277,2289,2301,2313,2325,2337,2349">
+                                                <div class="row ">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>FIR No*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="FIR-RegisteredInvestigationFirNo" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter FIR No" data-validation-for-type="text" data-val-for-name="FIR-RegisteredInvestigationFirNo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Under Section*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="FIR-RegisteredInvestigationUnderSection" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter under section" data-validation-for-type="text" data-val-for-name="FIR-RegisteredInvestigationUnderSection">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>District *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="FIR-RegisteredInvestigationDistrictInfo" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="FIR-RegisteredInvestigationDistrictInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Police Station *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="FIR-RegisteredInvestigationPoliceStationInfo" data-val-tag="T1" data-val-repopulate-onchange-of="FIR-RegisteredInvestigationDistrictInfo" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="FIR-RegisteredInvestigationPoliceStationInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="RaptRegisteredInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2122,2134,2146,2158,2170,2182,2194,2206,2218,2230,2242,2254,2266,2278,2290,2302,2314,2326,2338,2350">
+                                                <div class="row ">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>DD No*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="RaptRegisteredInvestigationDDNo" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter DD No" data-validation-for-type="text" data-val-for-name="RaptRegisteredInvestigationDDNo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="RaptRegisteredInvestigationDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter Detail" data-validation-for-type="text" data-val-for-name="RaptRegisteredInvestigationDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>District *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="RaptRegisteredInvestigationDistrictInfo" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="RaptRegisteredInvestigationDistrictInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Police Station *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="RaptRegisteredInvestigationPoliceStationInfo" data-val-tag="T1" data-val-repopulate-onchange-of="RaptRegisteredInvestigationDistrictInfo" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="RaptRegisteredInvestigationPoliceStationInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="FIR-CancelledInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2123,2135,2147,2159,2171,2183,2195,2207,2219,2231,2243,2255,2267,2279,2291,2303,2315,2327,2339,2351">
+                                                <div class="row ">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>FIR No*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="FIR-CancelledInvestigationFirNo" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter FIR No" data-validation-for-type="text" data-val-for-name="FIR-CancelledInvestigationFirNo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Under Section*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="FIR-CancelledInvestigationUnderSection" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter under section" data-validation-for-type="text" data-val-for-name="FIR-CancelledInvestigationUnderSection">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-md-12 ">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>District *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="FIR-CancelledInvestigationDistrictInfo" data-val-tag="T1" data-val-populate-on-start="True" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/Districts?id=1&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="District is required" data-validation-for-type="text" data-val-for-name="FIR-CancelledInvestigationDistrictInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Police Station *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <select class="form-control" type="select" name="FIR-CancelledInvestigationPoliceStationInfo" data-val-tag="T1" data-val-repopulate-onchange-of="FIR-CancelledInvestigationDistrictInfo" data-val-config="combineIdWithVal::True" data-val-api-url="../GeneralApi/WardsByDistrictId?id={id}&campaignId=78" data-val-is-required="True">
+                                                                    <option value="-1">--Select--</option>
+                                                                </select>
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Police Station is required" data-validation-for-type="text" data-val-for-name="FIR-CancelledInvestigationPoliceStationInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="NotPursuing" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2124,2136,2148,2160,2172,2184,2196,2208,2220,2232,2244,2256,2268,2280,2292,2304,2316,2328,2340,2352">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-12">
+                                                            <div class="col-md-4">
+                                                                <label>Select One *</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input id="RadioNotPursuing" name="RadioNotPursuing" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="NotPursuing" value="">
+                                                                <label class="normalFont"><input type="radio" name="NotPursuing" value="6257___Affidavit attached duly signed by complainant"> Affidavit attached duly signed by complainant </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="NotPursuing" value="6258___Signed report of authority attached/uploaded"> Signed report of authority attached/uploaded </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="NotPursuing">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="ProceedingInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2125,2137,2149,2161,2173,2185,2197,2209,2221,2233,2245,2257,2269,2281,2293,2305,2317,2329,2341,2353">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Proceeding started vide letter No dated*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control textDetail" name="ProceedingInvestigationInfo" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter required info" data-validation-for-type="text" data-val-for-name="ProceedingInvestigationInfo">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioProceedingInvestigationSignedReport" name="RadioProceedingInvestigationSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ProceedingInvestigationSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="ProceedingInvestigationSignedReport" value="6237___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="ProceedingInvestigationSignedReport" value="6238___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="ProceedingInvestigationSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="InvestigationChangedInvestigation" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2126,2138,2150,2162,2174,2186,2198,2210,2222,2234,2246,2258,2270,2282,2294,2306,2318,2330,2342,2354">
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-8">
+                                                            <label>Investigation changed *</label>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input id="RadioInvestigationChanged" name="RadioInvestigationChanged" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="InvestigationChanged" value="">
+                                                            <label class="normalFont"><input type="radio" name="InvestigationChanged" value="6239___Yes"> Yes </label>@*<br>*@
+                                                            <label class="normalFont"><input type="radio" name="InvestigationChanged" value="6240___No"> No </label>@*<br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="InvestigationChanged">
+
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-4">
+                                                            <label>vide letter No dated*</label>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <input type="text" data-val-tag="T1" class="form-control textDetail" name="InvestigationChangedInvestigationInfo" data-val-is-required="True" />
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter required info" data-validation-for-type="text" data-val-for-name="InvestigationChangedInvestigationInfo">
+
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <div class="col-md-8">
+                                                            <label>Signed report of authority attached/uploaded *</label>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <input id="RadioInvestigationChangedSignedReport" name="RadioInvestigationChangedSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="InvestigationChangedInvestigationSignedReport" value="">
+                                                            <label class="normalFont"><input type="radio" name="InvestigationChangedInvestigationSignedReport" value="6241___Yes"> Yes </label>@*<br>*@
+                                                            <label class="normalFont"><input type="radio" name="InvestigationChangedInvestigationSignedReport" value="6242___No"> No </label>@*<br>*@
+                                                            <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="InvestigationChangedInvestigationSignedReport">
+
+                                                            </span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            <!-- Categories For departmental issues -->
+                                            <div id="FalseDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2355,2362,2369,2376,2383">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="FalseDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="FalseDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioFalseDepartmentalIssueSignedReport" name="RadioFalseDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="FalseDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="FalseDepartmentalIssueSignedReport" value="6245___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="FalseDepartmentalIssueSignedReport" value="6246___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="FalseDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="RedressedDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2356,2363,2370,2377,2384">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="RedressedDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="RedressedDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioRedressedDepartmentalIssueSignedReport" name="RadioRedressedDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="RedressedDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="RedressedDepartmentalIssueSignedReport" value="6247___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="RedressedDepartmentalIssueSignedReport" value="6248___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="RedressedDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="MatterInCourtDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2357,2364,2371,2378,2385">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Name of Court and writ No*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="MatterCourtNameAndWritNoDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="MatterCourtNameAndWritNoDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioMatterInCourtDepartmentalIssueSignedReport" name="RadioMatterInCourtDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="MatterInCourtDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="MatterInCourtDepartmentalIssueSignedReport" value="6249___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="MatterInCourtDepartmentalIssueSignedReport" value="6250___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="MatterInCourtDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="NoMeritDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2358,2365,2372,2379,2386">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="NoMeritDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="NoMeritDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioNoMeritDepartmentalIssueSignedReport" name="RadioNoMeritDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="NoMeritDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="NoMeritDepartmentalIssueSignedReport" value="6251___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="NoMeritDepartmentalIssueSignedReport" value="6252___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="NoMeritDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="NotEligibleDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2359,2366,2373,2380,2387">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="NotEligibleDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="NotEligibleDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioNotEligibleDepartmentalIssueSignedReport" name="RadioNotEligibleDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="NotEligibleDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="NotEligibleDepartmentalIssueSignedReport" value="6253___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="NotEligibleDepartmentalIssueSignedReport" value="6254___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="NotEligibleDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="ProceedingDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2360,2367,2374,2381,2388">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-4">
+                                                                <label>Enter short detail*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input type="text" data-val-tag="T1" class="form-control" name="ProceedingDepartmentalIssueDetail" data-val-is-required="True" />
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please enter detail" data-validation-for-type="text" data-val-for-name="ProceedingDepartmentalIssueDetail">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <div class="col-md-8">
+                                                                <label>Signed report of authority attached/uploaded *</label>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <input id="RadioProceedingDepartmentalIssueSignedReport" name="RadioProceedingDepartmentalIssueSignedReport" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="ProceedingDepartmentalIssueSignedReport" value="">
+                                                                <label class="normalFont"><input type="radio" name="ProceedingDepartmentalIssueSignedReport" value="6255___Yes"> Yes </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="ProceedingDepartmentalIssueSignedReport" value="6256___No"> No </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="ProceedingDepartmentalIssueSignedReport">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="NotWillingToPursueDepartmentalIssue" class="dynamicDiv" style="display: none;" data-display-if="DisposalCatId::2361,2368,2375,2382,2389">
+                                                <div class="row">
+                                                    <div class="form-group col-md-12">
+
+                                                        <div class="form-group col-md-12">
+                                                            <div class="col-md-4">
+                                                                <label>Select one*</label>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <input id="RadioNotWillingToPursueDepartmentalIssue" name="RadioNotWillingToPursueDepartmentalIssue" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="NotWillingToPursueDepartmentalIssueSelectOne" value="">
+                                                                <label class="normalFont"><input type="radio" name="NotWillingToPursueDepartmentalIssueSelectOne" value="6259___Affidavit attached duly signed by complainant"> Affidavit attached duly signed by complainant </label>@*<br>*@
+                                                                <label class="normalFont"><input type="radio" name="NotWillingToPursueDepartmentalIssueSelectOne" value="6260___Signed report of authority attached/uploaded"> Signed report of authority attached/uploaded </label>@*<br>*@
+                                                                <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="NotWillingToPursueDepartmentalIssueSelectOne">
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @*<div class="form-group row">
+                                        <div class="col-md-6">
+                                            <h5><u> Satisfaction of complainant *</u></h5>
+                                        </div>
+                                    </div>*@
+                                        @*<div id="SatisfactionOfComplainant" class="form-group row">
+                                        <div class="form-group col-md-12">
+                                            <div class="form-group col-md-6">
+                                                <div class="col-md-4">
+                                                    <label>Select One *</label>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <input id="RadioSatisfactionOfComplainant" name="RadioSatisfactionOfComplainant" type="radio" class="hidden" data-val-tag="T1" data-val-is-required="True" data-group-name="SatisfactionOfComplainant" value="">
+                                                    <label class="normalFont"><input type="radio" name="SatisfactionOfComplainant" value="6261___Yes"> Yes </label>
+                                                    <label class="normalFont"><input type="radio" name="SatisfactionOfComplainant" value="6262___No"> No </label>
+                                                    <span class="field-validation-valid label label-warning hidden" data-val-is-required-message="Please select value" data-val-for-name="SatisfactionOfComplainant">
+
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="Step4NonEditable" class="form-group row dynamicDivAdded">
+                                        @{
+                                            List<DbDynamicComplaintFields> listToShow = Model.ListDbDynamicComplaintFields.Where(n => n.Filter2 == 4).ToList();
+                                            for (int i = 0; i < listToShow.Count; i++)
+                                            {
+                                                <div class="form-group col-md-6">
+                                                    <div class="col-md-6">
+                                                        <label>@listToShow[i].FieldName</label>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        @Html.DisplayFor(m => listToShow[i].FieldValue)
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 hidden">
+                        <input id="CurrentDivIndex" name="CurrentDivIndex" value="0" data-force-post="True" @*data-val-next-div-config="ShowBtnId::BtnShowMeetingWithin48Hours||HideBtnId::BtnHideMeetingWithin48Hours||InitialIndex::0||CurrentIndex::0||DivList::MeetingWithin48Hours"*@>
+                    </div>
+                    @if (Model.CurrentStep < 5)
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-8">
+
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" id="BtnShowNext" @*id="BtnShowMeetingWithin48Hours" data-val-tag="T1" name="BtnMeetingWithin48Hours" value="Show"*@ class="btn btn-primary pull-right"><span class="fa fa-eye"></span>&nbsp;Show Next</button>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" id="BtnHideNext" @*id="BtnHideMeetingWithin48Hours" data-val-tag="T1" name="BtnMeetingWithin48Hours" value="Hide"*@ class="btn btn-primary pull-right"><span class="fa fa-eye-slash"></span>&nbsp;Hide Next</button>
+                            </div>
+                        </div>
+
+                        if (Model.CanSaveComplaintAction)
+                        {
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="submit" style="margin: 5px 15px 0 0" class="btn btn-primary pull-right" @*onclick="OnSumitClick()"*@><span class="fa fa-save"></span>&nbsp;Submit</button>
+                                </div>
+                            </div>
+                        }
+                        <br clear="all" />
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var Model = @Html.Raw(Json.Encode(@Model));
+    //var stepWiseDivIds = [{StepEditable:"Step0Editable",StepNonEditable:"Step0NonEditable"}];
+    var currentStep = parseInt(Model.CurrentStep);
+
+    $(document).ready(function () {
+        debugger;
+
+
+        RegisterLocalValidation("#SubmitComplaintAction", "T1");
+        RegisterCloning("#SubmitComplaintAction", "T1");
+        if(/*currentStep!=2*/ currentStep<=2 && Model.ListDbActionReportLogs.length==0) {
+            $("#BtnAddProceeding").trigger('click');
+        }
+        PopulateEffectOfCurrentStep();
+    });
+
+
+
+    function PopulateEffectOfCurrentStep(){
+        for (var i = 0; i < currentStep; i++) {
+            IncrementValueOnButtonClick($("#CurrentDivIndex"), 1,4);
+        }
+    }
+
+
+    /* ---------- add/remove proceedings ---------- */
+    $("#BtnAddProceeding").on('click', function () {
+        $('#BtnRemoveProceeding').prop('disabled', false);
+    });
+
+    $("#BtnRemoveProceeding").on('click', function () {
+        var proceedings = $('.proceedingInfo:visible').length;
+
+        if (proceedings => 1) {
+            if (proceedings - 1 == 0)
+                $('#BtnRemoveProceeding').prop('disabled', true);
+            $(".proceedingInfo:visible")[proceedings - 1].remove();
+        }
+    });
+    /* ---------- add/remove proceedings : end ---------- */
+
+    $('.textDetail').on('change keydown keyup paste', function (e) {
+        if (this.value != '') {
+            var val = this.value.replace(/[^a-zA-Z0-9_\ ]/gi, '');
+            $('input[name="' + e.target.name + '"]').val(val);
+        }
+    })
+
+    $("#BtnShowNext").on('click', function() {
+        debugger;
+        IncrementValueOnButtonClick($("#CurrentDivIndex"), 1,4);
+    });
+
+    $("#BtnHideNext").on('click', function() {
+        IncrementValueOnButtonClick($("#CurrentDivIndex"), -1,4);
+    });
+
+    $("#DisposalCatId").on('change', function() {
+        //alert($(this).val()) ;
+        var selectedVal = $(this).val();
+        var listDbCat = Model.ListDbDisposalCategories;
+        for (var i = 0; i < listDbCat.length; i++) {
+            if (listDbCat[i].Complaint_SubCategory==selectedVal.split('___')[0]) {
+                $("#IdealActionDiv").html(listDbCat[i].Ideal_Action);
+                $("#IdealAction").val(listDbCat[i].Ideal_Action);
+            }
+        }
+    });
+    $("#SubmitComplaintAction").submit(function (event) {
+        debugger;
+        event.preventDefault();
+        var elementsToPost = [];
+        var isValid = ValidateFormOnSubmit("#SubmitComplaintAction", "T1",elementsToPost);
+        if (isValid /*$('#AddComplaintForm').valid()*/) {
+            ShowLoading();
+            SubmitForm("#SubmitComplaintAction", elementsToPost);
+        }
+        return isValid;
+    });
+
+    function PostActionCallback(data) {
+        if(data!=null) {
+            //$("#ComplaintAction").html(data);
+            //data.RedirectUrl = '';
+        }
+        HideLoading();
+    }
+
+</script>

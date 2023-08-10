@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Department Wise Report"; 
+    
+}
+<style>
+    .DTTT {
+        display: block !important;
+    }
+</style>
+@*<div class="col-md-12">
+
+    <div class="panel bg-light-blue">
+        <div class="panel-body">
+            <h3 style="margin:0; font-size: 20px;"><i class="fa fa-list"></i>&nbsp;Agent Wise Listing in Campaigns</h3>
+        </div>
+    </div>
+</div>*@
+
+<div class="col-md-12 col-xs-12">
+    <div class="box box-primary">
+        <div class="box-header-blue with-border btn-header">
+            <h4 class="box-title">Department wise</h4>
+        </div>
+        <div class="box-body-white">
+            <div class="col-md-12 col-sm-12">
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12">
+                        <input type="text" id="from" value="@DateTime.Now.AddMonths(-6).ToString("yyyy-MM-dd")" placeholder="example: 11/21/2015"
+                               class="form-control datepicker" data-original-title="From" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12 col-sm-12">
+                        <input type="text" id="to" value="@DateTime.Now.ToString("yyyy-MM-dd")" placeholder="example: 12/31/2015"
+                               class="form-control datepicker" data-original-title="To" data-toggle="tooltip">
+
+                    </div>
+                </div>
+                <div class="form-group col-md-2 col-sm-12">
+                    <div class="col-md-12" data-original-title="Campaign(s)" data-toggle="tooltip">
+                        @Html.DropDownList("campaignsList", (List<SelectListItem>)ViewBag.Campaigns, new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12" data-original-title="Department(s)" data-toggle="tooltip">
+                        @Html.DropDownList("departmentList", new List<SelectListItem>(), new { @class = "form-control", @multiple = "multiple" })
+                    </div>
+
+                </div>
+                <div class="form-group col-md-2 col-xs-12">
+                    <div class="col-md-12">
+                        <button id="FilterBtn" class="btn btn-primary col-md-12" type="button"><i class="fa fa-filter"></i>&nbsp;Filter</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="box-body-white">
+
+            <table id="reportListing" width="100%" class="table table-condensed table-hover table-bordered table-striped  responsive" role="grid" aria-describedby="reportListing">
+                <thead>
+                    <tr role="row" class="tableHeader">
+                        <th>Campaign</th>
+                        <th>Department</th>
+                        <th>Resolved</th>
+                        <th>Pending</th>
+                        <th>Total</th>
+                        <th>Closure Rate</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#campaignsList").change(function() {
+                $.loadDropdown("departmentList", "GetDepartmentsOfCampaignOfUser", $("#campaignsList").val());
+                $.enableMultiselectOf("departmentList");
+            });
+           
+            $("#campaignsList").trigger('change');
+            $("#FilterBtn").trigger('click');
+
+        });
+        $("#FilterBtn").on('click', function (e) {
+            e.preventDefault();
+            loadData();
+        });
+        var counter = 1;
+        function loadData() {
+           
+            var table = $('#reportListing').DataTable({
+                "dom": '<<T><f>><"clear">t<"bottom"<<"float-left"i><"float-right"p><"clear">>>',
+                    "oTableTools": {
+                        "sSwfPath": "http://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf",
+                        "aButtons": [
+                          {
+                              'sExtends': 'xls',
+                              'sButtonText': 'Export to Excel',
+                              "oSelectorOpts": { filter: 'applied', order: 'current' },
+                          },
+                          {
+                              'sExtends': 'print',
+                              'sButtonText': 'Print',
+                              "oSelectorOpts": { filter: 'applied', order: 'current' },
+                          },
+                          {
+                              'sExtends': 'copy',
+                              'sButtonText': 'Copy',
+                              "oSelectorOpts": { filter: 'applied', order: 'current' },
+                          }
+                        ]
+                    },
+                    "bDestroy": true,
+                    "iDisplayLength": 50,
+                    "processing": false,
+                    "responsive": true,
+                    "serverSide": false,
+                    "ajax":
+                    {
+                        "url": '@Url.Action("DepartmentWiseCount", "api/report")',
+                        "contentType": "application/x-www-form-urlencoded",
+                        "type": "POST",
+                        "async":false,
+                        "data": 
+                        {
+                            From: $("#from").val(),
+                            To: $("#to").val(),
+                            Departments: $("#departmentList").val(),
+                            Campaigns: $("#campaignsList").val()
+                        }
+
+                    },
+                    "columns": [
+                        { "data": "Campaign_Name" },
+                        { "data": "Department_Name" },
+                        {
+                            "data": "Pending",
+                            render: function (data, type, row, meta) {
+                                return row.Total - row.Pending;
+                            }, "bSortable": true
+                        },
+                        { "data": "Pending" },
+                        { "data": "Total" },
+                        {
+                            "data": "Pending",
+                            render: function (data, type, row, meta) {
+                                let resolved = ((row.Total - row.Pending) / (row.Total)) * 100;
+                                resolved = resolved > 0 ? resolved : 0;
+                                return `${resolved.toFixed(2)}%`
+                            }, "bSortable": true
+                        },
+                    ]
+                });
+            }
+        
+    </script>
+}

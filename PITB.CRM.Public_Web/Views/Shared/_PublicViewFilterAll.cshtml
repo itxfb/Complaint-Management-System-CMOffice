@@ -1,0 +1,103 @@
+﻿@model PITB.CRM.Public_Web.Models.ViewModels.VmFilters
+@*<div class="media v-middle">
+        <div class="media-body">
+            <div style="width: 89%;margin: 0 auto;">
+                <h3> <span style="color: #29a097">Filter</span> Search</h3>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        <div id="DistrictArea">
+                            @{ Html.RenderAction("LoadDistricts", "General"); }
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <div id="TehsilArea">
+                            <select class="form-control">
+                                <option>-- Tehsil --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <div id="UcArea">
+                            <select class="form-control">
+                                <option>-- UC --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.DropDownListFor(
+                        m => m.Categories,
+                        new SelectList(Model.CategoriesSelectListItems, "Value", "Text"),
+                        "-- Category --", new { @class = "form-control", id = "CategoryDDL" })
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.DropDownListFor(
+                        m => m.StatusId,
+                        new SelectList(Model.StatusSelectListItems, "Value", "Text"),
+                        "-- Status --", new { @class = "form-control", id = "StatusDDL" })
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button class="btn btn-default btn-stroke" style="width: 100%" id="FilterBtn" onclick="FilterBtnClick();">
+                            <span class="fa fa-filter"></span>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+            <div class="row">
+                <div class="col-md-12">
+                    <label>District</label>
+                    <div class="form-group">
+                        <div id="DistrictArea">
+                            @{ Html.RenderAction("LoadDistricts", "General"); }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label>Town</label>
+                    <div class="form-group">
+                        <div id="TehsilArea">
+                            <select class="form-control">
+                                <option>-- Town --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+          
+            <div class="col-md-12">
+                <label>Union council</label>
+                <div class="form-group">
+                    <div id="UcArea">
+                        <select class="form-control">
+                            <option>-- UC --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <label>Category</label>
+                <div class="form-group">
+                    @Html.DropDownListFor(
+                        m => m.Categories,
+                        new SelectList(Model.CategoriesSelectListItems, "Value", "Text"),
+                        "-- Category --", new { @class = "form-control", id = "CategoryDDL" })
+                    </div>
+                </div>
+            <div class="col-md-12">
+                <label>Status</label>
+                <div class="form-group">
+                    @Html.DropDownListFor(
+                        m => m.StatusId,
+                        new SelectList(Model.StatusSelectListItems, "Value", "Text"),
+                        "-- Status --", new { @class = "form-control", id = "StatusDDL" })
+                </div>
+            </div>
+              
+                <div class="form-group col-md-12">
+                    <button class="btn btn-block  btn-warning" style="border: none; border-radius: 0px;" id="FilterBtn" onclick="FilterBtnClick();">
+                        <span class="fa fa-filter"></span> Filter
+                    </button>
+                </div>
+</div>
